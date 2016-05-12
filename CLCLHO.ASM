@@ -1,3 +1,7 @@
+;*********************************************************
+;* SMC - Single Method Composer                          *
+;* Copyright Graham A C John 1991-98 All rights reserved *
+;*********************************************************
 	TITLE     CLCLHO - Calculate LeadHead Offset for Row
 ;
 ;    This routine calculates a Lead Head Offset (LHO) into a proving array

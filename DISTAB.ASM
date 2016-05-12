@@ -1,3 +1,7 @@
+;*********************************************************
+;* SMC - Single Method Composer                          *
+;* Copyright Graham A C John 1991-98 All rights reserved *
+;*********************************************************
 TITLE DISTAB - Display Proving Table for Method
 ;
 ;    This routine displays the proving table
@@ -396,11 +400,12 @@ dissta PROC
   call binasc			  ;   Convert to ascii
 .IF !genend
   call elapse			  ;Display elapsed time since comp started
-  mov bx,cx
-  movzx eax,bh                    ; Display Hours Elapsed
-  mov discol,colinf               ;   Information colour
-  mov di,90                       ;   Screen position
-  mov cx,3                        ;   Number of digits
+  mov ebx,ecx
+  mov eax,ebx			  ; Display Hours Elapsed
+  shr eax,8
+  mov discol,colinf		  ;   Information colour
+  mov di,88			  ;   Screen position
+  mov cx,4			  ;   Number of digits
   call binasc                     ;   Convert to ascii
   mov diszero,"0"                 ; Set no zero suppression
   movzx eax,bl                    ; Display Minutes Elapsed
@@ -413,7 +418,8 @@ dissta PROC
   mov di,104                      ;   Screen position
   mov cx,2                        ;   Number of digits
   call binasc                     ;   Convert to ascii
-  movzx eax,bh			  ; Display composing speed
+  mov eax,ebx			  ; Display composing speed
+  shr eax,8
   mov ecx,60			  ;   convert hours to minutes
   mul cl
   and ebx,0FFh

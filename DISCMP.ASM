@@ -1,3 +1,7 @@
+;*********************************************************
+;* SMC - Single Method Composer                          *
+;* Copyright Graham A C John 1991-98 All rights reserved *
+;*********************************************************
 TITLE DISCMP - Display Composition from list
 ;
 ;    This routine displays a single composition from the list

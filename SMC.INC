@@ -1,3 +1,7 @@
+;*********************************************************
+;* SMC - Single Method Composer                          *
+;* Copyright Graham A C John 1991-98 All rights reserved *
+;*********************************************************
 ;************************************
 ;******** DATA INCLUDE FILE - SMC.INC
 ;************************************
@@ -113,29 +117,117 @@ metnam BYTE "                         "
 metlen WORD 0                     ;Current method definition
 metnot BYTE 63 DUP(0)
 metcal BYTE 0,0,0
-metn01 BYTE "Cambridge Surprise       "
+metn01 BYTE "Belfast Surprise         "
+       WORD 32
+       BYTE 60h,0,28h,0A0h,0,0C0h,0,48h,0C0h,0,0A0h,48h,90h,0,0C0h,48h
+       BYTE 0C0h,0,90h,48h,0A0h,0,0C0h,48h,0,0C0h,0,0A0h,28h,0,60h
+       BYTE 32 dup(0)
+       BYTE 88h,0A0h,0F0h
+       BYTE "Belfast Surprise (6th Pl)"
+       WORD 32
+       BYTE 60h,0,28h,0A0h,0,0C0h,0,48h,0C0h,0,0A0h,48h,90h,0,0C0h,48h
+       BYTE 0C0h,0,90h,48h,0A0h,0,0C0h,48h,0,0C0h,0,0A0h,28h,0,60h
+       BYTE 32 dup(0)
+       BYTE 88h,090h,09Ch
+       BYTE "Bristol Surprise         "
+       WORD 32
+       BYTE 0,28h,0,0A0h,28h,0,28h,50h,0A0h,0,0A0h,28h,0,0A0h,0,88h
+       BYTE 0,0A0h,0,28h,0A0h,0,0A0h,50h,28h,0,28h,0A0h,0,28h,0
+       BYTE 32 dup(0)
+       BYTE 88h,0A0h,0F0h
+       BYTE "Cambridge Surprise       "
        WORD 32
        BYTE 0,48h,0,0A0h,0,0D4h,0,50h,0,0A0h,0,28h,0,90h,0,18h
        BYTE 0,90h,0,28h,0,0A0h,0,50h,0,0D4h,0,0A0h,0,48h,0
        BYTE 32 dup(0)
        BYTE 0C0h,0A0h,0F0h
-       BYTE "Yorkshire Surprise       "
+       BYTE "Caterham Surprise        "
        WORD 32
-       BYTE 0,48h,0,0A0h,0,028h,0,90h,0,0C0h,0,48h,0,0A0h,0,18h
-       BYTE 0,0A0h,0,48h,0,0C0h,0,90h,0,28h,0,0A0h,0,48h,0
+       BYTE 50h,0,30h,0A0h,28h,0,28h,50h,0,60h,0C0h,28h,90h,0,90h,28h
+       BYTE 90h,0,90h,28h,0C0h,60h,0,50h,28h,0,28h,0A0h,30h,0,50h
+       BYTE 32 dup(0)
+       BYTE 88h,0A0h,0F0h
+       BYTE "Catherine Surprise       "
+       WORD 32
+       BYTE 0,48h,0,0A0h,0,0D8h,0,90h,0,0C0h,0,28h,0A0h,0,0A0h,28h
+       BYTE 0A0h,0,0A0h,28h,0,0C0h,0,90h,0,0D8h,0,0A0h,0,48h,0
        BYTE 32 dup(0)
        BYTE 0C0h,0A0h,0F0h
+       BYTE "Cray Surprise            "
+       WORD 32
+       BYTE 0,30h,0,0A0h,0,30h,0,50h,0,60h,0,28h,0,60h,0,18h
+       BYTE 0,60h,0,28h,0,60h,0,50h,0,30h,0,0A0h,0,30h,0
+       BYTE 32 dup(0)
+       BYTE 0C0h,0A0h,0F0h
+       BYTE "Glasgow Surprise         "
+       WORD 32
+       BYTE 50h,0,30h,0A0h,28h,0,28h,50h,0,0A0h,0,48h,90h,0,90h,48h
+       BYTE 90h,0,90h,48h,0,0A0h,0,50h,28h,0,28h,0A0h,30h,0,50h
+       BYTE 32 dup(0)
+       BYTE 88h,090h,09Ch
+       BYTE "Dartmoor Surprise        "
+       WORD 32
+       BYTE 30h,0,28h,0A0h,0,28h,0,50h,0,0C0h,0,28h,0,90h,0,88h
+       BYTE 0,90h,0,28h,0,0C0h,0,50h,0,28h,0,0A0h,28h,0,30h
+       BYTE 32 dup(0)
+       BYTE 0C0h,0A0h,0F0h
+       BYTE "Jersey Surprise          "
+       WORD 32
+       BYTE 0,28h,0,90h,0,0C0h,0,90h,0,0A0h,0,28h,0,50h,0,28h
+       BYTE 0,50h,0,28h,0,0A0h,0,90h,0,0C0h,0,90h,0,28h,0
+       BYTE 32 dup(0)
+       BYTE 0C0h,0A0h,0F0h
+       BYTE "Kent Treble Bob          "
+       WORD 32
+       BYTE 60h,0,60h,88h,0,0C0h,0,88h,0,0C0h,0,88h,0,0C0h,0,88h
+       BYTE 0,0C0h,0,88h,0,0C0h,0,88h,0,0C0h,0,88h,60h,0,60h
+       BYTE 32 dup(0)
+       BYTE 88h,0A0h,0F0h
        BYTE "Lincolnshire Surprise    "
        WORD 32
        BYTE 0,48h,0,0A0h,0,28h,0,90h,0,0A0h,0,28h,0,50h,0,18h
        BYTE 0,50h,0,28h,0,0A0h,0,90h,0,28h,0,0A0h,0,48h,0
        BYTE 32 dup(0)
        BYTE 0C0h,0A0h,0F0h
-       BYTE "Superlative Surprise     "
+       BYTE "Lindum Surprise          "
        WORD 32
-       BYTE 0,50h,0,0A0h,0,28h,0,50h,0,0A0h,0,28h,0,50h,0,18h
-       BYTE 0,50h,0,28h,0,0A0h,0,50h,0,28h,0,0A0h,0,50h,0
+       BYTE 0,50h,0,0A0h,0,28h,0,90h,0,0A0h,0,48h,0,0A0h,0,28h
+       BYTE 0,0A0h,0,48h,0,0A0h,0,90h,0,28h,0,0A0h,0,50h,0
        BYTE 32 dup(0)
+       BYTE 0C0h,0A0h,0F0h
+       BYTE "London Surprise          "
+       WORD 32
+       BYTE 48h,0,48h,0A0h,0,0C0h,0,48h,0A0h,0,0A0h,28h,90h,0,90h,28h
+       BYTE 90h,0,90h,28h,0A0h,0,0A0h,48h,0,0C0h,0,0A0h,48h,0,48h
+       BYTE 32 dup(0)
+       BYTE 0C0h,0A0h,0F0h
+       BYTE "MC Little Surprise       "
+       WORD 24
+       BYTE 0,48h,0,0A0h,0,30h,0,48h,0A0h,0,0C0h,30h
+       BYTE 0C0h,0,0A0h,48h,0,30h,0,0A0h,0,48h,0
+       BYTE 40 dup(0)
+       BYTE 0C0h,0A0h,0F0h
+       BYTE "Norwich Surprise         "
+       WORD 32
+       BYTE 0,60h,0,0A0h,0,0C0h,0,48h,0,60h,0,48h,0,60h,0,88h
+       BYTE 0,60h,0,48h,0,60h,0,48h,0,0C0h,0,0A0h,0,60h,0
+       BYTE 32 dup(0)
+       BYTE 88h,0A0h,0F0h
+       BYTE "Oxford Treble Bob        "
+       WORD 32
+       BYTE 0,60h,0,88h,0,0C0h,0,88h,0,0C0h,0,88h,0,0C0h,0,88h
+       BYTE 0,0C0h,0,88h,0,0C0h,0,88h,0,0C0h,0,88h,0,60h,0
+       BYTE 32 dup(0)
+       BYTE 88h,0A0h,0F0h
+       BYTE "Stedman Triples          "
+       WORD 12
+       BYTE 0A0h,0C0h,0A0h,0C0h,0A0h,88h,0C0h,0A0h,0C0h,0A0h,0C0h
+       BYTE 52 dup(0)
+       BYTE 88h,090h,09Ch
+       BYTE "Plain Bob                "
+       WORD 16
+       BYTE 0,88h,0,88h,0,88h,0,88h,0,88h,0,88h,0,88h,0
+       BYTE 48 dup (0)
        BYTE 0C0h,0A0h,0F0h
        BYTE "Pudsey Surprise          "
        WORD 32
@@ -149,23 +241,35 @@ metn01 BYTE "Cambridge Surprise       "
        BYTE 0,60h,0,48h,0,0A0h,0,90h,0,28h,0,0A0h,0,48h,0
        BYTE 32 dup(0)
        BYTE 0C0h,0A0h,0F0h
-       BYTE "London Surprise          "
+       BYTE "St Clements Court Bob    "
+       WORD 16
+       BYTE 0,88h,0,048h,0,48h,0,48h
+       BYTE 0,48h,0,48h,0,88h,0
+       BYTE 48 dup(0)
+       BYTE 0C0h,0A0h,0F0h
+       BYTE "Superlative Surprise     "
        WORD 32
-       BYTE 48h,0,48h,0A0h,0,0C0h,0,48h,0A0h,0,0A0h,28h,90h,0,90h,28h
-       BYTE 90h,0,90h,28h,0A0h,0,0A0h,48h,0,0C0h,0,0A0h,48h,0,48h
+       BYTE 0,50h,0,0A0h,0,28h,0,50h,0,0A0h,0,28h,0,50h,0,18h
+       BYTE 0,50h,0,28h,0,0A0h,0,50h,0,28h,0,0A0h,0,50h,0
        BYTE 32 dup(0)
        BYTE 0C0h,0A0h,0F0h
-       BYTE "Bristol Surprise         "
+       BYTE "Warkworth Surprise       "
        WORD 32
-       BYTE 0,28h,0,0A0h,28h,0,28h,50h,0A0h,0,0A0h,28h,0,0A0h,0,88h
-       BYTE 0,0A0h,0,28h,0A0h,0,0A0h,50h,28h,0,28h,0A0h,0,28h,0
+       BYTE 0,60h,0,0A0h,0,0C0h,0,50h,0A0h,0,0C0h,28h,90h,0,0A0h,28h
+       BYTE 0A0h,0,90h,28h,0C0h,0,0A0h,50h,0,0C0h,0,0A0h,0,60h,0
        BYTE 32 dup(0)
        BYTE 88h,0A0h,0F0h
+       BYTE "Yorkshire Surprise       "
+       WORD 32
+       BYTE 0,48h,0,0A0h,0,028h,0,90h,0,0C0h,0,48h,0,0A0h,0,18h
+       BYTE 0,0A0h,0,48h,0,0C0h,0,90h,0,28h,0,0A0h,0,48h,0
+       BYTE 32 dup(0)
+       BYTE 0C0h,0A0h,0F0h
 metend BYTE 0			  ;Marks End of methods
-metleh DWORD 2 DUP (0)            ;First Plain Leadhead of the Method
+metleh DWORD 2 DUP (0)		  ;First Plain Leadhead of the Method
 metlhg WORD "  "                  ;Lead Head Group of method
 metcol BYTE 8 DUP (0)		  ;Column positions of calls for discmp
-metsec DWORD 8801h		  ;Security check on method area
+metsec DWORD 108570		  ;Security check on method area
 ;*********FLH List
 flhcnt    BYTE 0                  ;Count of the number of False Lead Heads
 flhlist   DWORD 128*2 DUP(0)      ;List of False Course Heads
@@ -183,7 +287,7 @@ genlea    WORD 0                  ;Lead Pointer into LHO list (genlho)
 genptr    DWORD 0                 ;Pointer into call list (gencal)
 genspare  BYTE 0
 genday    BYTE 0                  ;Start day of week 0-7
-genhour   BYTE 0                  ;Start hour 0-23
+genhour   BYTE 0		  ;Start hour 0-23
 genmin    BYTE 0                  ;Start minutes 0-59
 gensec    BYTE 0                  ;Start second 0-59
 gensech   BYTE 0                  ;Start hundreths of a second 0-99
@@ -213,9 +317,9 @@ curlin	  BYTE 0		  ;cursor line
 curcol	  BYTE 0		  ;cursor column
 newnum	  WORD 0		  ;number of inserted new composition
 ;*********Display Titles
-distit0   BYTE "LHNo Leadhead Len Pt Plain    Bob      Single   RQWTBHR67      I C 87s 82s 83s  "
+distit0   BYTE "LHNo Leadhead Len Pt Plain    Bob      Single   RQWTBHR6723    I C 87s 82s 83s  "
 distit1   BYTE "LHNo Leadhead   crus  (5678)s 5678s 6578s 4578s 4678s 6478s 5478s 3578s 3478s   "
-distit2   BYTE "LHNo Leadhead 8765s 7568s 7658s 7468s 2468s 1234s 4321s                         "
+distit2   BYTE "LHNo Leadhead 8765s 7568s 7658s 2345s 5432s 3456s 6543s                         "
 distit3   BYTE "LHNo Leadhead flh flh 1    flh 2    flh 3    flh 4    flh 5    flh 6    flh 7   "
 distit3a  BYTE "LHNo Leadhead flh flh 8    flh 9    flh 10   flh 11   flh 12   flh 13   flh 14  "
 distit3b  BYTE "LHNo Leadhead flh flh 15   flh 16   flh 17   flh 18   flh 19   flh 20   flh 21  "
@@ -225,8 +329,8 @@ distit4   BYTE "                            Elapsed Time  :     :  :   Comps Fou
 	  BYTE "Available Leads   :         Leads Checked :          m Comps Listed:            "
 	  BYTE "FLHs High/Poss    :   ,     Leads/sec     :          k Complete    :           %"
 distit5   BYTE " No   Elapsed  Lnth Prt   Ps  Bs  Ss 87s 82s 83s --crus- 5678s 6578s 8765s 7568s"
-distit6   BYTE " No   Elapsed  Lnth Prt  4578s 4678s 6478s 5478s 3578s 3478s 5678cmb 7658s 7468s"
-distit7   BYTE " No   Elapsed  Lnth Prt  2468s 4321s 1234s QWTBHR67  CompScore                  "
+distit6   BYTE " No   Elapsed  Lnth Prt  4578s 4678s 6478s 5478s 3578s 3478s 5678cmb 7658s 2345s"
+distit7   BYTE " No   Elapsed  Lnth Prt  5432s 3456s 6543s QWTBHR6723     Score     Seq Rotation"
 distit8   BYTE "                   V    I    M    W    B    4    H    2345678                   "
 distit9   BYTE "                  ฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤ   ฤฤฤฤฤฤฤ                   "
 distit10  BYTE 19 DUP(" "),31 DUP(0FAh),"    ",7 DUP (0FAh),19 DUP (" ")
@@ -249,8 +353,8 @@ disexc    BYTE "                                                                
 	  BYTE "                                                                                "
 	  BYTE "MINIMUM  Musical Rows:     crus  5678s 6578s 4678s 6478s 4578s 5478s 3578s 3478s"
 	  BYTE "                         ***/*** **/** **/** **/** **/** **/** **/** **/** **/**"
-	  BYTE "  Q W T B H R 6 7        5678cmb 8765s 7568s 7658s 7468s 2468s 4321s 1234s      "
-	  BYTE "  * * * * * * * *        ***/*** **/** **/** **/** **/** **/** **/** **/**      "
+	  BYTE "  Q W T B H R 6 7 2 3    5678cmb 8765s 7568s 7658s 2345s 5432s 3456s 6543s      "
+	  BYTE "  * * * * * * * * * *    ***/*** **/** **/** **/** **/** **/** **/** **/**      "
 disinc	  BYTE "                                                                                "
 	  BYTE "INCLUDE  Courseheads matching masks below (suffix with +/- to restrict nature)  "
 	  BYTE "                                                                                "
@@ -297,9 +401,9 @@ banner	  BYTE "ษออออออออออออออออออออออออออออออออออออออออออป"
 	  BYTE "บ                                          บ"
 	  BYTE "บ          SINGLE METHOD COMPOSER          บ"
 	  BYTE "บ                                          บ"
-	  BYTE "บ            SMC Version 1.1               บ"
+	  BYTE "บ             SMC  Version 1.2             บ"
 	  BYTE "บ                                          บ"
-	  BYTE "บ   Copyright (C)  Graham A C John 1993    บ"
+	  BYTE "บ  Copyright (C)  Graham A C John 1993-98  บ"
 	  BYTE "บ                                          บ"
 	  BYTE "ศออออออออออออออออออออออออออออออออออออออออออผ"
 ;*********Input Fields
@@ -396,8 +500,8 @@ flddef		BYTE 01,05,27,05,01,00,112,00	  ;00 Length Below
 		BYTE 01,24,10,01,90,88,89,67      ;89  
 		BYTE 01,24,12,01,91,89,90,67      ;90      
 		BYTE 01,24,14,01,92,90,91,67      ;91  
-		BYTE 01,24,16,01,93,91,92,67      ;92      
-		BYTE 01,24,25,03,94,92,93,67      ;93 5678 combs
+		BYTE 01,24,16,01,113,91,92,67	  ;92
+		BYTE 01,24,25,03,94,114,93,67	  ;93 5678 combs
 		BYTE 01,24,29,03,95,93,94,68      ;94      
 		BYTE 01,24,33,02,96,94,95,69      ;95 8765s
 		BYTE 01,24,36,02,97,95,96,70      ;96      
@@ -405,18 +509,20 @@ flddef		BYTE 01,05,27,05,01,00,112,00	  ;00 Length Below
 		BYTE 01,24,42,02,99,97,98,72      ;98      
 		BYTE 01,24,45,02,100,98,99,73     ;99 7658s 
 		BYTE 01,24,48,02,101,99,100,74    ;100     
-		BYTE 01,24,51,02,102,100,101,75   ;101 7468s
+		BYTE 01,24,51,02,102,100,101,75   ;101 2345s
 		BYTE 01,24,54,02,103,101,102,76   ;102     
-		BYTE 01,24,57,02,104,102,103,77   ;103 2468s
+		BYTE 01,24,57,02,104,102,103,77   ;103 5432s
 		BYTE 01,24,60,02,105,103,104,78   ;104     
-		BYTE 01,24,63,02,106,104,105,79   ;105 4321s
+		BYTE 01,24,63,02,106,104,105,79   ;105 3456s
 		BYTE 01,24,66,02,107,105,106,80   ;106     
-		BYTE 01,24,69,02,108,106,107,81   ;107 1234s
+		BYTE 01,24,69,02,108,106,107,81   ;107 6543s
 		BYTE 01,24,72,02,108,107,108,82   ;108
 		BYTE 02,05,79,01,112,002,111,109  ;109 Optimisation
 		BYTE 02,07,61,01,111,112,007,002  ;110 Reverse
 		BYTE 02,07,79,01,003,110,009,109  ;111 Rotation
 		BYTE 02,07,35,01,110,109,003,000  ;112 Tenors split courseheads
+		BYTE 01,24,18,01,114,92,113,67	  ;113 8 bell co=24653
+		BYTE 01,24,20,01,93,113,114,67	  ;114 8 bell co=35642
 ;*********Status and Message Texts
 stahlp	  BYTE STATIC,"Help Summary        "
 stamet	  BYTE STATIC,"Define Method       "
@@ -482,40 +588,42 @@ excrev	  WORD TRUE		  ;Reverse composing if FALSE (ie S,B,P)
 optsync   WORD FALSE              ;Course synchronization
 excsync   WORD FALSE		  ;Exclude synchronization
 excrot	  WORD FALSE		  ;Generate composition rotations if FALSE
+evaseq	  DWORD 0		  ;Sequence number of valid compositions found
+evarot	  DWORD 0		  ;Count of valid rotations
 rotftt	  WORD FALSE		  ;Rotation first time through indicator
 rotcnt	  DWORD 0		  ;Count (& Ptr) of number of rotations
-rotarray  WORD 720 DUP (0)	  ;array of composition pointers for rotations
+rotarray  WORD 2520 DUP (0)	  ;array of composition pointers for rotations
 ;*********Composition Weighting Factors for scoring (0 to 17 binary weight)
 wgtlenhi  BYTE  0                 ;Weight for longer compositions
 wgtlenlo  BYTE  1                 ;Weight for shorter compositions
 wgtmus87  BYTE  17                ;Weight of 87s at backstroke
-wgtmus82  BYTE  12                ;Weight of 82s
-wgtmus83  BYTE  11                ;Weight of 83s
+wgtmus82  BYTE	5		  ;Weight of 82s
+wgtmus83  BYTE	5		  ;Weight of 83s
 wgt5678b  BYTE  5                 ;Weight of (5678) combinations - back
 wgt5678f  BYTE  5                 ;Weight of (5678) combinations - front
 wgtpar    BYTE  17                ;Weight of parts in composition
-wgtcrub   BYTE  17                ;Weight of crus - back
+wgtcrub   BYTE	18		  ;Weight of crus - back
 wgtcruf   BYTE  16                ;Weight of crus - front
-wgtmusb4  BYTE	17,16,14,14,13,13,14,14,15,15,15,10,10,10,10
-wgtmusf4  BYTE	16,15,12,12,11,11,12,12,13,13,13,07,07,07,07
+wgtmusb4  BYTE	18,18,14,14,13,13,14,14,15,15,15,12,12,12,12
+wgtmusf4  BYTE	18,18,12,12,11,11,12,12,13,13,13,12,12,12,12
 ;*********4 Bell Music Masks (Note DWORDS are reversed)
 musmsk4   DWORD 08070605h,08070506h,08070504h,08070604h,
 			 08070406h,08070405h,08070503h,08070403h,
-			 05060708h,08060507h,08050607h,08060407h,
-			 08060402h,04030201h,01020304h
+			 05060708h,08060507h,08050607h,05040302h,
+			 02030405h,06050403h,03040506h
 muscnt4   WORD LENGTHOF musmsk4
 ;*********8 Bell Music Masks - compressed into a dword by shift and overlay
 ;               Rounds     Queens     Whitt      Tittums
 ;               12345678   13572468   12753468   15263748
 ;               Backrounds Hagdyke    Rollercstr
 ;               87654321   12563478   14327658   65432178
-;
-;               76543218   00000000   00000000   00000000
+;			   co=24653   co=35642
+;		76543218   17823456   18723456	 00000000
 ;
 ;               00000000   00000000   00000000   00000000
 musmsk8   DWORD 00000000h, 78563412h, 58762413h, 68245713h,
 		51627384h, 68572413h, 28354617h, 38475162h,
-		48516273h, 00000000h, 00000000h, 00000000h,
+		48516273h, 26857413h, 26758413h, 00000000h,
 		00000000h, 00000000h, 00000000h, 00000000h
 muscnt8   WORD  LENGTHOF musmsk8
 datseg1   ENDS
@@ -525,8 +633,8 @@ lstgrp    GROUP lstseg1
 lstseg1   SEGMENT COMMON  
 lstsiz    WORD  ?                 ;Size of composition definition in paragraphs
 lstlen    WORD  ?                 ;Length of composition
-lstscore  DWORD ?                 ;Composition score
-lstcalls  WORD  3 DUP(?)          ;Number of calls (P,B,S) in composition
+lstscore  DWORD ?		  ;Composition score
+lstcalls  WORD	3 DUP(?)	  ;Number of calls (P,B,S) in composition
 lstmus8   WORD  ?                 ;8 bell rows in composition
 lstmus87  WORD  ?                 ;Number of 87s at backstroke
 lstmus82  WORD  ?                 ;Number of 82s
@@ -538,11 +646,13 @@ lstcrub   BYTE  ?                 ;Number of crus - back
 lstcruf   BYTE  ?                 ;Number of crus - front
 lstmusb4  BYTE  15 DUP (?)        ;Number of 4 bell combinations - back
 lstmusf4  BYTE  15 DUP (?)        ;Number of 4 bell combinations - front
-lsthour   BYTE  ?                 ;Timestamp hours 0-255
+lsthour   WORD	?		  ;Timestamp hours 0-32767
 lstmin    BYTE  ?                 ;Timestamp minutes 0-59
 lstsec    BYTE  ?                 ;Timestamp second 0-59
-lstcal    BYTE  ?                 ;List of calls (with workspace allowance)
-lstrest   BYTE	65536 - 63 DUP(?)
+lstseq	  DWORD ?		  ;Sequence number of composition
+lstrot	  WORD	?		  ;Sequence number of rotation
+lstcal	  BYTE	?		  ;List of calls (with workspace allowance)
+lstrest   BYTE	65536 - 70 DUP(?)
 lstseg1   ENDS
 cmpgrp    GROUP cmpseg1,cmpseg2,cmpseg3,cmpseg4,cmpseg5,cmpseg6,cmpseg7,cmpseg8
 		ASSUME fs:cmpgrp
@@ -566,6 +676,8 @@ cmpmus8   WORD ?                  ;Special rows in lead (8 bell masks)
 						    ;     6 - 14327658 R
 						    ;     7 - 65432178
 						    ;	  8 - 76543218
+						    ;	  2 - 17823456 co=24653
+						    ;	  3 - 18723456 co=35642
 						    ;	 14 - Nature of leadhead (set if -ve)
 						    ;    15 - Included in composition flag
 cmppar    BYTE ?                  ;Number of parts if leadhead is parthead

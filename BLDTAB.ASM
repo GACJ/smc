@@ -1,3 +1,7 @@
+;*********************************************************
+;* SMC - Single Method Composer                          *
+;* Copyright Graham A C John 1991-98 All rights reserved *
+;*********************************************************
 TITLE BLDTAB - Build Proving Table for Method
 ;
 ;    This routine builds the proving and composing table for a method
@@ -16,6 +20,7 @@ TITLE BLDTAB - Build Proving Table for Method
 	INCLUDE smc.inc           ;Data Definitions
 	.CODE
 	EXTERN clclho:NEAR, status:NEAR, transp:NEAR, dissta:NEAR, message:NEAR
+	EXTERN binasc:NEAR
 bldtab	PROC USES eax ebx ecx edi
   cli				  ;change stack segment to list segment
   mov ax,ss			  ;save stack segment and registers
@@ -39,8 +44,15 @@ bldtab	PROC USES eax ebx ecx edi
     add ebx,eax
   .UNTILCXZ
   .IF ebx != metsec
+    push ebx
     mov si,offset mess6		  ;issue error message
     call message
+    pop eax			  ;display check number (ebx to eax)
+    mov ecx,12			  ;on top right of screen
+    mov di,136
+    mov discol,colinf		  ;Set display colour
+    mov diszero,"Z"		  ;Zero suppression on
+    call binasc
     mov dx,FnExclud
     jmp endbld
   .ENDIF
@@ -59,6 +71,7 @@ bldtab	PROC USES eax ebx ecx edi
   mov statcomps,0		  ;Zero stats
   mov statleads,0
   mov statfound,0
+  mov evaseq,0
   mov statdel,0
   mov stattab,0
   mov statflhhi,0
@@ -102,6 +115,14 @@ bldtab	PROC USES eax ebx ecx edi
   and al,7Fh			  ;ignore first bit
   .IF ! (al == 7Fh || al == 0)
     mov excsync,FALSE
+  .ENDIF
+  .IF  exc82s ||	   \	  ;only exclude sync if no lead exclusions
+       exc83s ||	   \
+       exc87s ||	   \
+       exctschs ||	   \
+       incmask != 0F0h ||  \
+       inccomp != 010h
+     mov excsync,FALSE
   .ENDIF
 @@:
   mov al,PLAIN			  ;determine first and last valid call types

@@ -1,3 +1,7 @@
+;*********************************************************
+;* SMC - Single Method Composer                          *
+;* Copyright Graham A C John 1991-98 All rights reserved *
+;*********************************************************
 TITLE COMGEN - Composition Generator
 ;
 ;    This routine uses the composing table to generate compositions

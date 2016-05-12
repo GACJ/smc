@@ -1,3 +1,7 @@
+;*********************************************************
+;* SMC - Single Method Composer                          *
+;* Copyright Graham A C John 1991-98 All rights reserved *
+;*********************************************************
 TITLE EXCLUD - Enter Composition Exclusion Criteria
 ;
 ;    This routine displays the current exclusions for amendment. There are
@@ -239,7 +243,7 @@ newpage:
   mov di,(160*24)+4
   mov ah,discol
   shl dx,1                        ;ignore rounds bit
-  mov cx,8
+  mov cx,10
   .REPEAT
     shl dx,1
     .IF CARRY?
@@ -615,9 +619,21 @@ fedit1 PROC                       ;edit and convert field to binary
   .IF bx == 108
     mov excmusf4+14,al
   .ENDIF
-  .IF bx > 84 && bx < 93                      ;8 bell combinations
+  .IF bx > 84 && bx < 93		      ;8 bell combinations
     mov ecx,ebx
     sub cx,84
+    mov dx,8000h
+    shr dx,cl
+    .IF ax == 0
+      not dx
+      and excmus8,dx
+    .ELSE
+      or excmus8,dx
+    .ENDIF
+  .ENDIF
+  .IF bx > 112 && bx < 115		      ;8 bell combinations (2)
+    mov ecx,ebx
+    sub cx,104
     mov dx,8000h
     shr dx,cl
     .IF ax == 0

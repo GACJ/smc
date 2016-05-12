@@ -1,3 +1,7 @@
+;*********************************************************
+;* SMC - Single Method Composer                          *
+;* Copyright Graham A C John 1991-98 All rights reserved *
+;*********************************************************
 TITLE EVALCO - Evaluate Composition 
 ;
 ;    This routine evaluates compositions against exclusion criteria.
@@ -17,6 +21,7 @@ evalco PROC USES es fs gs
   mov GenNew,FALSE		  ;Assume no new composition found
   mov rotcnt,0			  ;initialise rotation variables
   mov rotarray,0
+  mov evarot,0
   .IF excrot			  ;indicate first time thru if rotation
     mov rotftt,FALSE		  ; not excluded
   .ELSE
@@ -110,7 +115,8 @@ evalrpt:
     mov ax,cmpmus8
     or lstmus8,ax
     .IF rotftt \ 		  ;if first time thru and rotations required
-     && cmptenor == 7 \		  ; keep ebx for each home lead in rotarray
+     && (cmptenor == 7 \	  ; keep ebx for each home lead in rotarray
+     ||  excsync ) \ 		  ; but keep all leads if no sync required
      && ! (cmpmus8 & 8000h)	  ; excluding final course end
        inc rotcnt		  ; count number of rotations
        mov eax,rotcnt
@@ -160,10 +166,24 @@ evalrpt:
   jnz evalfin
 ; *********************************COMPOSITION FOUND
   call score			  ;score composition
-  call elapse                     ;Keep Elapsed composition time in list
+  .IF evarot == 0
+    inc evaseq
+    mov eax,evaseq
+    mov lstseq,eax		  ;keep sequence in list
+    mov lstrot,0
+    inc evarot
+  .ELSE
+    mov eax,evaseq		  ;keep sequence in list
+    mov lstseq,eax
+    mov eax,evarot		  ;keep rotation number in list
+    mov lstrot,ax
+    inc evarot
+  .ENDIF
+  call elapse			  ;Keep Elapsed composition time in list
   mov lstsec,dh
   mov lstmin,cl
-  mov lsthour,ch
+  shr ecx,8
+  mov lsthour,cx
   .IF !excbest			  ;Increase length of best so far
     mov ax,lstlen
     .IF ax < excmin
@@ -185,11 +205,15 @@ evalrpt:
   .ENDIF
   .IF !gendup			  ;If not a duplicate composition
     or genNew,TRUE		  ;Signal new composition found
-    inc statfound		  ;count compositions satisfying selection criteria
+    inc statfound		  ;count compositions satisfying criteria
     inc statcomps		  ;count compositions listed
   .ELSE
     mov es,ax			  ;remove duplicate comp from list segment
     mov genlst,es
+    dec evarot			  ;reverse out sequence and rotation number
+    .IF ZERO?
+      dec evaseq
+    .ENDIF
   .ENDIF
 evalfin:
   .IF rotcnt != 0		  ;if more rotations to try
@@ -230,7 +254,7 @@ cntparts PROC USES fs gs          ;Count number of parts in composition
 @@:popad
    ret
 cntparts ENDP
-elapse PROC USES ax ;Calculates time elapsed (hhh(ch):mm(cl):ss(dh):hh(dl) since composition started
+elapse PROC USES eax;Calculates time elapsed (hhh(ch+ech):mm(cl):ss(dh):hh(dl) since composition started
   @GetDate
   push ax                         ;keep day of the week
   @GetTime
@@ -261,13 +285,16 @@ elapse PROC USES ax ;Calculates time elapsed (hhh(ch):mm(cl):ss(dh):hh(dl) since
   .ENDIF
   mov ah,24
   mul ah
-  add ch,al
+  and eax,0FFFFh
+  and ecx,0FFFFh
+  shl eax,8
+  add ecx,eax
   ret
 elapse ENDP
 score PROC                        ;Score composition using weighted factors
   pushad
   movzx eax,lstlen
-  .IF ax > excmin		  ;weight comps which are NOT best so far
+  .IF ax >= excmin		  ;weight comps which are NOT best so far
     or lstscore,10000000h	  ;set high bit of score on
   .ELSE
     mov lstscore,eax		  ;set score to comp length if short

@@ -1,3 +1,7 @@
+;*********************************************************
+;* SMC - Single Method Composer                          *
+;* Copyright Graham A C John 1991-98 All rights reserved *
+;*********************************************************
 TITLE DISDYN - Display Current Composition (Dynamically)
 ;
 ;    This routine displays the current composition (incomplete)

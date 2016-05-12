@@ -1,3 +1,7 @@
+;*********************************************************
+;* SMC - Single Method Composer                          *
+;* Copyright Graham A C John 1991-98 All rights reserved *
+;*********************************************************
 TITLE INCLUD - Enter Composition Inclusion Criteria
 ;
 ;    This routine displays the current inclusions for amendment. These are

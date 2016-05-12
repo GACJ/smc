@@ -1,3 +1,7 @@
+;*********************************************************
+;* SMC - Single Method Composer                          *
+;* Copyright Graham A C John 1991-98 All rights reserved *
+;*********************************************************
 TITLE DISLST - Display Composition List
 ;
 ;    This routine displays a list of compositions generated
@@ -214,11 +218,11 @@ newline:
     inc eax
     mov ecx,3
     call binasc
-    add edi,8
-    movzx eax,lsthour             ;Display Time elapsed
-    mov ecx,3
-    call binasc
     add edi,6
+    movzx eax,lsthour             ;Display Time elapsed
+    mov ecx,4
+    call binasc
+    add edi,8
     mov al,":"
     mov ah,discol
     stosw
@@ -412,7 +416,7 @@ newline:
     mov ecx,2
     call binasc
     add edi,6
-    movzx eax,lstmusb4+11          ;7468s
+    movzx eax,lstmusb4+11	   ;2345s
     mov ecx,2
     call binasc
     add edi,4
@@ -426,7 +430,7 @@ newline:
   .ENDIF
   .IF disframe == 2
     add edi,2
-    movzx eax,lstmusb4+12         ;2468s
+    movzx eax,lstmusb4+12	  ;5432s
     mov ecx,2
     call binasc
     add edi,4
@@ -437,7 +441,7 @@ newline:
     mov ecx,2
     call binasc
     add edi,6
-    movzx eax,lstmusb4+13          ;4321s
+    movzx eax,lstmusb4+13	   ;3456s
     mov ecx,2
     call binasc
     add edi,4
@@ -448,7 +452,7 @@ newline:
     mov ecx,2
     call binasc
     add edi,6
-    movzx eax,lstmusb4+14          ;1234s
+    movzx eax,lstmusb4+14	   ;6543s
     mov ecx,2
     call binasc
     add edi,4
@@ -459,10 +463,10 @@ newline:
     mov ecx,2
     call binasc
     add edi,6
-    mov ah,discol                  ;8 bell counts (1st 8 displayed)
+    mov ah,discol		   ;8 bell counts (1st 10 displayed)
     mov dx,lstmus8
     shl dx,1                       ;ignore rounds
-    mov ecx,8
+    mov ecx,10
     .REPEAT
       shl dx,1
       .IF CARRY?
@@ -472,11 +476,18 @@ newline:
       .ENDIF
       stosw
     .UNTILCXZ
-    add edi,2
-    mov eax,lstscore              ;Composition score
+    mov eax,lstscore		  ;Composition score
     mov ecx,10
     call binasc
-    add edi,56
+    add edi,18
+    mov eax,lstseq		  ;Sequence Number
+    mov ecx,9
+    call binasc
+    add edi,18
+    movzx eax,lstrot		  ;Rotation Number
+    mov ecx,9
+    call binasc
+    add edi,18
   .ENDIF
     inc ebx                         ;next list entry
     mov ax,gs

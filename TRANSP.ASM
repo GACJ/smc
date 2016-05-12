@@ -1,3 +1,7 @@
+;*********************************************************
+;* SMC - Single Method Composer                          *
+;* Copyright Graham A C John 1991-98 All rights reserved *
+;*********************************************************
 	TITLE     TRANSP - Row Transposition
 ;
 ;        (ah=0)          (ah=1)            (ah=2)
