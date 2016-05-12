@@ -1,0 +1,662 @@
+SMC
+Single Method Composer
+Version 1.1
+User Documentation
+
+Graham A C John
+February 1995
+
+Table of Contents
+
+1.	Introduction				
+2.	System Requirements			
+3.	SMC Functions				
+3.1.	Help (F1)				
+3.2.	Select Method (F2)			
+3.3.	Define Exclusions (F3)			
+3.3.1.	Lengths Below/Above			
+3.3.2.	Longest yet				
+3.3.3.	Optimisation				
+3.3.4.	Tenors split course heads		
+3.3.5.	Reverse 				
+3.3.6.	Rotation				
+3.3.7.	Rounds @ Hand, Bank, Int, LH		
+3.3.8.	87s @ Back, 82s, 83s			
+3.3.9.	Number of Parts (1,2,3,4,5,6,7,10,12)	
+3.3.10.	Plains/Bobs/Singles			
+3.3.11.	Minimum Musical Rows			
+3.4.	Define Inclusions (Alt F3)		
+3.5.	Build Composing Table (F4)		
+3.6.	Display Composition List (F5)		
+3.7.	Display Composition from List (Enter)	
+3.8.	Display Composition in Progress (F6)	
+3.9.	Display Music Analysis (F7)		
+3.10.	Display Composing Table (F8)		
+3.11.	Suspend/Restart Composition (F9)	
+3.12.	Quit (F10)				
+4.	Feedback  				
+
+
+
+1.	Introduction
+
+Single Method Composer (SMC) has been developed to carry out exhaustive searches for 
+compositions of treble-hunting Major methods. It can search for short touches, quarterpeal 
+compositions, peal compositions, or even extents.
+
+The program is written entirely in 80386 assembler and has been designed to achieve the 
+highest possible composing speed. With the Pentium microprocessors currently available 
+it can generate and check over half a million leads per second. Even at this speed many 
+searches are still too long to exhaust. Consequently a number of different types of 
+selection criteria can be specified to restrict the search. Some of these criteria can be used 
+to optimise the composing table, some to optimise the composing process, and some to 
+evaluate the compositions found. The earlier the selection criteria can be applied the more 
+effectively the search can be contained.
+
+One of the benefits of using this brute force approach to composition is that if an 
+exhaustive search can be completed, it is possible to assess what is the best available 
+composition for the specified criteria. Comparison with existing collections can also show 
+where an interesting composition has been missed using traditional methods.
+
+SMC comes into its own when used for methods with a high incidence of falseness. To 
+find compositions for such methods by hand is slower than for methods with little 
+incidence of falseness; but for SMC the greater the falseness, the faster the search can be 
+completed. This is because the falseness chops off huge branches of the search tree and 
+this outweighs the additional time required to check the higher number of false lead heads.
+
+For many methods, huge numbers of compositions exist. The job of the composer is then 
+one of selecting those which have some different, improved or special quality over those 
+previously produced. SMC provides a summary of musical rows and scores compositions 
+found to assist this process.   
+
+Some insight into method structure, incidence of falseness and composing techniques will 
+help to decide how best to restrict a particular search. However, some exploratory 
+searches using different criteria can often indicate what might work. For example, if too 
+many compositions are being found, the search criteria can be tightened. Conversely, if no 
+compositions are being found then the criteria can be relaxed. Furthermore, there is an 
+option to exclude tenors split course heads, which is very effective in finding alternative 
+course structures.
+
+I don't mind users of SMC claiming authorship of any new compositions discovered  
+(provided that someone else hasn't found and submitted them for publication first), but if 
+you intend to publish in the Ringing World, please be careful not to waste the Peal 
+Compositions Committee's time by:
+
+*	using an independent peal proving program to confirm it is true 
+
+*	being as sure as you can that it, or something very similar, has not been published 
+	before
+
+*	comparing it with published compositions to ensure that it has a distinction making it 
+	worthy of publication
+
+*	pointing out why you think the composition has merit
+
+*	not submitting lots of variants of a composition
+
+2.	System Requirements
+
+SMC is an MS-DOS program which requires a PC with an 80386 or better processor and 
+at least 584K (600,000 bytes) of conventional memory available to execute it. It displays 
+80x25 text, so there are no special display requirements.
+
+If it is difficult to make sufficient memory available under your normal configuration, 
+create a bootable diskette for SMC where DOS and the essential drivers are loaded in high 
+memory.
+
+SMC can also be run under Windows if the conventional memory requirement can be met. 
+This has the big advantage that it can be left running in the background for long periods 
+without tying up the PC.
+
+The program can be run by executing SMC.EXE and no data files are required. To run 
+under Windows, a program information file (SMC.PIF) and Windows Icon (SMC.ICO) 
+are also provided, but are not essential.
+
+3.	SMC Functions
+
+All SMC functions can be invoked at any time, regardless of the function last invoked. No 
+confirmation (are you sure?) messages are issued by SMC, so care should be taken to 
+ensure the correct function key is pressed.
+
+The functions are described individually in the following sub-sections.
+
+3.1.	Help (F1)
+
+Displays a summary of available functions and keys.
+
+3.2.	Select Method (F2)
+
+Pressing F2 rotates through the available methods.
+
+3.3.	Define Exclusions (F3)
+
+For consistency all fields entered on this screen are treated as exclusions. Option fields 
+should be marked with 'X' to exclude the option or blank to include it (e.g. Optimisation: 
+X will turn off optimisation). The remaining fields hold a number which is either a 
+minimum or a maximum value.
+
+Exclusions may be changed while composition is in progress. However, the composing 
+table will not be optimised for the new criteria until it is rebuilt (F4). Furthermore, 
+compositions currently listed will not necessarily satisfy the new criteria.
+
+The following editing keys are available:
+
+X, x		Mark as excluded
+0-9   		Numbers for maximum and minimum values
+Space		Remove exclusions, clear values to zero
+Left		Move cursor left through or between input fields
+Right		Move cursor right through or between input fields
+Up		Move up through the input fields
+Down		Move down through the input fields
+Tab		Move to next field
+Backtab		Move to previous field
+Home		Move to first field
+End		Move to last field
+Enter		Accept and edit field input, move to next input field
+
+The individual exclusion fields are described in the following subsections:
+
+3.3.1.	Lengths Below/Above
+
+These input fields are used to define the minimum and maximum length of the 
+compositions required. The default is 5000 to 5376. Keep these values in a reasonably 
+tight range to minimise search time.
+
+3.3.2.	Longest yet
+
+This option is useful when attempting a search where you are not sure whether a 
+composition of the desired length will exist. SMC will progressively add the longest 
+composition yet found to the composition list, even though the minimum length criteria has 
+not been satisfied. These short compositions are given a score of their length, which puts 
+the longest at the top of the list but relegates them all to the bottom of the list as soon as 
+compositions of the correct length are found.
+
+3.3.3.	Optimisation
+
+If set to blank, the search will be optimised. Currently, only regenerative optimisation is 
+implemented. Whenever the composition runs false, the composing engine backtracks and 
+substitutes a call at the previous calling position. As it composes forwards again, it copies 
+the pattern of calls from the start of the composition.
+The following simple example demonstrates how a 672 of Plain Bob Major would be 
+found. In the example a new line indicates that the composition runs false or comes round 
+early. Each letter corresponds to a Plain, Bobbed or Singled lead and new leads generated 
+without backtracking are in lower case.
+Without optimisation:
+
+PPPPPPP
+PPPPPPbppppppp
+PPPPPPBPPPPPPbppppppp
+PPPPPPBPPPPPPBPPPPPPb
+PPPPPPBPPPPPPBPPPPPPsppppppp
+PPPPPPBPPPPPPBPPPPPPSPPPPPPbppppppp
+PPPPPPBPPPPPPBPPPPPPSPPPPPPBPPPPPPbppppppp
+PPPPPPBPPPPPPBPPPPPPSPPPPPPBPPPPPPBPPPPPPb
+PPPPPPBPPPPPPBPPPPPPSPPPPPPBPPPPPPBPPPPPPs
+
+With regenerative optimisation:
+
+PPPPPPP
+PPPPPPbppppppbppppppb
+PPPPPPBPPPPPPBPPPPPPspppppppbpppppppbppppppps
+
+Without optimisation the composing engine has to backtrack eight times; with 
+optimisation only twice. As demonstrated by this example, all multipart compositions are 
+found  immediately after the first part has been found, without further backtracking. 
+Furthermore, regenerative optimisation causes the search to accelerate dramatically as 
+soon as the composing engine has backtracked as far as the first course.
+
+If some calling positions are excluded (e.g. for tenors together), regeneration following 
+backtracking is deferred to the end of following course. This prevents calls being 
+regenerated which don't satisfy the exclusion criteria. 
+
+The only compositions missed by regenerative optimisation are rotations. Therefore, the 
+optimisation and rotation options should be used in combination to ensure that all 
+compositions are found.
+
+3.3.4.	Tenors split course heads
+
+This option can be used to find tenors together compositions which use structures such as 
+I/V, 4/I, I/O/V/V and S3/S5 which work for the method concerned. It works by marking 
+the tenors split course heads as excluded in the composing table. When the table is built, 
+any leads which cannot be reached due to the course head exclusions are themselves 
+excluded. Only the required course structures then remain. The Display Composing Table 
+(F8) function can be used to see the effect this option has on the leads and calls available.
+
+Although little in the way of call exclusions should be applied for this option to work well, 
+it is sometimes a good idea to exclude calls where the tenor makes fourths. This prevents 
+SMC generating long courses where the tenor rolls round on the front, repeatedly making 
+fourths, yet still returning to the seventh at the course end.
+
+3.3.5.	Reverse  
+
+This option controls the direction of the composing engine. The default is excluded; this 
+means that the composing engine will start with all leads set to Plain. When the 
+composition runs false, the plain will first be changed to a bob and then a single, subject to 
+call exclusions. If not excluded, the reverse happens i.e. the composing engine starts with 
+all calls set to single and change these to bobs and then plains. Reversing composition will 
+find the compositions containing the highest number of singles/bobs first.
+
+The composing table must be re-built after changing this option.
+
+3.3.6.	Rotation  
+
+This option will take each composition found by the composing engine and rotate it by 
+course heads. Each rotation is then evaluated to score it and check it meets the exclusion 
+criteria. Using this option ensures that the most musical rotation is found quickly. It 
+should also be used with the optimisation option to ensure that all compositions are found.
+
+3.3.7.	Rounds @ Hand, Bank, Int, LH
+
+Rounds exclusions can be used to find compositions only coming round at handstroke by 
+excluding Rounds @ Back, or internally within the lead by excluding Rounds @ LH (lead 
+head). Conversely, if only conventional finishes are required, mark Rounds @ Int 
+(internal) as excluded.
+
+If, for example, you require all the quarterpeals coming round at backstroke snap, exclude 
+Rounds @ LH with a minimum length of 1250 and a maximum length of (say) 1442.  
+
+3.3.8.	87s @ Back, 82s, 83s
+
+These options allow you exclude less musical leads such as those which contain 87s at 
+backstroke, or 82s/83s at either stroke.
+
+3.3.9.	Number of Parts (1,2,3,4,5,6,7,10,12)
+
+These options allow you to search for multiparts only (by excluding one parts), or search 
+for compositions with a specified number of parts. If the optimisation option is selected 
+and one parts are excluded, the composing engine will further optimise the search. When 
+the composition runs false, backtracking is forced until a change of calling within the first 
+part occurs, since regenerative optimisation ensures that multiparts are found from the 
+first part without running false. For this purpose, the size of the first part is determined as 
+maximum length divided by minimum part size. Restricting the search to say three parts 
+and above can very substantially reduce the search time.
+When searching for multiparts where the part heads are not course heads (e.g. seven 
+parts), individual calling positions should not be excluded when regenerative optimisation 
+is required, otherwise some multipart compositions may be missed. 
+
+3.3.10.	Plains/Bobs/Singles
+
+These options give the ability to restrict the search to compositions containing specific 
+numbers of  plains, bobs and singles both in total and in each calling position. The calling 
+position columns relate to the position of the tenor at backstroke after the call has been 
+made e.g. 8ths is Home, 7ths is Wrong and 3rds is Before (at a bob).
+
+Set the maximum (Plains/Bobs/Singles Above) to zero if no calls are required in a calling 
+position, since this helps optimisation of the composing table. Always use above zero and 
+below 9999 if you do not require a specific number of calls, since SMC will not waste 
+time counting calls if there are no maxima or minima. Setting the Any/Above option to 
+zero will exclude that type of call completely.
+
+If call maxima are set to anything other than 9999, the composing engine will count the 
+number of calls in each calling position (and in total) while composing. If any are 
+exceeded, it will backtrack. Compositions not achieving a specified minimum number of 
+calls are discarded after the composing engine has found them.
+
+These options allow searches for compositions of a particular type, such as tenors together 
+with only one Before, or compositions only containing singles at Home.
+
+3.3.11.	Minimum Musical Rows
+
+These minimum criteria are checked for each composition found by the composing engine. 
+If the composition (or any rotations of it) does not satisfy the criteria it will be discarded. 
+Although these exclusions allow filtering of the compositions to be viewed, they have a 
+relatively small effect on composing performance.
+
+The musical rows provided are mostly four bell masks, and the minimum can be specified 
+for the back and front (i.e. back/front) of the row. Apart from crus (combination roll ups - 
+xx78, where xx is any combination of 4,5 &6), where up to 144 can be specified and 
+5678cmb (combinations of 5,6,7 & 8)  where up to 576 can be specified, all other values 
+can be set from 0 to 24.
+
+Eight individual rows can also be specified as mandatory in compositions by setting the 
+minimum value to 1. These are:
+
+13572468  Q(ueens)
+12753468  W(hittingtons) 
+15263748  T(ittums)
+87654321  B(ack Rounds)
+12563478  H(agdyke)
+14327658  R(ollercoaster)
+65432178  6  
+76543218  7
+
+3.4.	Define Inclusions (Alt F3)
+
+Pressing Alt F3 brings up a screen which allows course heads to be selected by wild card 
+(i.e. the character "?"). If the course head is followed by "+", "-" or blank then only in 
+course, out of course or both course heads will be included, respectively. For example, to 
+select the 24 course heads of Simon Humphrey's Lincolnshire, use the following:
+
+1?3???78+
+1??3??78-
+
+If calls are restricted by exclusion to middles, wrongs and homes, SMC will very quickly 
+find all the possible arrangements of these 24 courses. 
+
+Inclusion (Alt F3) takes effect before exclusion (F3) and controls the building of the 
+composing table. Any matching course heads are marked for inclusion and the remainder 
+are excluded. It is important to recognise that specifying courses for inclusion does not 
+guarantee that they will be included, since exclusion criteria take precedence over 
+inclusion criteria. Furthermore, any leads which cannot be reached (due to call restrictions 
+or exclusion of intermediate leads) will also be excluded.
+
+Inclusion only applies to course heads, not courses. This means that in the above example 
+the tenors could be split within the courses, or parts of other tenors together courses could 
+be used (e.g. between M and W). If strict tenors together is a requirement, then calls which 
+could split the tenors must also be excluded to ensure that this is the case.
+
+The following editing keys are available:
+
++		Mark course head mask as positive nature only
+-		Mark course head mask as negative nature only
+?		Wild card in course head mask 
+0-9		Fixed bells in course head mask
+Space		Mark course head mask as either nature
+Left		Move cursor left through or between input fields
+Right		Move cursor right through or between input fields
+Up		Move up through the input fields
+Down		Move down through the input fields
+Tab		Move to next field
+Backtab		Move to previous field
+Home		Move to first field
+End		Move to last field
+Enter		Accept and edit field input, move to next input field
+
+3.5.	Build Composing Table (F4)
+
+Pressing F4 will build the composing table for the currently selected method, inclusion 
+criteria and exclusion criteria. On completion, the composing engine (F9) is automatically 
+started and the Composition List (F5) function is invoked to list any compositions found.
+
+The composing table is designed to minimise the work required by the composing engine 
+to achieve the highest possible composing speed. The table contains a row for every 
+possible lead head plus an additional row for starting rounds, making 5041 rows in total. 
+The table can be viewed using the Display Composing Table function (F8).
+
+The table is optimised based on the specified inclusion (Alt F3) and exclusion (F3) criteria 
+to  restrict the number of lead heads down from the 5040 available.   Using the tenor 
+positions where calls are permitted, it works out which leads it is possible to get to from 
+rounds and excludes the rest. For example, if singles and all calls which would part the 
+tenors are excluded, 420 leads would be available. The number of leads available for 
+composition is displayed at the top of the screen. 
+
+The function transposes the permitted plains, bobs and singles for each lead head and 
+retains the table row number for the destination lead heads against the source lead head in 
+the table. It then works out the table row number for each false lead head and stores these, 
+omitting any which are not applicable due to the false leads being excluded. The highest 
+number of false lead heads held for a lead is displayed, together with the maximum 
+number of  false lead heads possible for the method.
+
+At present, the program does not use extended memory and therefore the composing table 
+size is limited by the conventional memory available under DOS. The table is currently 
+474K and number of false lead heads which can be stored without increasing its size is 18. 
+If this number is exceeded for any lead, the message "FLH table array overflow. Increase 
+lead/call exclusions" is displayed. To overcome this, the exclusions for calls, lead and 
+course heads must be tightened up and the table rebuilt (F4) until 18 or less false lead 
+heads occur. 
+
+The function also counts and stores in the table the number of selected musical 
+combinations contained in each lead for later analysis of compositions found.
+The time taken to build the table is proportional to the number of leads included. To build 
+a table for all 5040 lead heads takes less than a minute on a 25Mhz 80486 PC.
+Once the table has been compiled, the program can compose without generating any rows 
+from place notation, transposing any lead heads, or working out any falseness. 
+Furthermore, musical assessment can be done merely by adding the totals stored for the 
+selected lead heads.
+
+It should be noted that the current composition list is discarded when the composing table 
+is rebuilt.
+
+3.6.	Display Composition List (F5)
+
+This functions is automatically invoked when composition starts, but can be re invoked at 
+any time by pressing F5. Any new compositions will automatically appear on the list as 
+they are found.
+
+Compositions are listed in descending order of merit as assessed by the composition score. 
+The score is calculated by SMC when the composition is evaluated. For speed of scoring, 
+the score is a 32-bit number comprising the sum of binary weighting factors applied to 
+musical and other criteria. The weighting factors, which are not currently user modifiable, 
+are set as follows:
+
+Measure			Weight (back)		Weight (front)
+
+not "longest yet"	2**31			N/A
+Longer compositions	length x 2**0		N/A
+Shorter compositions	40320-length x 2**1	N/A
+87s at backstroke	720-count x 2**17	N/A
+82s			720-count x 2**12	N/A
+83s			720-count x 2**11	N/A
+Number of parts		count x 2**17		N/A
+5678 combinations	count x 2**5		count x 2**5
+combination roll-ups	count x 2**17		count x 2**16
+5678s			count x 2**17		count x 2**16
+6578s			count x 2**16		count x 2**15
+4578s			count x 2**14		count x 2**12
+4678s			count x 2**14		count x 2**12
+6478s			count x 2**13		count x 2**11
+5478s			count x 2**13		count x 2**11
+3578s			count x 2**14		count x 2**12
+3478s			count x 2**14		count x 2**12
+8765s			count x 2**15		count x 2**13
+7568s			count x 2**15		count x 2**13
+7658s			count x 2**15		count x 2**13
+7468s			count x 2**10		count x 2**7
+2468s			count x 2**10		count x 2**7
+1234s			count x 2**10		count x 2**7
+4321s			count x 2**10		count x 2**7
+
+The function displays a list of summary information for each composition found, namely:
+
+No		Number of the composition in the list
+Elapsed		Elapsed time taken to find the composition
+Lnth		Length of the composition
+Prt		Count of equal parts
+Ps		Count of plains
+Bs		Count of bobs
+Ss		Count of singles
+87s		Count of 87s at backstroke
+82s		Count of 82s
+83s		Count of 83s
+crus		Count of combination roll ups (back/front)
+xxxxs		Count of xxxxs (back/front) where xxxx is a four bell mask
+5678cmb		Count of 5678 combinations (back/front)
+R		If "Y", the lead contains 12345678 (Rounds)
+Q		If "Y", the lead contains 13572468 (Queens)
+W		If "Y", the lead contains 12753468 (Whittingtons)
+T		If "Y", the lead contains 15263748 (Tittums)
+B		If "Y", the lead contains 87654321 (Back Rounds)
+H		If "Y", the lead contains 12563478 (Hagdyke)
+R		If "Y", the lead contains 14327658 (Rollercoaster)
+6		If "Y", the lead contains 65432178
+7		If "Y", the lead contains 76543218
+Compscore	The calculated score for the composition 
+
+64K of memory is reserved for this list and the compositions are held in compressed 
+format. Approximately 500 normal peal length compositions can be held. When the list is 
+full, compositions with the lowest composition score are dropped from the table to allow 
+better compositions to be added. A count of all compositions meeting the selection criteria 
+and the number currently listed is constantly displayed. 
+
+Compositions can be manually removed from the list by pressing the delete key when the 
+composition is highlighted.
+
+The following keys can be used in this function:
+
+Left		Page Left
+Right		Page Right
+Up		Move up one line
+Down		Move down one line
+Page Down   	Page Down
+Page Up		Page Up
+Home		Top of list
+End		Bottom of list
+Enter/Space 	Display composition (see below)
+Delete		Delete composition from list
+
+3.7.	Display Composition from List (Enter)
+
+Pressing Enter or the space bar while the composition list is displayed (F5) will display the 
+highlighted composition, in standard notation. Note certain assumptions have been made 
+to make the formatting of compositions logically consistent for all lead orders. The main 
+ones are:
+
+1)	The calling positions are presented in columns according to place bell order of the 
+	tenor in the plain course.
+
+2)	Calls are shown on the same line regardless of  intervening course heads, provided that 
+	the call is in the same column or a later column from the previous call.
+
+3)	When a new line is required (i.e. when a call is required in an earlier column than the 
+	previous call) and there is no intervening course head, the lead head of the previous call is 
+	displayed in parentheses in its place.
+
+4)	If the composition is an exact multipart, a line is drawn after each part.
+
+5)	If the composition overflows the screen, dots are shown on the first and line to indicate 
+	where the composition has scrolled off screen.
+
+The following keys can be used in this function:
+
+Left		Page Left through list summary
+Right		Page Right through list summary
+Down		Move down the composition one line
+Up		Move up the composition one line
+Page Down   	Display the next composition in the list
+Page Up		Display the previous composition in the list
+Enter/Space  	Return to Composition List
+Delete		Delete composition from list
+
+3.8.	Display Composition in Progress (F6)
+
+Pressing F6 invokes the dynamic display function for the current composition. It displays 
+the composition currently being developed, in standard notation, allowing the progress of 
+the composing engine to be monitored visually. Snapshots of the composition are 
+displayed whenever the composing engine releases control. This is either when a 
+composition has been found or after every 10,000 leads generated. This gives sub-second 
+refresh of the screen.
+
+This function reduces composing speed by approximately 5%. Cursor and paging keys are 
+not  available.
+
+3.9.	Display Music Analysis (F7)
+
+Not yet implemented. A music summary is shown in the composition list (F5).
+
+3.10.	Display Composing Table (F8)
+
+Pressing F8 displays the composing table. A row exists on this table for each of the 5040 
+lead heads plus an additional row for rounds (start and finish). Excluded rows are not 
+displayed. The lead heads for calls and false leads are actually held in the table as row 
+numbers but are displayed as lead heads.
+
+Viewing the table is a useful way of checking that the inclusions and exclusions have had 
+the effect you intended.
+
+Column headings are displayed as follows:
+
+LHNo		Lead head number (i.e. the row number in the composing table)
+Leadhead	The lead head suffixed by its nature
+Len		The lead length - constant, except where the lead contains rounds
+Pt		The number of parts in the composition, if this lead head is a part head
+Plain		The next lead head if no call, blank if the call/lead is excluded 
+Bob		The next lead head if bobbed, blank if the call/lead is excluded
+Single		The next lead head if singled, blank if the call/lead is excluded
+R		If "Y", the lead contains 12345678 (Rounds)
+Q		If "Y", the lead contains 13572468 (Queens)
+W		If "Y", the lead contains 12753468 (Whittingtons)
+T		If "Y", the lead contains 15263748 (Tittums)
+B		If "Y", the lead contains 87654321 (Back Rounds)
+H		If "Y", the lead contains 12563478 (Hagdyke)
+R		If "Y", the lead contains 14327658 (Rollercoaster)
+6		If "Y", the lead contains 65432178
+7		If "Y", the lead contains 76543218
+I		If "Y", the lead has been included in the developing composition
+C		The call in the developing composition (P, B or S)
+87s		The number of 87s at backstroke in the lead
+82s/83s		The number of 82s & 83s in the lead
+crus		The number of crus in the lead (front & back)
+(5678)s		The number of combinations of 5678 in the lead (front & back)
+xxxxs		The number of xxxx's in the lead (front & back)
+flh		The number of false leads which must be checked to ensure truth
+flh nn		The false lead heads to this lead (NB, the maximum stored is currently 18) 
+
+The table can be navigated using the following keys:
+
+Down/Page Down	Page Down
+Up/Page Up	Page Up
+Home		Top of table
+End		Bottom of table
+Left		Page Left
+Right		Page Right
+
+3.11.	Suspend/Restart Composition (F9)
+
+The composing engine is automatically started after the Build Table function (F4). 
+However it can be suspended by pressing F9 and restarted by pressing F9 again.
+
+The composing engine runs as a pseudo-background process so that all other functions 
+remain available while composition progresses. To maximise efficiency the composing 
+engine only checks for keyboard input after every 10,000 leads. This may result in a 
+noticeable slowing of response to other functions if a low lead generation rate (< 30K/sec) 
+is being achieved. If this is a problem, press F9 to suspend composition while other 
+functions are used.
+
+The elapsed time from building the composing table, the number of leads checked (in 
+millions), the number of leads checked per second (in thousands) and a percentage 
+complete figure is displayed. These are updated whenever there is any new information to 
+display or a key is pressed. The number of leads per second is simply the number of leads 
+checked divided by the elapsed time and the percentage complete is a crude measure of the 
+search progress based on the bland assumption that all branches of the search tree are the 
+same length (which of course they are not). 
+
+The composing engine is a small routine, with optimised code to maximise composing 
+speed. It checks the following to ensure truth and restrict the size of the search, namely:
+
+*	the lead  is not already in the composition
+*	any referenced false lead heads are not in the composition
+*	the maximum  composition length has not been exceeded
+*	the maximum number of  calls (for particular calling positions) have not been exceeded
+*	the maximum part size has not been exceeded (only applies if one parts are excluded 
+	and regenerative optimisation is in effect)
+
+It then repeats this process until a lead containing rounds is found (these are flagged in the 
+table). If the minimum composition length has been reached it then submits the 
+composition for evaluation.
+
+The evaluation routine checks that all minimum exclusion criteria (e.g. for musical rows) 
+have been satisfied. If specified, it then rotates the composition by course heads and 
+evaluates the rotations. Any non-duplicate compositions satisfying the selection criteria 
+are added to the composition list with summary information. 
+
+3.12.	Quit (F10)
+
+Pressing F10 exits SMC. 
+
+4.	Feedback  
+
+SMC was developed in 1992/93 and although still in the development stage, it has had 
+little modification since then. However, I do intend at some point to redevelop it for 
+Windows and extended memory. At the same time I would like to make more features user 
+configurable.
+
+The current version is being made available to demonstrate its capabilities and to elicit 
+useful feedback for future versions. Please note that I cannot guarantee the reliability of 
+the software and therefore assumptions should not be made that SMC has found all the 
+compositions for a given set of criteria, or even that the compositions displayed are true.
+
+For the purposes of demonstration, the standard eight Surprise Major methods are built 
+into to SMC. If you need a composition for a method not currently included in SMC, 
+please contact me via the Ringers BBS or via the internet and I will see if I can help.
+
+All rights to the software are reserved by the author, and it must not be modified in any 
+way, or distributed for sale or gain without express permission.
+
+I would appreciate feedback on SMC. In particular, if you have ideas on the following:
+
+*	further ways to optimise the search algorithm
+*	a better way of estimating search time and completeness of search
+*	improvements to composition scoring
+*	new areas of functionality
+
+I can be contacted via the Ringers BBS or the internet (johng@lfgms.logica.com).
