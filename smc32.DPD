@@ -1,0 +1,91 @@
+# Symantec IDDE generated .dpd file. V: 7200
+C:\source\smc32\smc.obj: \
+	smc.cpp \
+	smc.h \
+	ring.h \
+	basedef.h \
+	bulkhash.h \
+	bulklist.h \
+	filer.h \
+	fragment.h 
+C:\source\smc32\transpose.obj: \
+	transpose.cpp \
+	smc.h \
+	ring.h \
+	basedef.h \
+	bulkhash.h \
+	bulklist.h \
+	filer.h \
+	fragment.h 
+C:\source\smc32\method.obj: \
+	method.cpp \
+	smc.h \
+	ring.h \
+	basedef.h \
+	bulkhash.h \
+	bulklist.h \
+	filer.h \
+	fragment.h 
+C:\source\smc32\ring.obj: \
+	ring.cpp \
+	ring.h \
+	basedef.h 
+C:\source\smc32\buildtable.obj: \
+	buildtable.cpp \
+	smc.h \
+	ring.h \
+	basedef.h \
+	bulkhash.h \
+	bulklist.h \
+	filer.h \
+	fragment.h 
+C:\source\smc32\compose.obj: \
+	compose.cpp \
+	smc.h \
+	ring.h \
+	basedef.h \
+	bulkhash.h \
+	bulklist.h \
+	filer.h \
+	fragment.h \
+	composeloop.cpp 
+C:\source\smc32\filer.obj: \
+	filer.cpp \
+	filer.h \
+	basedef.h 
+C:\source\smc32\smcfile.obj: \
+	smcfile.cpp \
+	smc.h \
+	ring.h \
+	basedef.h \
+	bulkhash.h \
+	bulklist.h \
+	filer.h \
+	fragment.h 
+C:\source\smc32\music.obj: \
+	music.cpp \
+	smc.h \
+	ring.h \
+	basedef.h \
+	bulkhash.h \
+	bulklist.h \
+	filer.h \
+	fragment.h 
+C:\source\smc32\testbed.obj: \
+	testbed.cpp \
+	smc.h \
+	ring.h \
+	basedef.h \
+	bulkhash.h \
+	bulklist.h \
+	filer.h \
+	fragment.h 
+C:\source\smc32\library.obj: \
+	library.cpp \
+	smc.h \
+	ring.h \
+	basedef.h \
+	bulkhash.h \
+	bulklist.h \
+	filer.h \
+	fragment.h 

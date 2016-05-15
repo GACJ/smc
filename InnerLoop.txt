@@ -1,0 +1,81 @@
+//	eax = transient
+//	ebx = this
+//	ecx = call / falsenode index
+//	edx = transient / nodecount
+//	esi = current node
+//	edi = compptr
+//	ebp = maxpalilength - current complength
+
+
+sublennextcall:
+	add	ebp,[esi]Node.nrows
+loadcallnextcall:
+	mov	ecx,[edi]Composition.call
+nextcall:
+	mov	esi,[edi]Composition.node
+	inc	ecx
+	cmp	ecx,[ebx]Composer.ncalltypes
+	jbe	regen
+backtrack:
+	mov	[esi]Node.included,0	// Reset included flag
+	sub	edi,sizeof(Composition)	// All compositions found?
+	cmp	edi,[ebx]Composer.comp
+	jb	asmdone
+	mov	ecx,[edi]Composition.call
+	add	ebp,[esi]Node.nrows		// Reduce composition length
+	mov	esi,[edi]Composition.node	// Load previous lead
+nextcall2:
+	inc	ecx
+	cmp	ecx,[ebx]Composer.ncalltypes
+	ja	backtrack
+regen:
+#ifdef REGENERATION
+	mov	eax,[ebx]Composer.comp
+	sub	eax,edi
+	mov	[ebx]Composer.lastregen,edi
+	add	eax,[esi+ecx*4]Node.regenoffset;
+	mov	[ebx]Composer.regenptr,eax
+#endif
+
+composeloop:
+	mov	esi,[esi+ecx*4]Node.nextnode
+	mov	[edi]Composition.call,ecx	// Add call to composition
+	cmp	esi,0			// This call not possible here?
+	je	nextcall
+	inc	edx
+	cmp	[esi]Node.included,0	// Already had that lead?
+	jne	nextcall
+	cmp	[esi]Node.nfalsenodes,0
+	je	leadok
+	xor	ecx,ecx
+falsenodeloop:				// Check false nodes for next lead
+	cmp	ecx,[esi]Node.nfalsenodes
+	je	leadok
+	mov	eax,[esi+ecx*4]Node.falsenodes
+	inc	ecx
+	cmp	[eax]Node.included,0
+	je	falsenodeloop
+	jmp	loadcallnextcall
+leadok:	
+	sub	ebp,[esi]Node.nrows
+	js	sublennextcall		// Composition too long?
+
+	add	edi,sizeof(Composition)	// Increment comp ptr
+#ifdef REGENERATION
+	mov	eax,[ebx]Composer.regenptr
+#endif
+	mov	[esi]Node.included,1	// Mark node included
+	mov	[edi]Composition.node,esi	// Add lead to composition
+#ifdef REGENERATION
+	mov	ecx,[edi+eax]
+#else
+	xor	ecx,ecx
+#endif
+	cmp	[esi]Node.comesround,0	// Has come round?
+	je	composeloop
+	mov	eax,[ebx]Composer.maxpalilength
+	sub	eax,ebp
+	cmp	eax,[ebx]Composer.minlengthnow
+	jb	backtrackfromrounds
+	mov	[ebx]Composer.complength,eax
+	mov	[ebx]Composer.lengthcountdown,ebp
