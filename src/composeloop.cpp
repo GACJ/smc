@@ -40,7 +40,7 @@
   }
   goto reenter;
  }
- asm
+ __asm
  {
 	mov	edi,[compptr]
 #ifdef MMXCOUNTER
@@ -70,7 +70,7 @@
  }
  while(TRUE)
  {
-  asm
+  __asm
   {
 //	eax = transient
 //	ebx = this
@@ -127,7 +127,7 @@ backtrackfromrounds:
   }
   ncompnodes = compptr-comp;
   showstats();
-  asm
+  __asm
   {
 	jmp	reenter
 asmdone:

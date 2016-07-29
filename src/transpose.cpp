@@ -20,7 +20,7 @@ void Ring::transpose(char *source,char *transposer,char *dest)
 {
  int i,j;
 
- asm
+ __asm
  {
 	mov	ecx,[this]
 	mov	ecx,[ecx]Ring.nbells
@@ -41,7 +41,7 @@ normalloop:
 
 void Ring::unknowntrans(char *source,char *transposer,char *dest)
 {
- asm
+ __asm
  {
 	mov	ecx,[this]
 	mov	ecx,[ecx]Ring.nbells
@@ -65,7 +65,7 @@ findloop:	inc	al
 
 void Ring::inversetrans(char *source,char *transposer,char *dest)
 {
- asm
+ __asm
  {
 	mov	ecx,[this]
 	mov	ecx,[ecx]Ring.nbells

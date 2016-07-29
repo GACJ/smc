@@ -148,7 +148,7 @@ int isMMXsupported()
 #else
  __try
 // the cpuid instruction sets bit 23 if an mmx processor is present
- asm
+ __asm
  {
 	mov	eax,1
 	cpuid

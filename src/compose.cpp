@@ -391,7 +391,7 @@ int Composer::evalcomp()
  if (nmusicdefs)
  {
 #ifdef ASMEVAL
-  asm
+  __asm
   {
 	push	ebx
 	mov	ebx,[this]
@@ -476,7 +476,7 @@ music1:	mov	eax,[ebx+ecx*4]
 nullnode:	pop	ebx
   }
   return(FALSE);		// Can't do this rotation (nextnode==NULL)
-  asm
+  __asm
   {
 // Do second half: compstart to rot
 secondhalf:
@@ -1043,23 +1043,23 @@ int Composer::readblockcalling(Block *block)
 
 #ifdef CYCLETIMER
 #define CYCLESTART	asm	rdtsc; \
-		asm	mov	[cyclelo],eax
+		__asm	mov	[cyclelo],eax
 #define CYCLESTOP	asm 	rdtsc; \
-		asm	sub	eax,[cyclelo]; \
-		asm	cmp	eax,[ncycles]; \
-		asm	ja	cont; \
-		asm	mov	[ncycles],eax; \
-		asm	mov	[cyclenfalse],edx \
-		asm cont:
+		__asm	sub	eax,[cyclelo]; \
+		__asm	cmp	eax,[ncycles]; \
+		__asm	ja	cont; \
+		__asm	mov	[ncycles],eax; \
+		__asm	mov	[cyclenfalse],edx \
+		__asm cont:
 #define CYCLESTOPF	asm 	rdtsc; \
-		asm	sub	eax,[cyclelo]; \
-		asm	cmp	ecx,6 \
-		asm	jb	cont \
-		asm	cmp	eax,[ncycles]; \
-		asm	ja	cont; \
-		asm	mov	[ncycles],eax; \
-		asm	mov	[cyclenfalse],ecx \
-		asm cont:
+		__asm	sub	eax,[cyclelo]; \
+		__asm	cmp	ecx,6 \
+		__asm	jb	cont \
+		__asm	cmp	eax,[ncycles]; \
+		__asm	ja	cont; \
+		__asm	mov	[ncycles],eax; \
+		__asm	mov	[cyclenfalse],ecx \
+		__asm cont:
 #if CYCLETIMER==TIMECOMPOSE
 #define STARTTIMEC CYCLESTART
 #define STOPTIMEC CYCLESTOP
@@ -1067,7 +1067,7 @@ int Composer::readblockcalling(Block *block)
 #define STARTTIMEBT CYCLESTART
 #define STOPTIMEBT CYCLESTOP
 #elif CYCLETIMER==TIMEFALSE
-#define STARTTIMEF asm mov ecx,0; CYCLESTART; asm mov edx,0
+#define STARTTIMEF __asm mov ecx,0; CYCLESTART; asm mov edx,0
 #define STOPTIMEF CYCLESTOPF
 #endif
 int cyclelo,ncycles;
