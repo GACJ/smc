@@ -147,6 +147,7 @@ int isMMXsupported()
  return FALSE;
 #else
  __try
+ {
 // the cpuid instruction sets bit 23 if an mmx processor is present
  __asm
  {
@@ -155,6 +156,7 @@ int isMMXsupported()
 	mov	eax,edx
 	shr	eax,23
 	and	eax,1
+ }
  }
  __except(EXCEPTION_EXECUTE_HANDLER)
  {
