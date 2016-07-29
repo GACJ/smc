@@ -100,7 +100,7 @@ int Composer::flushcompbuffer(int checkpoint)
 
 void Composer::finaloutput()
 {
- long systime;
+ time_t systime;
 
  flushcompbuffer(FALSE);		// Flush buffer, but don't output checkpoint
  if (outfile.open())
