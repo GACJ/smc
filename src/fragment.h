@@ -3,11 +3,11 @@
 // SMC32 32-bit conversion
 // Copyright Mark B Davies 1998-2003
 
-const MAXFRAGTABLESIZE = 1<<9*2;	// !! Must be a power of FOUR
-const MAXFRAGLENGTH = 32;		// Number of nodes
+const int MAXFRAGTABLESIZE = 1<<9*2;	// !! Must be a power of FOUR
+const int MAXFRAGLENGTH = 32;		// Number of nodes
 typedef unsigned int Pattern;
-const PATTLEN = sizeof(Pattern)*4;	// One node packed in 2 bits
-const NPATTS = (MAXFRAGLENGTH+PATTLEN-1)/PATTLEN;
+const int PATTLEN = sizeof(Pattern)*4;	// One node packed in 2 bits
+const int NPATTS = (MAXFRAGLENGTH+PATTLEN-1)/PATTLEN;
 
 class Composer;
 
@@ -34,13 +34,13 @@ public:
  void shiftupprimary() {for (int i=NPATTS-1; i>0; i--)
  		     primary[i] = (primary[i]<<2)|(primary[i-1]>>sizeof(Pattern)*8-2);
  		    primary[0]<<= 2;}
- inline isdup(Pattern *testpatt);
- sameduplicate(Fragment *f) { if (length!=f->length) return(FALSE);
+ inline int isdup(Pattern *testpatt);
+ int sameduplicate(Fragment *f) { if (length!=f->length) return(FALSE);
  			for (int i=0; i<(length+PATTLEN-1)/PATTLEN; i++)
  			 if (duplicate[i]!=f->duplicate[i])
  			  return(FALSE);
  			return(TRUE);}
- sameprimary(Fragment *f) { if (length!=f->length) return(FALSE);
+ int sameprimary(Fragment *f) { if (length!=f->length) return(FALSE);
  			for (int i=0; i<(length+PATTLEN-1)/PATTLEN; i++)
  			 if (primary[i]!=f->primary[i])
  			  return(FALSE);
@@ -52,7 +52,7 @@ public:
 };
 
 // No longer used from within composeloop
-Fragment::isdup(Pattern *testpatt)
+int Fragment::isdup(Pattern *testpatt)
 {
  unsigned int patt;
  int i,l;
@@ -95,19 +95,19 @@ protected:
 protected:
  Fragment *findprimary(Fragment *frag,int endplacebell);
  Fragment *findduplicate(Fragment *frag,int endplacebell);
- searchorder(Pattern *patt1,Pattern *patt2,int length);
+ int searchorder(Pattern *patt1,Pattern *patt2,int length);
 public:
  FragmentLibrary(int size): f("tmplib") {mapsize=size; mask=mapsize-1;
  			for (int i=0; i<MAXNBELLS; i++) fragmap[i]=NULL;}
  ~FragmentLibrary() {for (int i=0; i<MAXNBELLS; i++) delete fragmap[i];}
- add(Fragment &newfrag,int endplacebell);
+ int add(Fragment &newfrag,int endplacebell);
  void normalise();
- newfile(char *filename);
+ int newfile(char *filename);
  char *getname() {return f.getname();}
  FragMap *getmapfornode(int endplacebell) {return fragmap[endplacebell];}
- read(Composer *ring,char *filename);
- writelibheader(Composer *ring);
- writefragment(Composer *ring,Fragment *frag,int endplacebell);
- compress();
+ int read(Composer *ring,char *filename);
+ int writelibheader(Composer *ring);
+ int writefragment(Composer *ring,Fragment *frag,int endplacebell);
+ int compress();
 };
 

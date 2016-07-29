@@ -7,7 +7,7 @@
 #include <time.h>
 #include "smc.h"
 
-ExtMethod::buildtables(Composer &ring)
+int ExtMethod::buildtables(Composer &ring)
 {
  clock_t time;
 
@@ -42,7 +42,7 @@ ExtMethod::buildtables(Composer &ring)
 
 // Counts how many nodes are available to the composition
 // Stores nodeheads found in a BulkHash for later use
-Composer::findtablesize()
+int Composer::findtablesize()
 {
  int maxnleads,tablesize;
  int i;
@@ -90,13 +90,13 @@ Composer::findtablesize()
  return(TRUE);
 }
 
-matchhashednode(HashedNode *hnode,int hashvalue,Composer *ring)
+int matchhashednode(HashedNode *hnode,int hashvalue,Composer *ring)
 {
  return ring->samerow(ring->row,hnode->nodehead);
 }
 
 // Returns FALSE if dead end
-Composer::recursefindnodes(int stacklevel)
+int Composer::recursefindnodes(int stacklevel)
 {
  HashedNode *hnode;
  char LH[MAXNBELLS];
@@ -230,7 +230,7 @@ deadend:
  return(FALSE);
 }
 
-Composer::isLHexcluded()
+int Composer::isLHexcluded()
 {
  int i,failedmatches,callingbellpos;
 
@@ -253,7 +253,7 @@ Composer::isLHexcluded()
  return(FALSE);
 }
 
-Composer::isrowexcluded()
+int Composer::isrowexcluded()
 {
  int i;
 
@@ -283,7 +283,7 @@ Composer::isrowexcluded()
 // 8. False nodes and other data are copied from NodeExtra duplicate fields to Nodes
 // 9. The false node arrays in NodeExtra structures can be freed.
 // 10.Hopefully... all the tables are now ready for the composing loop
-Composer::gennodetable()
+int Composer::gennodetable()
 {
  HashedNode *hnode;
  int i,j,k;
@@ -595,7 +595,7 @@ void Composer::countnodemusic(int n)
  }
 }
 
-Composer::musthaveblockerror(Block *b, char *err)
+int Composer::musthaveblockerror(Block *b, char *err)
 {
  char tempbuf[MAXNBELLS+1];
  writerow(b->entrylh,tempbuf);
@@ -611,7 +611,7 @@ Composer::musthaveblockerror(Block *b, char *err)
 // If so, goes through nextnode pointers in the nodex tables, knocking out any that
 // split up blocks. The result should be that the composing loop must run through
 // complete blocks whenever it finds them.
-Composer::preparemusthaveblocks()
+int Composer::preparemusthaveblocks()
 {
  Block *b;
  HashedNode *hnode;
@@ -884,7 +884,7 @@ void Composer::processexcludednodes()
 //    any node is noted for used in allocating the Node tables to minimum size.
 // Later in gennode, the falsebits array is copied from each NodeExtra to corresponding
 // Node.
-Composer::calcbitwisetruthtables()
+int Composer::calcbitwisetruthtables()
 {
  NodeExtra *nodex;
  int pass;

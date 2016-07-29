@@ -24,7 +24,7 @@ char *nextpn(char *pn);
 int pnlen(char *pn);
 char *buildclass(char *p,char *classname,int abbreviated);
 
-Method::newmethod(char *newname,char *newpn)
+int Method::newmethod(char *newname,char *newpn)
 {
  int i,ret;
 
@@ -62,7 +62,7 @@ Method::newmethod(char *newname,char *newpn)
 }
 
 // Leadend calls only!
-Method::newcall(Call call,char *newpn)
+int Method::newcall(Call call,char *newpn)
 {
  delete callpn[call];
  callpn[call] = new char[strlen(newpn)+1];
@@ -77,7 +77,7 @@ Method::newcall(Call call,char *newpn)
 
 // Returns TRUE if testpn defines the same method as us
 // NB doesn't check for expanded symmetric pns!
-Method::issamepn(char *testpn)
+int Method::issamepn(char *testpn)
 {
  char c,*p;
 
@@ -103,7 +103,7 @@ Method::issamepn(char *testpn)
  return(TRUE);
 }
 
-Method::parsepn()
+int Method::parsepn()
 {
  int i,j;
  char c,*p,*q;
@@ -272,7 +272,7 @@ void Method::showleadcode(char *buf)
 }
 
 // Returns TRUE if 4ths place bobs should be used
-Method::fourthsplacebobs()
+int Method::fourthsplacebobs()
 {
  if (leadheadcode&PBLEADCODE)
   if ((leadheadcode&0x0F)+'a'<='f' || (leadheadcode&0x0F)+'a'=='m')

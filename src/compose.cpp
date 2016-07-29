@@ -12,12 +12,12 @@
 // How many million nodes between each showstats() call
 #define SHOWSTATSFREQ 2
 // How many clock ticks between checkpoints (given no other comp output)
-const CHECKPOINTFREQ = 60*CLOCKS_PER_SEC;
+const int CHECKPOINTFREQ = 60*CLOCKS_PER_SEC;
 //const CHECKPOINTFREQ = 4*CLOCKS_PER_SEC;
 
 char callchars[] = "p-sxu";
 
-Composer::newcomp()
+int Composer::newcomp()
 {
  int i,j;
 
@@ -190,7 +190,7 @@ double Composer::calcpercentcomplete()
 // 	    (i.e. percentage for a composition using plains wherever possible)
 // percentrange - 100.0 / %age range in the search tree from plains-wherever-possible
 //	    to bobs-wherever possible. Range 100.0 up.
-Composer::findpercentrange()
+int Composer::findpercentrange()
 {
  Node *node;
  double p0,p1;
@@ -372,7 +372,7 @@ void Composer::countparts()
 //#define ASMEVAL
 
 // Evaluate one particular rotation
-Composer::evalcomp()
+int Composer::evalcomp()
 {
  Node *node = comp[0].node;	// Start from rounds regardless of rotation
  int goodenough = TRUE;
@@ -584,7 +584,7 @@ scoringdone:
 
 // Print composition to compbuffer
 // !! Must match with inputcomp() below
-Composer::outputcomp()
+int Composer::outputcomp()
 {
  Node *node = comp[0].node;	// Start from rounds regardless of rotation
  int rot = comprot;
@@ -652,7 +652,7 @@ char *Composer::printcall(char *buf,int c,int pos)
 }
 
 // !! Must match with outputcomp() above
-Composer::inputcomp(char *compbuf)
+int Composer::inputcomp(char *compbuf)
 {
  CompMusicStore storedcomp;
  char *p;
@@ -725,7 +725,7 @@ Composer::inputcomp(char *compbuf)
 // If nnodes<=0, assume reading complete composition & extend to part end/rounds
 // On entry, storedcomp.nparts should already be set!
 // The Node parameter gives the starting node for call conversion - normally rounds
-Composer::readcalling(char *buf,CompStore &storedcomp,Node *node,int nnodes)
+int Composer::readcalling(char *buf,CompStore &storedcomp,Node *node,int nnodes)
 {
  char *c,*p = buf;
  char ch;
@@ -914,7 +914,7 @@ Composer::readcalling(char *buf,CompStore &storedcomp,Node *node,int nnodes)
 // the block other than entry node. Note that if we discover an inmusthaveblock flag
 // already set, that is an error - blocks must be independent.
 // This code has been taken from Composer::readcalling() above.
-Composer::readblockcalling(Block *block)
+int Composer::readblockcalling(Block *block)
 {
  char *c,*p = block->calling;
  NodeExtra *nodex = block->entrynode;

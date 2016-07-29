@@ -6,7 +6,7 @@
 extern char callchars[];
 
 // Move current Composer composition into storedcomp
-Composer::storecomposition(CompStore &storedcomp)
+int Composer::storecomposition(CompStore &storedcomp)
 {
  if (!storedcomp.copyincomp(nodesperpart,comp))
   return(FALSE);
@@ -15,7 +15,7 @@ Composer::storecomposition(CompStore &storedcomp)
 }
 
 // Move current Composer composition into storedcomp
-Composer::storecomposition(CompMusicStore &storedcomp)
+int Composer::storecomposition(CompMusicStore &storedcomp)
 {
  storedcomp.rot = comprot;
  storedcomp.score = score;
@@ -27,7 +27,7 @@ Composer::storecomposition(CompMusicStore &storedcomp)
 
 // Used by music analyser - copies Composer composition into storedcomp, but
 // assumes rot, score, music and nTVs have already been set up
-Composer::storecomp2(CompMusicStore &storedcomp)
+int Composer::storecomp2(CompMusicStore &storedcomp)
 {
  int i;
 
@@ -45,7 +45,7 @@ Composer::storecomp2(CompMusicStore &storedcomp)
 
 // !! Overwrites current Composer state
 // Also sets up include flags, testing for truth as it goes
-Composer::loadcomposition(CompMusicStore &storedcomp)
+int Composer::loadcomposition(CompMusicStore &storedcomp)
 {
  Node *node;
  int rot;
@@ -121,7 +121,7 @@ void Composer::countcalls()
 
 // Returns TRUE if storedcomp visits exactly the same nodes as the composition
 // which is currently set up in Composer
-Composer::isnodeidentical(CompStore *storedcomp,unsigned int hashvalue)
+int Composer::isnodeidentical(CompStore *storedcomp,unsigned int hashvalue)
 {
  Node *node;
  int storednodes = storedcomp->nodesperpart*storedcomp->nparts;
@@ -154,7 +154,7 @@ Composer::isnodeidentical(CompStore *storedcomp,unsigned int hashvalue)
 // nodes in each other - at the moment, we have no way of checking node usage of
 // an individual fragment, just the overall composition
 // If a suitable fragment is found, it is added to the fragment library
-Composer::extractfragment(CompStore *storedcomp)
+int Composer::extractfragment(CompStore *storedcomp)
 {
  Node *node = comp[0].node;
  Fragment frag;
@@ -257,7 +257,7 @@ unsigned int Composer::calcnodehash()
  return hashvalue;
 }
 
-CompHasher::init(int tablesize)
+int CompHasher::init(int tablesize)
 {
  if (!BulkHash::init(tablesize,4,sizeof(CompStore),COMPSPERBULKHASH))
  {
@@ -269,7 +269,7 @@ CompHasher::init(int tablesize)
 
 // Inserts a new composition into the hashtable
 // Checks for node-identical compositions - extracts fragments if found
-CompHasher::addcomp(Composer *ring)
+int CompHasher::addcomp(Composer *ring)
 {
  CompStore *storedcomp;
  CompStore newcomp;
@@ -401,7 +401,7 @@ void FragmentLibrary::normalise()
 }
 
 // Converts library into compressed format, deletes BulkLists
-FragmentLibrary::compress()
+int FragmentLibrary::compress()
 {
  CompressedFrag *compressedlist;
  int *compressedalloc;
@@ -472,7 +472,7 @@ FragmentLibrary::compress()
  return(TRUE);
 }
 
-FragmentLibrary::newfile(char *filename)
+int FragmentLibrary::newfile(char *filename)
 {
  if (filename==NULL)
  {
@@ -489,7 +489,7 @@ FragmentLibrary::newfile(char *filename)
 }
 
 
-FragmentLibrary::writefragment(Composer *ring,Fragment *frag,int endplacebell)
+int FragmentLibrary::writefragment(Composer *ring,Fragment *frag,int endplacebell)
 {
  char *buf;
  int i,j;
@@ -622,7 +622,7 @@ Fragment *FragmentLibrary::findprimary(Fragment *frag,int endplacebell)
 }
 
 // Returns TRUE if patt1 would occur earlier in the search than patt2
-FragmentLibrary::searchorder(Pattern *patt1,Pattern *patt2,int length)
+int FragmentLibrary::searchorder(Pattern *patt1,Pattern *patt2,int length)
 {
  int i;
 
