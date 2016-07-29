@@ -575,10 +575,17 @@ protected:
  			{for (int i=0; i<nbells; i++)
 			  printf("%c",rounds[row[i]]);
 			 printf("\n");}
- inline void writerow(char *row, char *buf)
- 			{for (int i=0; i<nbells; i++)
-			  buf[i] = rounds[row[i]];
-			 buf[i] = 0;}
+
+inline void writerow(char * row, char * buf)
+{
+    int i;
+    for (i = 0; i < nbells; i++)
+    {
+        buf[i] = rounds[row[i]];
+    }
+    buf[i] = 0;
+}
+
  int readlh(char *p, char *buf, char *errprefix);
  int calcLHfactnum(char *row);
  void calcfactorials();
