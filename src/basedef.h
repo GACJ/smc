@@ -11,11 +11,15 @@ enum Bool {FALSE,TRUE};
 
 inline int filesize(const char * path)
 {
+    int size = 0;
     FILE * fp = fopen(path, "rb");
-    fseek(fp, 0, SEEK_END);
-    long size = ftell(fp);
-    fclose(fp);
-    return (int)size;
+    if (fp != NULL)
+    {
+        fseek(fp, 0, SEEK_END);
+        size = (int)ftell(fp);
+        fclose(fp);
+    }
+    return size;
 }
 
 inline char * stpcpy(char * dest, const char * src)
