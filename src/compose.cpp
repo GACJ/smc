@@ -73,7 +73,7 @@ int Composer::newcomp()
    for (j=0; j<=ncalltypes; j++)
    {
 // Set up regenoffsets in each lead
-    node->regenoffset[j] = -sizeof(Composition);
+    node->regenoffset[j] = -((int)sizeof(Composition));
     if (coursestructured)
      node->regenoffset[j]-= sizeof(Composition)*courseenddist[nodeextra[i].callingbellpos[j]];
    }
