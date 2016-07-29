@@ -242,9 +242,9 @@ public:
  int *falsenodes;
  int nfalsebits;
  FalseBits *falsebits;		// Only used if Composer.bitwisetruthflags set
- int nextnode[NDIFFCALLS];
+ int nextnode[NDIFFCALLS] = { -1 };
 #ifdef PREVNODES
- int prevnode[NDIFFCALLS];
+ int prevnode[NDIFFCALLS] = { -1 };
 #endif
 
 public:
