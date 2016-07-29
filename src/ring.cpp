@@ -595,7 +595,7 @@ void Ring::startlead()
 
 void Ring::change()
 {
- char c,x,*pn;
+ char c,x,*pn = NULL;
  Call call;
  int i;
 
