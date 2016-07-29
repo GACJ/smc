@@ -58,7 +58,7 @@ public:
  int newcall(Call call,char *newpn);
  void setcompletename(char *buf,int abbreviated);
  void showleadcode(char *buf);
- MethodType gettype() {return type;}
+ MethodType gettype() {return (MethodType)type;}
  int fourthsplacebobs();
  int courselength();
  char *getpn() {return pn;}

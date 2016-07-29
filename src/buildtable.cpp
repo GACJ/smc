@@ -106,7 +106,7 @@ int Composer::recursefindnodes(int stacklevel)
 
 // See if this node is already in the hashtable
  nodehashitem.factnum = calcLHfactnum(row);
- hnode = nodehasher.finditem(nodehashitem.factnum,(HashItemMatchFn)matchhashednode,this);
+ hnode = (HashedNode *)nodehasher.finditem(nodehashitem.factnum,(HashItemMatchFn)matchhashednode,this);
 // If it is, return TRUE if it was included; FALSE if visited but not included
  if (hnode)
   return hnode->included;
@@ -118,7 +118,7 @@ int Composer::recursefindnodes(int stacklevel)
  nodehashitem.excluded = FALSE;
  copyrow(row,nodehashitem.nodehead);
  nodehashitem.nodex = NULL;
- hnode = nodehasher.add(&nodehashitem,nodehashitem.factnum);
+ hnode = (HashedNode *)nodehasher.add(&nodehashitem,nodehashitem.factnum);
  if (hnode==NULL)
   return(FALSE);
 // Check stack depth - return if too deep
@@ -527,7 +527,7 @@ void Composer::gennodex(int n)
    }
    else
    {
-    hnode = nodehasher.finditem(calcLHfactnum(row),
+    hnode = (HashedNode *)nodehasher.finditem(calcLHfactnum(row),
     	(HashItemMatchFn)matchhashednode,this);
     if (hnode && hnode->included)
      nodex->nextnode[call] = hnode->nodex->num;
@@ -685,7 +685,7 @@ HashedNode *Composer::findnodefromLH()
    break;
  }
  if (leadspernode[b1])
-   return nodehasher.finditem(calcLHfactnum(row),(HashItemMatchFn)matchhashednode,this);
+   return (HashedNode *)nodehasher.finditem(calcLHfactnum(row),(HashItemMatchFn)matchhashednode,this);
  return NULL;
 }
 
@@ -731,7 +731,7 @@ void Composer::calcfalsenodes(int n)
     }
     if (leadspernode[b1])
     {
-     hnode = nodehasher.finditem(calcLHfactnum(row),(HashItemMatchFn)matchhashednode,this);
+     hnode = (HashedNode *)nodehasher.finditem(calcLHfactnum(row),(HashItemMatchFn)matchhashednode,this);
      if (hnode && hnode->included)
      {
       b = hnode->nodex->num;
