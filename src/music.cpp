@@ -489,7 +489,7 @@ char displaybuf[MAXLINEBUF];
 // If compn=-nmusicdefs, this is the "max musthave blocks' composition
 int Composer::displaycomp(int compn,CompMusicStore *thiscomp,LineFile &f)
 {
- Node *node,*nextnode;
+ Node *node,*nextnode = NULL;
  char *buf;
  int firstworkingbell,lastworkingbell;
  int callpos,queuedcolumn,nbobs,realcourseend;
