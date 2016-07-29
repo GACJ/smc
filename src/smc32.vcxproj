@@ -131,7 +131,6 @@
   <ItemGroup>
     <ClCompile Include="buildtable.cpp" />
     <ClCompile Include="compose.cpp" />
-    <ClCompile Include="composeloop.cpp" />
     <ClCompile Include="filer.cpp" />
     <ClCompile Include="library.cpp" />
     <ClCompile Include="method.cpp" />
@@ -146,6 +145,7 @@
     <ClInclude Include="basedef.h" />
     <ClInclude Include="bulkhash.h" />
     <ClInclude Include="bulklist.h" />
+    <ClInclude Include="composeloop.inc" />
     <ClInclude Include="filer.h" />
     <ClInclude Include="fragment.h" />
     <ClInclude Include="ring.h" />

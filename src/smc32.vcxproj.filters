@@ -21,9 +21,6 @@
     <ClCompile Include="compose.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="composeloop.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="filer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -74,5 +71,10 @@
     <ClInclude Include="smc.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="composeloop.inc">
+      <Filter>Header Files</Filter>
+    </None>
   </ItemGroup>
 </Project>
