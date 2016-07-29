@@ -47,7 +47,7 @@ protected:
  char *pn;
  char *pnptrs[MAXLEADLEN];
  char *callpn[NDIFFCALLS];		// Only leadend calls at the moment
- MethodType type;
+ int type;
  char leadheadcode;
  char symmetrical;
 
