@@ -136,8 +136,8 @@ asmdone:
 #else
 	mov	edx,[ebx]Composer.stats.nodecount
 #endif
-	add	(int *)[ebx]Composer.stats.nodesgenerated,edx
-	adc	(int *)[ebx+4]Composer.stats.nodesgenerated,0
+	add	dword ptr [ebx]Composer.stats.nodesgenerated,edx
+	adc	dword ptr [ebx+4]Composer.stats.nodesgenerated,0
 	pop	ebx
 	pop	ebp
 #ifdef MMXCOUNTER
@@ -195,7 +195,7 @@ reducelength:
 	mov	[esi]Node.included,0	// Reset included flag
 #endif
 #endif
-	sub	edi,sizeof(Composition)	// All compositions found?
+	sub	edi,size Composition	// All compositions found?
 #ifdef PALINDROMIC
 	mov	eax,[edi]Composition.palinode
 #endif
@@ -391,14 +391,14 @@ leadok:	STOPTIMEF
 	je	notfrag
 // Check call pattern against fragment list
 	mov	ecx,[edx]
-	add	edx,sizeof(int)
+	add	edx,4 // size int
 pattloop:	dec	ecx
 	js	notfrag
 	movq	mm6,mm2
 	movq	mm7,[edx]
 	pand	mm6,[edx+8]
 	pcmpeqd	mm6,mm7
-	add	edx,sizeof(CompressedFrag)
+	add	edx,size CompressedFrag
 	packssdw	mm6,mm6
 	movd	eax,mm6
 	cmp	eax,0
@@ -415,7 +415,7 @@ notfrag:
 	mov	eax,[eax+ecx*4]Node.prevnode
 	cmp	eax,0
 	je	sublennextcall
-	mov	[edi+sizeof(Composition)]Composition.palinode,eax
+	mov	[edi+size Composition]Composition.palinode,eax
 	cmp	esi,eax
 	je	reachedmidnodeapex
 #endif
@@ -430,7 +430,7 @@ notfrag:
 	mov	[eax]Node.included,1	// Mark palindromic node included
 #endif
 #endif
-	add	edi,sizeof(Composition)	// Increment comp ptr
+	add	edi,size Composition	// Increment comp ptr
 #ifdef FALSEBITS
 	mov	edx,[esi]Node.falsebits
 	mov	eax,[esi+4]Node.falsebits
@@ -476,7 +476,7 @@ reachedmidnodeapex:
 reachednodeheadapex:
 	mov	[ebx]Composer.midnodeapex,0
 	mov	eax,[ebx]Composer.maxpalilength
-inccomp:	add	edi,sizeof(Composition)	// Increment comp ptr
+inccomp:	add	edi,size Composition	// Increment comp ptr
 #ifdef FALSEBITS
 	mov	edx,[esi]Node.falsebits
 	mov	eax,[esi+4]Node.falsebits
