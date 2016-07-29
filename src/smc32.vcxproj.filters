@@ -74,5 +74,18 @@
     <ClInclude Include="composeloop.inc">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Resource Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Resource.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\SMC.ICO">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>

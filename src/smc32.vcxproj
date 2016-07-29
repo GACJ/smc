@@ -156,8 +156,15 @@
     <ClInclude Include="composeloop.inc" />
     <ClInclude Include="filer.h" />
     <ClInclude Include="fragment.h" />
+    <ClInclude Include="resource.h" />
     <ClInclude Include="ring.h" />
     <ClInclude Include="smc.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Resource.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\SMC.ICO" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
