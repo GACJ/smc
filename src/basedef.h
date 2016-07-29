@@ -24,4 +24,7 @@ inline char * stpcpy(char * dest, const char * src)
     return strchr(dest, 0);
 }
 
+#define strcmpi     _strcmpi
+#define strncmpi    _strnicmp
+
 #endif // INCBASEDEF
