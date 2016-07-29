@@ -1,6 +1,8 @@
 #ifndef INCBASEDEF
 #define INCBASEDEF
 
+#include <string.h>
+
 // (C) 1998 Mark B Davies
 
 enum Bool {FALSE,TRUE};
@@ -14,6 +16,12 @@ inline int filesize(const char * path)
     long size = ftell(fp);
     fclose(fp);
     return (int)size;
+}
+
+inline char * stpcpy(char * dest, const char * src)
+{
+    strcpy(dest, src);
+    return strchr(dest, 0);
 }
 
 #endif // INCBASEDEF
