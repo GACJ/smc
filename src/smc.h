@@ -10,7 +10,7 @@
 #include "filer.h"
 #include "fragment.h"
 
-#define VERSION "SMC32 v0.965"
+#define VERSION "SMC32 v0.965.2-msvc"
 #define COPYRIGHT "(c) 1998-2003 Mark B Davies & Graham A C John"
 #define INEXT "smc"
 #define MUSEXT "mus"
@@ -29,21 +29,21 @@
 // !!! No longer works
 //#define SWAPCALLORDER
 
-const MAXSTACKDEPTH = 5000;		// In recursefindnodes()
-const ALIGNMENT = 8;		// !! Must be a power of two
-const TRUTHTABLEWORDSIZE = 32;
-const BULKROWALLOC = 4096;		// Number of rows in each BulkList
-const MAXCOMPSPACE = MAXLINEBUF;	// Maximum length in chars of output comp
-const COMPBUFFERSIZE = 4000 + MAXCOMPSPACE;
+const int MAXSTACKDEPTH = 5000;		// In recursefindnodes()
+const int ALIGNMENT = 8;		// !! Must be a power of two
+const int TRUTHTABLEWORDSIZE = 32;
+const int BULKROWALLOC = 4096;		// Number of rows in each BulkList
+const int MAXCOMPSPACE = MAXLINEBUF;	// Maximum length in chars of output comp
+const int COMPBUFFERSIZE = 4000 + MAXCOMPSPACE;
 const char CHECKPOINT_SYMBOL = '!';
 
-const MAXBLOCKCHARS = 256;		// Maximum length in chars of a "must-have" block
+const int MAXBLOCKCHARS = 256;		// Maximum length in chars of a "must-have" block
 
-const MAXCALLPOSNAME = 8;
-const MAXNPARTS = 3*4*5*7;		// Maximum number of parts for 20 bells!!
+const int MAXCALLPOSNAME = 8;
+const int MAXNPARTS = 3*4*5*7;		// Maximum number of parts for 20 bells!!
 
-const COMPSPERBULKLIST = 1000;	// Comps per BulkList
-const COMPSPERBULKHASH = 16;		// Comps per BulkHash
+const int COMPSPERBULKLIST = 1000;	// Comps per BulkList
+const int COMPSPERBULKHASH = 16;		// Comps per BulkHash
 
 char * const TOKEN_MUSIC = "MUSIC";
 char * const TOKEN_START = "SMC32";
@@ -56,7 +56,7 @@ class NodeExtra;
 class ExtMethod: public Method
 {
 public:
- buildtables(Composer &ring);
+ int buildtables(Composer &ring);
 protected:
 };
 
@@ -90,7 +90,7 @@ public:
 public:
  MusicDef() {name=0; matches=0; nrows=weighting=minscore=0;}
  ~MusicDef() {delete name; delete matches;}
- ensurespace(int n);
+ int ensurespace(int n);
 };
 
 class MusicCount
@@ -102,10 +102,10 @@ public:
 public:
  MusicCount() {score=NULL; nmusicdefs=0;}
  ~MusicCount() {delete score;}
- alloc(int n) {delete score; score = new int[n]; if (score==NULL) return(FALSE);
+ int alloc(int n) {delete score; score = new int[n]; if (score==NULL) return(FALSE);
  					nmusicdefs = n; return(TRUE);}
- ensurespace(int n);
- set(MusicCount &m);
+ int ensurespace(int n);
+ int set(MusicCount &m);
 };
 
 // Holds data for "must-have" blocks: calling and start/end lhs, plus music counts
@@ -154,8 +154,8 @@ public:
 public:
  CompStore() {calling=NULL; allocsize=0;}
  ~CompStore() {delete(calling);}
- ensurespace(int nnodes);
- copyincomp(int nodesperpart,Composition *composition);
+ int ensurespace(int nnodes);
+ int copyincomp(int nodesperpart,Composition *composition);
 };
 
 class CompMusicStore: public CompStore
@@ -180,11 +180,11 @@ class CompSorter
 public:
  CompSorter(): bulkalloc(COMPSPERBULKLIST,sizeof(CompMusicStore))
  		{n=listsize=0; list=NULL;}
- init(int ncomps) {safedelete(list); bulkalloc.freeall(); listsize = n = 0;
+ int init(int ncomps) {safedelete(list); bulkalloc.freeall(); listsize = n = 0;
 	 	list = new CompMusicStore*[ncomps]; if (list==NULL) return(FALSE);
 	 	listsize = ncomps; return(TRUE);}
- addcomp(CompMusicStore &newcomp);
- adduniquecomp(CompMusicStore &newcomp,Composer *ring);	// Debug only
+ int addcomp(CompMusicStore &newcomp);
+ int adduniquecomp(CompMusicStore &newcomp,Composer *ring);	// Debug only
  int ncompslisted() {return n;}
  CompMusicStore *get(int compn) {if (compn<0 || compn>=n) return(NULL); return list[compn];}
 protected:
@@ -197,8 +197,8 @@ protected:
 class CompHasher: public BulkHash
 {
 public:
- init(int tablesize);
- addcomp(Composer *ring);
+ int init(int tablesize);
+ int addcomp(Composer *ring);
 };
 
 
@@ -242,9 +242,9 @@ public:
  int *falsenodes;
  int nfalsebits;
  FalseBits *falsebits;		// Only used if Composer.bitwisetruthflags set
- int nextnode[NDIFFCALLS];
+ int nextnode[NDIFFCALLS] = { -1 };
 #ifdef PREVNODES
- int prevnode[NDIFFCALLS];
+ int prevnode[NDIFFCALLS] = { -1 };
 #endif
 
 public:
@@ -504,25 +504,25 @@ public:
  	    delete[] musicdefs; delete[] nodeextra;
  	    delete falseLHs; delete truthtable; delete musthaveblocks;}
  void init(ExtMethod *method) {Ring::init(method);}
- setdefaults();
- writefileheader(LineFile &f);
- writeheaderessential(LineFile &f);
- readinputfile(LineFile &f);
- readmusicfile(LineFile &f);
- readmusicminoverrides(LineFile &f);
- skipmusicfile(LineFile &f);
- readcalling(char *compbuf,CompStore &storedcomp,Node *node,int nnodes=0);
- setup();
- newcomp();
- newsearch();
- restartsearch();
+ int setdefaults();
+ int writefileheader(LineFile &f);
+ int writeheaderessential(LineFile &f);
+ int readinputfile(LineFile &f);
+ int readmusicfile(LineFile &f);
+ int readmusicminoverrides(LineFile &f);
+ int skipmusicfile(LineFile &f);
+ int readcalling(char *compbuf,CompStore &storedcomp,Node *node,int nnodes=0);
+ int setup();
+ int newcomp();
+ int newsearch();
+ int restartsearch();
  void compose();
  void findcourseenddists();
  void findnodes();
- findfalseLHs();
- findtablesize();
- gennodetable();
- musicsort(int maxncomps);
+ int findfalseLHs();
+ int findtablesize();
+ int gennodetable();
+ int musicsort(int maxncomps);
  char *writepattern(char *buf,Pattern *pattern,int length,int startplacebell);
  Node *findstartingnode(int startplacebell);
 
@@ -530,43 +530,43 @@ protected:
  void resetcompbuffer() {compbufptr=compbuffer; ncompsinbuffer=0; lastcheckpoint=0;}
  void defaultcallingpositions(int call);
  int addcalltype(Call calltype);
- readcall(int call);
+ int readcall(int call);
  void showstats();
  void printelapsed(char *buf,int nearestsecond=TRUE);
  void finaloutput();
  void analysecomp();
  void countparts();
  void countcalls();
- evalcomp();
- flushcompbuffer(int checkpoint=TRUE);
- outputcomp();
- inputcomp(char *compbuf);
+ int evalcomp();
+ int flushcompbuffer(int checkpoint=TRUE);
+ int outputcomp();
+ int inputcomp(char *compbuf);
  double calcpercentcomplete();
- findpercentrange();
+ int findpercentrange();
  char *printcall(char *buf,int call,int pos);
- recursefindnodes(int stacklevel);
+ int recursefindnodes(int stacklevel);
  void gennodex(int n);
  void countnodemusic(int n);
- preparemusthaveblocks();
- musthaveblockerror(Block *b, char *err);
+ int preparemusthaveblocks();
+ int musthaveblockerror(Block *b, char *err);
  HashedNode *findnodefromLH();
- readblockcalling(Block *block);
+ int readblockcalling(Block *block);
  void calcfalsenodes(int n);
  void processessentialnodes();
  void processexcludednodes();
- calcbitwisetruthtables();
+ int calcbitwisetruthtables();
  void calcfalsebitmasks(NodeExtra *nodex);
  int truthflagpackingscore(NodeExtra *nodex);
  void gennode(int n);
- isLHexcluded();
- isrowexcluded();
- inline isrounds(char *row) {for (int i=0; i<nbells; i++)
+ int isLHexcluded();
+ int isrowexcluded();
+ inline int isrounds(char *row) {for (int i=0; i<nbells; i++)
  			if (row[i]!=i) return(FALSE);
  		         return(TRUE);}
- inline isfinishrow(char *row) {for (int i=0; i<nbells; i++)
+ inline int isfinishrow(char *row) {for (int i=0; i<nbells; i++)
  			if (row[i]!=finishrow[i]) return(FALSE);
  		         return(TRUE);}
- inline isnegative(char *row);
+ inline int isnegative(char *row);
  inline int findcallingbell(char *row)
  			{for (int i=0; i<nbells; i++)
  			  if (row[i]==callingbell) return(i); return(-1);}
@@ -575,18 +575,25 @@ protected:
  			{for (int i=0; i<nbells; i++)
 			  printf("%c",rounds[row[i]]);
 			 printf("\n");}
- inline void writerow(char *row, char *buf)
- 			{for (int i=0; i<nbells; i++)
-			  buf[i] = rounds[row[i]];
-			 buf[i] = 0;}
- readlh(char *p, char *buf, char *errprefix);
+
+inline void writerow(char * row, char * buf)
+{
+    int i;
+    for (i = 0; i < nbells; i++)
+    {
+        buf[i] = rounds[row[i]];
+    }
+    buf[i] = 0;
+}
+
+ int readlh(char *p, char *buf, char *errprefix);
  int calcLHfactnum(char *row);
  void calcfactorials();
  void findcalltranspositions();
- readrowmatch(char *buffer,MusicRow &m);
+ int readrowmatch(char *buffer,MusicRow &m);
  void writerowmatch(char *buffer,MusicRow &m);
- ismusicmatch(MusicDef &m);
- isrowmatch(MusicRow &m);
+ int ismusicmatch(MusicDef &m);
+ int isrowmatch(MusicRow &m);
  void compose_regen_MMXfrag_cps_multipart();
  void compose_regen_MMX_cps_multipart();
  void compose_regen_MMX_cps_multipart_callcount();
@@ -641,19 +648,19 @@ protected:
  void compose_();
  void compose_callcount();
 
- displaycomp(int compn,CompMusicStore *thiscomp,LineFile &f);
- findcourseend(char *leadhead, int callingbellcourseendpos);
- storecomposition(CompStore &storedcomp);
- storecomposition(CompMusicStore &storedcomp);
- storecomp2(CompMusicStore &storedcomp);
- loadcomposition(CompMusicStore &storedcomp);
- extractfragment(CompStore *storedcomp);
- isnodeidentical(CompStore *storedcomp,unsigned int hashvalue);
+ int displaycomp(int compn,CompMusicStore *thiscomp,LineFile &f);
+ int findcourseend(char *leadhead, int callingbellcourseendpos);
+ int storecomposition(CompStore &storedcomp);
+ int storecomposition(CompMusicStore &storedcomp);
+ int storecomp2(CompMusicStore &storedcomp);
+ int loadcomposition(CompMusicStore &storedcomp);
+ int extractfragment(CompStore *storedcomp);
+ int isnodeidentical(CompStore *storedcomp,unsigned int hashvalue);
  unsigned int calcnodehash();
 };
 
 // Can handle wildcard bells (-1)
-inline Composer::isnegative(char *row)
+inline int Composer::isnegative(char *row)
 {
  char tmprow[MAXNBELLS];
  int i,j,b,negative=0;

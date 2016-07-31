@@ -12,12 +12,12 @@
 // How many million nodes between each showstats() call
 #define SHOWSTATSFREQ 2
 // How many clock ticks between checkpoints (given no other comp output)
-const CHECKPOINTFREQ = 60*CLOCKS_PER_SEC;
+const int CHECKPOINTFREQ = 60*CLOCKS_PER_SEC;
 //const CHECKPOINTFREQ = 4*CLOCKS_PER_SEC;
 
 char callchars[] = "p-sxu";
 
-Composer::newcomp()
+int Composer::newcomp()
 {
  int i,j;
 
@@ -73,7 +73,7 @@ Composer::newcomp()
    for (j=0; j<=ncalltypes; j++)
    {
 // Set up regenoffsets in each lead
-    node->regenoffset[j] = -sizeof(Composition);
+    node->regenoffset[j] = -((int)sizeof(Composition));
     if (coursestructured)
      node->regenoffset[j]-= sizeof(Composition)*courseenddist[nodeextra[i].callingbellpos[j]];
    }
@@ -190,7 +190,7 @@ double Composer::calcpercentcomplete()
 // 	    (i.e. percentage for a composition using plains wherever possible)
 // percentrange - 100.0 / %age range in the search tree from plains-wherever-possible
 //	    to bobs-wherever possible. Range 100.0 up.
-Composer::findpercentrange()
+int Composer::findpercentrange()
 {
  Node *node;
  double p0,p1;
@@ -372,7 +372,7 @@ void Composer::countparts()
 //#define ASMEVAL
 
 // Evaluate one particular rotation
-Composer::evalcomp()
+int Composer::evalcomp()
 {
  Node *node = comp[0].node;	// Start from rounds regardless of rotation
  int goodenough = TRUE;
@@ -391,7 +391,7 @@ Composer::evalcomp()
  if (nmusicdefs)
  {
 #ifdef ASMEVAL
-  asm
+  __asm
   {
 	push	ebx
 	mov	ebx,[this]
@@ -476,7 +476,7 @@ music1:	mov	eax,[ebx+ecx*4]
 nullnode:	pop	ebx
   }
   return(FALSE);		// Can't do this rotation (nextnode==NULL)
-  asm
+  __asm
   {
 // Do second half: compstart to rot
 secondhalf:
@@ -584,7 +584,7 @@ scoringdone:
 
 // Print composition to compbuffer
 // !! Must match with inputcomp() below
-Composer::outputcomp()
+int Composer::outputcomp()
 {
  Node *node = comp[0].node;	// Start from rounds regardless of rotation
  int rot = comprot;
@@ -652,7 +652,7 @@ char *Composer::printcall(char *buf,int c,int pos)
 }
 
 // !! Must match with outputcomp() above
-Composer::inputcomp(char *compbuf)
+int Composer::inputcomp(char *compbuf)
 {
  CompMusicStore storedcomp;
  char *p;
@@ -725,7 +725,7 @@ Composer::inputcomp(char *compbuf)
 // If nnodes<=0, assume reading complete composition & extend to part end/rounds
 // On entry, storedcomp.nparts should already be set!
 // The Node parameter gives the starting node for call conversion - normally rounds
-Composer::readcalling(char *buf,CompStore &storedcomp,Node *node,int nnodes)
+int Composer::readcalling(char *buf,CompStore &storedcomp,Node *node,int nnodes)
 {
  char *c,*p = buf;
  char ch;
@@ -914,7 +914,7 @@ Composer::readcalling(char *buf,CompStore &storedcomp,Node *node,int nnodes)
 // the block other than entry node. Note that if we discover an inmusthaveblock flag
 // already set, that is an error - blocks must be independent.
 // This code has been taken from Composer::readcalling() above.
-Composer::readblockcalling(Block *block)
+int Composer::readblockcalling(Block *block)
 {
  char *c,*p = block->calling;
  NodeExtra *nodex = block->entrynode;
@@ -1043,23 +1043,23 @@ Composer::readblockcalling(Block *block)
 
 #ifdef CYCLETIMER
 #define CYCLESTART	asm	rdtsc; \
-		asm	mov	[cyclelo],eax
+		__asm	mov	[cyclelo],eax
 #define CYCLESTOP	asm 	rdtsc; \
-		asm	sub	eax,[cyclelo]; \
-		asm	cmp	eax,[ncycles]; \
-		asm	ja	cont; \
-		asm	mov	[ncycles],eax; \
-		asm	mov	[cyclenfalse],edx \
-		asm cont:
+		__asm	sub	eax,[cyclelo]; \
+		__asm	cmp	eax,[ncycles]; \
+		__asm	ja	cont; \
+		__asm	mov	[ncycles],eax; \
+		__asm	mov	[cyclenfalse],edx \
+		__asm cont:
 #define CYCLESTOPF	asm 	rdtsc; \
-		asm	sub	eax,[cyclelo]; \
-		asm	cmp	ecx,6 \
-		asm	jb	cont \
-		asm	cmp	eax,[ncycles]; \
-		asm	ja	cont; \
-		asm	mov	[ncycles],eax; \
-		asm	mov	[cyclenfalse],ecx \
-		asm cont:
+		__asm	sub	eax,[cyclelo]; \
+		__asm	cmp	ecx,6 \
+		__asm	jb	cont \
+		__asm	cmp	eax,[ncycles]; \
+		__asm	ja	cont; \
+		__asm	mov	[ncycles],eax; \
+		__asm	mov	[cyclenfalse],ecx \
+		__asm cont:
 #if CYCLETIMER==TIMECOMPOSE
 #define STARTTIMEC CYCLESTART
 #define STOPTIMEC CYCLESTOP
@@ -1067,7 +1067,7 @@ Composer::readblockcalling(Block *block)
 #define STARTTIMEBT CYCLESTART
 #define STOPTIMEBT CYCLESTOP
 #elif CYCLETIMER==TIMEFALSE
-#define STARTTIMEF asm mov ecx,0; CYCLESTART; asm mov edx,0
+#define STARTTIMEF __asm mov ecx,0; CYCLESTART; asm mov edx,0
 #define STOPTIMEF CYCLESTOPF
 #endif
 int cyclelo,ncycles;
@@ -1226,7 +1226,7 @@ void Composer::compose()
 #undef CALLCOUNT
 
 void Composer::compose_palindromic_MMX()
-#include "composeloop.cpp"
+#include "composeloop.inc"
 
 #else // ONECOMP
 
@@ -1240,52 +1240,52 @@ void Composer::compose_palindromic_MMX()
 #undef CALLCOUNT
 
 void Composer::compose_regen_MMXfrag_cps_multipart()
-#include "composeloop.cpp"
+#include "composeloop.inc"
 
 #undef MMXFRAGOPT
 /*
 void Composer::compose_regen_MMX_cps_multipart()
-#include "composeloop.cpp"
+#include "composeloop.inc"
 
 #define CALLCOUNT
 void Composer::compose_regen_MMX_cps_multipart_callcount()
-#include "composeloop.cpp"
+#include "composeloop.inc"
 #undef CALLCOUNT
 */
 
 #undef MULTIPART
 #define MMXFRAGOPT
 void Composer::compose_regen_MMXfrag_cps()
-#include "composeloop.cpp"
+#include "composeloop.inc"
 
 #undef MMXFRAGOPT
 /*
 void Composer::compose_regen_MMX_cps()
-#include "composeloop.cpp"
+#include "composeloop.inc"
 
 #define CALLCOUNT
 void Composer::compose_regen_MMX_cps_callcount()
-#include "composeloop.cpp"
+#include "composeloop.inc"
 #undef CALLCOUNT
 */
 
 #undef MMXCOUNTER
 #define MULTIPART
 void Composer::compose_regen_cps_multipart()
-#include "composeloop.cpp"
+#include "composeloop.inc"
 
 #define CALLCOUNT
 void Composer::compose_regen_cps_multipart_callcount()
-#include "composeloop.cpp"
+#include "composeloop.inc"
 #undef CALLCOUNT
 
 #undef MULTIPART
 void Composer::compose_regen_cps()
-#include "composeloop.cpp"
+#include "composeloop.inc"
 
 #define CALLCOUNT
 void Composer::compose_regen_cps_callcount()
-#include "composeloop.cpp"
+#include "composeloop.inc"
 #undef CALLCOUNT
 
 #undef REGENERATION
@@ -1293,37 +1293,37 @@ void Composer::compose_regen_cps_callcount()
 /*
 #define PALINDROMIC
 void Composer::compose_palindromic_MMX_cps()
-#include "composeloop.cpp"
+#include "composeloop.inc"
 
 #undef PALINDROMIC
 */
 #define MMXFRAGOPT
 void Composer::compose_MMXfrag_cps()
-#include "composeloop.cpp"
+#include "composeloop.inc"
 
 #undef MMXFRAGOPT
 /*
 void Composer::compose_MMX_cps()
-#include "composeloop.cpp"
+#include "composeloop.inc"
 
 #define CALLCOUNT
 void Composer::compose_MMX_cps_callcount()
-#include "composeloop.cpp"
+#include "composeloop.inc"
 #undef CALLCOUNT
 */
 
 #undef MMXCOUNTER
 #define PALINDROMIC
 void Composer::compose_palindromic_cps()
-#include "composeloop.cpp"
+#include "composeloop.inc"
 
 #undef PALINDROMIC
 void Composer::compose_cps()
-#include "composeloop.cpp"
+#include "composeloop.inc"
 
 #define CALLCOUNT
 void Composer::compose_cps_callcount()
-#include "composeloop.cpp"
+#include "composeloop.inc"
 #undef CALLCOUNT
 
 #undef CLEANPROOF
@@ -1334,30 +1334,30 @@ void Composer::compose_cps_callcount()
 #define MMXFRAGOPT
 #define MULTIPART
 void Composer::compose_regen_MMXfrag_falsebits_multipart()
-#include "composeloop.cpp"
+#include "composeloop.inc"
 
 #undef MULTIPART
 void Composer::compose_regen_MMXfrag_falsebits()
-#include "composeloop.cpp"
+#include "composeloop.inc"
 #undef MMXFRAGOPT
 #undef MMXCOUNTER
 
 #define MULTIPART
 void Composer::compose_regen_falsebits_multipart()
-#include "composeloop.cpp"
+#include "composeloop.inc"
 
 #define CALLCOUNT
 void Composer::compose_regen_falsebits_multipart_callcount()
-#include "composeloop.cpp"
+#include "composeloop.inc"
 #undef CALLCOUNT
 
 #undef MULTIPART
 void Composer::compose_regen_falsebits()
-#include "composeloop.cpp"
+#include "composeloop.inc"
 
 #define CALLCOUNT
 void Composer::compose_regen_falsebits_callcount()
-#include "composeloop.cpp"
+#include "composeloop.inc"
 #undef CALLCOUNT
 
 #undef REGENERATION
@@ -1365,21 +1365,21 @@ void Composer::compose_regen_falsebits_callcount()
 #define MMXCOUNTER
 #define MMXFRAGOPT
 void Composer::compose_MMXfrag_falsebits()
-#include "composeloop.cpp"
+#include "composeloop.inc"
 #undef MMXFRAGOPT
 #undef MMXCOUNTER
 
 #define PALINDROMIC
 void Composer::compose_palindromic_falsebits()
-#include "composeloop.cpp"
+#include "composeloop.inc"
 
 #undef PALINDROMIC
 void Composer::compose_falsebits()
-#include "composeloop.cpp"
+#include "composeloop.inc"
 
 #define CALLCOUNT
 void Composer::compose_falsebits_callcount()
-#include "composeloop.cpp"
+#include "composeloop.inc"
 #undef CALLCOUNT
 
 #undef FALSEBITS
@@ -1389,52 +1389,52 @@ void Composer::compose_falsebits_callcount()
 #define MMXFRAGOPT
 #define MULTIPART
 void Composer::compose_regen_MMXfrag_multipart()
-#include "composeloop.cpp"
+#include "composeloop.inc"
 
 #undef MMXFRAGOPT
 /*
 void Composer::compose_regen_MMX_multipart()
-#include "composeloop.cpp"
+#include "composeloop.inc"
 
 #define CALLCOUNT
 void Composer::compose_regen_MMX_multipart_callcount()
-#include "composeloop.cpp"
+#include "composeloop.inc"
 #undef CALLCOUNT
 */
 
 #undef MULTIPART
 #define MMXFRAGOPT
 void Composer::compose_regen_MMXfrag()
-#include "composeloop.cpp"
+#include "composeloop.inc"
 
 #undef MMXFRAGOPT
 /*
 void Composer::compose_regen_MMX()
-#include "composeloop.cpp"
+#include "composeloop.inc"
 
 #define CALLCOUNT
 void Composer::compose_regen_MMX_callcount()
-#include "composeloop.cpp"
+#include "composeloop.inc"
 #undef CALLCOUNT
 */
 
 #undef MMXCOUNTER
 #define MULTIPART
 void Composer::compose_regen_multipart()
-#include "composeloop.cpp"
+#include "composeloop.inc"
 
 #define CALLCOUNT
 void Composer::compose_regen_multipart_callcount()
-#include "composeloop.cpp"
+#include "composeloop.inc"
 #undef CALLCOUNT
 
 #undef MULTIPART
 void Composer::compose_regen()
-#include "composeloop.cpp"
+#include "composeloop.inc"
 
 #define CALLCOUNT
 void Composer::compose_regen_callcount()
-#include "composeloop.cpp"
+#include "composeloop.inc"
 #undef CALLCOUNT
 
 #undef REGENERATION
@@ -1442,37 +1442,37 @@ void Composer::compose_regen_callcount()
 #define PALINDROMIC
 /*
 void Composer::compose_palindromic_MMX()
-#include "composeloop.cpp"
+#include "composeloop.inc"
 */
 
 #undef PALINDROMIC
 #define MMXFRAGOPT
 void Composer::compose_MMXfrag()
-#include "composeloop.cpp"
+#include "composeloop.inc"
 
 #undef MMXFRAGOPT
 /*
 void Composer::compose_MMX()
-#include "composeloop.cpp"
+#include "composeloop.inc"
 
 #define CALLCOUNT
 void Composer::compose_MMX_callcount()
-#include "composeloop.cpp"
+#include "composeloop.inc"
 #undef CALLCOUNT
 */
 
 #undef MMXCOUNTER
 #define PALINDROMIC
 void Composer::compose_palindromic()
-#include "composeloop.cpp"
+#include "composeloop.inc"
 
 #undef PALINDROMIC
 void Composer::compose_()
-#include "composeloop.cpp"
+#include "composeloop.inc"
 
 #define CALLCOUNT
 void Composer::compose_callcount()
-#include "composeloop.cpp"
+#include "composeloop.inc"
 #undef CALLCOUNT
 
 #endif // ONECOMP

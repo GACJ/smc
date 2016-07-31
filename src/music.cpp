@@ -12,7 +12,7 @@
 #endif
 
 // Parameter 'maxncomps' is the number of 'best' comps we want to keep.
-Composer::musicsort(int maxncomps)
+int Composer::musicsort(int maxncomps)
 {
  CompMusicStore topcomp;
  CompMusicStore *compptr;
@@ -268,7 +268,7 @@ Composer::musicsort(int maxncomps)
 }
 
 // Copies one MusicCount into another. Scores are copied, not unlinked
-MusicCount::set(MusicCount &m)
+int MusicCount::set(MusicCount &m)
 {
  int i;
 
@@ -282,7 +282,7 @@ MusicCount::set(MusicCount &m)
  return(TRUE);
 }
 
-MusicCount::ensurespace(int n)
+int MusicCount::ensurespace(int n)
 {
  if (n>nmusicdefs)
  {
@@ -293,7 +293,7 @@ MusicCount::ensurespace(int n)
  return(TRUE);
 }
 
-MusicDef::ensurespace(int n)
+int MusicDef::ensurespace(int n)
 {
  if (n>nrows)
  {
@@ -308,7 +308,7 @@ MusicDef::ensurespace(int n)
 }
 
 // Ensure space and copy in composition
-CompStore::copyincomp(int nodesperpart,Composition *composition)
+int CompStore::copyincomp(int nodesperpart,Composition *composition)
 {
  int i;
 
@@ -320,7 +320,7 @@ CompStore::copyincomp(int nodesperpart,Composition *composition)
  return(TRUE);
 }
 
-CompStore::ensurespace(int length)
+int CompStore::ensurespace(int length)
 {
  if (allocsize<length)
  {
@@ -376,7 +376,7 @@ int CompMusicStore::isTV(CompMusicStore &storedcomp)
 
 // Inserts a new composition into the 'best' list
 // Checks for (musical) Trivial Variations
-CompSorter::addcomp(CompMusicStore &newcomp)
+int CompSorter::addcomp(CompMusicStore &newcomp)
 {
  CompMusicStore *replace;
  int whichTV;
@@ -487,9 +487,9 @@ char displaybuf[MAXLINEBUF];
 // If compn<=0, means composition is a 'special' which maximises the
 // single musicdef[-compn]
 // If compn=-nmusicdefs, this is the "max musthave blocks' composition
-Composer::displaycomp(int compn,CompMusicStore *thiscomp,LineFile &f)
+int Composer::displaycomp(int compn,CompMusicStore *thiscomp,LineFile &f)
 {
- Node *node,*nextnode;
+ Node *node,*nextnode = NULL;
  char *buf;
  int firstworkingbell,lastworkingbell;
  int callpos,queuedcolumn,nbobs,realcourseend;
@@ -827,7 +827,7 @@ Composer::displaycomp(int compn,CompMusicStore *thiscomp,LineFile &f)
 
 // Given a leadhead, applies Plains until courseend appears
 // Returns FALSE if courseend not found
-Composer::findcourseend(char *leadhead, int callingbellcourseendpos)
+int Composer::findcourseend(char *leadhead, int callingbellcourseendpos)
 {
  char tmprow[MAXNBELLS];
  int i=0;
@@ -845,7 +845,7 @@ Composer::findcourseend(char *leadhead, int callingbellcourseendpos)
 
 // Checks the current row (and changen in lead!) to see whether it matches any of
 // the rows in MusicDef m
-Composer::ismusicmatch(MusicDef &m)
+int Composer::ismusicmatch(MusicDef &m)
 {
  int i;
 
@@ -857,7 +857,7 @@ Composer::ismusicmatch(MusicDef &m)
 
 // Checks the current row (and changen in lead!) to see whether it matches this
 // MusicRow
-Composer::isrowmatch(MusicRow &m)
+int Composer::isrowmatch(MusicRow &m)
 {
  MusicRow tempmus;
  char tmprow[MAXNBELLS];

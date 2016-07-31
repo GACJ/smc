@@ -6,7 +6,7 @@
 #include "smc.h"
 #include "filer.h"
 
-isMMXsupported();
+int isMMXsupported();
 
 char * const DELIMITERS = " ,\t";
 char * const MATCHWILD = "x?-.";
@@ -53,7 +53,7 @@ extern int maxnparts[];
 
 // If there are any buffered compositions, write them out to disk
 // Also write a 'checkpoint' with the current state of the engine
-Composer::flushcompbuffer(int checkpoint)
+int Composer::flushcompbuffer(int checkpoint)
 {
  int i;
 
@@ -100,7 +100,7 @@ Composer::flushcompbuffer(int checkpoint)
 
 void Composer::finaloutput()
 {
- long systime;
+ time_t systime;
 
  flushcompbuffer(FALSE);		// Flush buffer, but don't output checkpoint
  if (outfile.open())
@@ -180,7 +180,7 @@ void Composer::printelapsed(char *buf,int nearestsecond)
 char *calltokens[NDIFFCALLS] = {TOKEN_PLAIN,TOKEN_BOB,TOKEN_SINGLE,TOKEN_EXTREME};
 
 // For required format see readinputfile() below
-Composer::writefileheader(LineFile &f)
+int Composer::writefileheader(LineFile &f)
 {
  time_t systime;
  int i,j;
@@ -303,7 +303,7 @@ Composer::writefileheader(LineFile &f)
  return(TRUE);
 }
 
-FragmentLibrary::writelibheader(Composer *ring)
+int FragmentLibrary::writelibheader(Composer *ring)
 {
  f.newfile(ring->outfile.getname());
  f.changeexttype(LIBEXT);
@@ -330,7 +330,7 @@ FragmentLibrary::writelibheader(Composer *ring)
 
 // If filename==NULL, assume already set up
 // Otherwise, filename imported and changed to LIBEXT, preserving number
-FragmentLibrary::read(Composer *ring,char *filename)
+int FragmentLibrary::read(Composer *ring,char *filename)
 {
  CompStore dupcalling,primcalling;
  Fragment frag;
@@ -501,7 +501,7 @@ FragmentLibrary::read(Composer *ring,char *filename)
  return(TRUE);
 }
 
-Composer::writeheaderessential(LineFile &f)
+int Composer::writeheaderessential(LineFile &f)
 {
  char tmprow[MAXNBELLS];
  int i,j;
@@ -621,7 +621,7 @@ char *Block::blocktype()
 // A '/' as the first character can be used to comment out a line
 
 // !! Any changes must be reflected in writefileheader() above
-Composer::readinputfile(LineFile &f)
+int Composer::readinputfile(LineFile &f)
 {
  char *buf = f.buffer;
  char buf2[MAXLINEBUF];
@@ -1010,7 +1010,7 @@ Composer::readinputfile(LineFile &f)
 }
 
 // Reads leadhead row from input *p, checking for right number of bells, good characters etc
-Composer::readlh(char *p, char *buf, char *errprefix)
+int Composer::readlh(char *p, char *buf, char *errprefix)
 {
  int i;
  char *b;
@@ -1093,7 +1093,7 @@ int readcalllimit(char *p)
  return max;
 }
 
-Composer::readcall(int call)
+int Composer::readcall(int call)
 {
  char *p,*b;
  int i,l;
@@ -1211,7 +1211,7 @@ Composer::readcall(int call)
  return(TRUE);
 }
 
-Composer::skipmusicfile(LineFile &f)
+int Composer::skipmusicfile(LineFile &f)
 {
  if (!f.open())
  {
@@ -1233,7 +1233,7 @@ Composer::skipmusicfile(LineFile &f)
 // Rows can have wildcard characters '?'
 // A '/' as the first character can be used to comment out a line
 // !! Any changes must be reflected in writefileheader() above
-Composer::readmusicfile(LineFile &f)
+int Composer::readmusicfile(LineFile &f)
 {
  char *buf = f.buffer;
  char buf2[MAXLINEBUF];
@@ -1456,7 +1456,7 @@ Composer::readmusicfile(LineFile &f)
 // Music-minimum overrides are only ever present in a .smc file, never a search file
 // Format of each line:
 // min-changes music-name
-Composer::readmusicminoverrides(LineFile &f)
+int Composer::readmusicminoverrides(LineFile &f)
 {
  char *p;
  int i,min;
@@ -1489,7 +1489,7 @@ Composer::readmusicminoverrides(LineFile &f)
  return(TRUE);
 }
 
-Composer::readrowmatch(char *buffer,MusicRow &m)
+int Composer::readrowmatch(char *buffer,MusicRow &m)
 {
  char *b;
  int i,j;
@@ -1608,7 +1608,7 @@ void Composer::writerowmatch(char *buffer,MusicRow &m)
  *buffer = 0;
 }
 
-Composer::restartsearch()
+int Composer::restartsearch()
 {
  int searchcomplete = FALSE;
 

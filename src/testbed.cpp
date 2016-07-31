@@ -10,7 +10,7 @@ int testbed(int test)
  int cyclelo,ncycles=0;
 
  if (test==0)
-  asm
+  __asm
   {
 	lea	esi,[testnode]
 	mov	ecx,6
@@ -40,7 +40,7 @@ fnext0:	rdtsc
 	jnz	tloop0
   }
  else
-  asm
+  __asm
   {
 	push	es
 	push	gs

@@ -7,7 +7,7 @@
 #include <time.h>
 #include "smc.h"
 
-ExtMethod::buildtables(Composer &ring)
+int ExtMethod::buildtables(Composer &ring)
 {
  clock_t time;
 
@@ -42,7 +42,7 @@ ExtMethod::buildtables(Composer &ring)
 
 // Counts how many nodes are available to the composition
 // Stores nodeheads found in a BulkHash for later use
-Composer::findtablesize()
+int Composer::findtablesize()
 {
  int maxnleads,tablesize;
  int i;
@@ -90,13 +90,13 @@ Composer::findtablesize()
  return(TRUE);
 }
 
-matchhashednode(HashedNode *hnode,int hashvalue,Composer *ring)
+int matchhashednode(HashedNode *hnode,int hashvalue,Composer *ring)
 {
  return ring->samerow(ring->row,hnode->nodehead);
 }
 
 // Returns FALSE if dead end
-Composer::recursefindnodes(int stacklevel)
+int Composer::recursefindnodes(int stacklevel)
 {
  HashedNode *hnode;
  char LH[MAXNBELLS];
@@ -106,7 +106,7 @@ Composer::recursefindnodes(int stacklevel)
 
 // See if this node is already in the hashtable
  nodehashitem.factnum = calcLHfactnum(row);
- hnode = nodehasher.finditem(nodehashitem.factnum,(HashItemMatchFn)matchhashednode,this);
+ hnode = (HashedNode *)nodehasher.finditem(nodehashitem.factnum,(HashItemMatchFn)matchhashednode,this);
 // If it is, return TRUE if it was included; FALSE if visited but not included
  if (hnode)
   return hnode->included;
@@ -118,7 +118,7 @@ Composer::recursefindnodes(int stacklevel)
  nodehashitem.excluded = FALSE;
  copyrow(row,nodehashitem.nodehead);
  nodehashitem.nodex = NULL;
- hnode = nodehasher.add(&nodehashitem,nodehashitem.factnum);
+ hnode = (HashedNode *)nodehasher.add(&nodehashitem,nodehashitem.factnum);
  if (hnode==NULL)
   return(FALSE);
 // Check stack depth - return if too deep
@@ -230,7 +230,7 @@ deadend:
  return(FALSE);
 }
 
-Composer::isLHexcluded()
+int Composer::isLHexcluded()
 {
  int i,failedmatches,callingbellpos;
 
@@ -253,7 +253,7 @@ Composer::isLHexcluded()
  return(FALSE);
 }
 
-Composer::isrowexcluded()
+int Composer::isrowexcluded()
 {
  int i;
 
@@ -283,7 +283,7 @@ Composer::isrowexcluded()
 // 8. False nodes and other data are copied from NodeExtra duplicate fields to Nodes
 // 9. The false node arrays in NodeExtra structures can be freed.
 // 10.Hopefully... all the tables are now ready for the composing loop
-Composer::gennodetable()
+int Composer::gennodetable()
 {
  HashedNode *hnode;
  int i,j,k;
@@ -527,7 +527,7 @@ void Composer::gennodex(int n)
    }
    else
    {
-    hnode = nodehasher.finditem(calcLHfactnum(row),
+    hnode = (HashedNode *)nodehasher.finditem(calcLHfactnum(row),
     	(HashItemMatchFn)matchhashednode,this);
     if (hnode && hnode->included)
      nodex->nextnode[call] = hnode->nodex->num;
@@ -595,7 +595,7 @@ void Composer::countnodemusic(int n)
  }
 }
 
-Composer::musthaveblockerror(Block *b, char *err)
+int Composer::musthaveblockerror(Block *b, char *err)
 {
  char tempbuf[MAXNBELLS+1];
  writerow(b->entrylh,tempbuf);
@@ -611,7 +611,7 @@ Composer::musthaveblockerror(Block *b, char *err)
 // If so, goes through nextnode pointers in the nodex tables, knocking out any that
 // split up blocks. The result should be that the composing loop must run through
 // complete blocks whenever it finds them.
-Composer::preparemusthaveblocks()
+int Composer::preparemusthaveblocks()
 {
  Block *b;
  HashedNode *hnode;
@@ -685,7 +685,7 @@ HashedNode *Composer::findnodefromLH()
    break;
  }
  if (leadspernode[b1])
-   return nodehasher.finditem(calcLHfactnum(row),(HashItemMatchFn)matchhashednode,this);
+   return (HashedNode *)nodehasher.finditem(calcLHfactnum(row),(HashItemMatchFn)matchhashednode,this);
  return NULL;
 }
 
@@ -731,7 +731,7 @@ void Composer::calcfalsenodes(int n)
     }
     if (leadspernode[b1])
     {
-     hnode = nodehasher.finditem(calcLHfactnum(row),(HashItemMatchFn)matchhashednode,this);
+     hnode = (HashedNode *)nodehasher.finditem(calcLHfactnum(row),(HashItemMatchFn)matchhashednode,this);
      if (hnode && hnode->included)
      {
       b = hnode->nodex->num;
@@ -884,7 +884,7 @@ void Composer::processexcludednodes()
 //    any node is noted for used in allocating the Node tables to minimum size.
 // Later in gennode, the falsebits array is copied from each NodeExtra to corresponding
 // Node.
-Composer::calcbitwisetruthtables()
+int Composer::calcbitwisetruthtables()
 {
  NodeExtra *nodex;
  int pass;

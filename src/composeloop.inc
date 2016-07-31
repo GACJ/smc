@@ -40,7 +40,7 @@
   }
   goto reenter;
  }
- asm
+ __asm
  {
 	mov	edi,[compptr]
 #ifdef MMXCOUNTER
@@ -70,7 +70,7 @@
  }
  while(TRUE)
  {
-  asm
+  __asm
   {
 //	eax = transient
 //	ebx = this
@@ -127,7 +127,7 @@ backtrackfromrounds:
   }
   ncompnodes = compptr-comp;
   showstats();
-  asm
+  __asm
   {
 	jmp	reenter
 asmdone:
@@ -136,8 +136,8 @@ asmdone:
 #else
 	mov	edx,[ebx]Composer.stats.nodecount
 #endif
-	add	(int *)[ebx]Composer.stats.nodesgenerated,edx
-	adc	(int *)[ebx+4]Composer.stats.nodesgenerated,0
+	add	dword ptr [ebx]Composer.stats.nodesgenerated,edx
+	adc	dword ptr [ebx+4]Composer.stats.nodesgenerated,0
 	pop	ebx
 	pop	ebp
 #ifdef MMXCOUNTER
@@ -145,7 +145,7 @@ asmdone:
 #endif
 	jmp	alldone
 
-loadcallnextcall:
+lbl_loadcallnextcall:
 	mov	ecx,[edi]Composition.call
 #ifdef CALLCOUNT
 	mov	edx,ecx
@@ -153,9 +153,9 @@ loadcallnextcall:
 	add	dl,[esi]Node.callcountposindex
 	inc	[ebx+edx*4]Composer.ncallsleftperpos
 #endif // CALLCOUNT
-sublennextcall:
+lbl_sublennextcall:
 	add	ebp,[esi]Node.nrows
-nextcall:
+lbl_nextcall:
 	mov	esi,[edi]Composition.node
 #ifdef MULTIPART
 	cmp	ebp,[ebx]Composer.maxpartlength
@@ -195,7 +195,7 @@ reducelength:
 	mov	[esi]Node.included,0	// Reset included flag
 #endif
 #endif
-	sub	edi,sizeof(Composition)	// All compositions found?
+	sub	edi,size Composition	// All compositions found?
 #ifdef PALINDROMIC
 	mov	eax,[edi]Composition.palinode
 #endif
@@ -223,7 +223,7 @@ reducelength:
 	cmp	ebp,[ebx]Composer.maxpartlength
 	jb	backtrack
 #endif // MULTIPART
-nextcall2:
+lbl_nextcall2:
 #ifdef REVERSECALLS
 	dec	ecx
 	js	backtrack
@@ -239,17 +239,17 @@ nextcall2:
 // Note that this test requires the next-node pointer, so we MUST test for allowed call first!
 // (Normally done in composing loop)
 	cmp	[esi+ecx*4]Node.nextnode,0
-	je	nextcall2
+	je	lbl_nextcall2
 
 	mov	eax,[ebx+ecx*4]Composer.ncallsleft
 	cmp	eax,[ebx+ecx*4]Composer.npartcalls
-	jl	nextcall2
+	jl	lbl_nextcall2
 	mov	eax,[esi+ecx*4]Node.nextnode
 	mov	edx,ecx
 	add	dl,[eax]Node.callcountposindex
 	mov	eax,[ebx+edx*4]Composer.ncallsleftperpos
 	cmp	eax,[ebx+edx*4]Composer.npartcallsperpos
-	jl	nextcall2
+	jl	lbl_nextcall2
 #endif // CALLCOUNT
 #endif // MULTIPART
 
@@ -269,7 +269,7 @@ regen:
 // Test for allowed call before doing regen save
 // Doesn't appear to make much difference
 	cmp	[esi+ecx*4]Node.nextnode,0
-	je	nextcall2
+	je	lbl_nextcall2
 #endif
 #ifdef REGENERATION
 // The regen pointer is set to point back to the start of the composition
@@ -294,7 +294,7 @@ composeloop:
 	mov	esi,[esi+ecx*4]Node.nextnode
 	mov	[edi]Composition.call,ecx	// Add call to composition
 	cmp	esi,0			// This call not possible here?
-	je	nextcall
+	je	lbl_nextcall
 #ifdef MMXFRAGOPT
 	movd	mm7,ecx
 #endif
@@ -309,14 +309,14 @@ composeloop:
 #else
 	cmp	[esi]Node.included,0	// Already had that node?
 #endif
-	jne	nextcall
+	jne	lbl_nextcall
 #endif
 	sub	ebp,[esi]Node.nrows
-	js	sublennextcall		// Composition too long?
+	js	lbl_sublennextcall		// Composition too long?
 #ifdef CALLCOUNT
 	mov	eax,[ebx+ecx*4]Composer.ncallsleft
 	dec	eax
-	js	sublennextcall
+	js	lbl_sublennextcall
 	mov	edx,ecx
 	add	dl,[esi]Node.callcountposindex
 	mov	[ebx+ecx*4]Composer.ncallsleft,eax
@@ -324,7 +324,7 @@ composeloop:
 	dec	eax
 	jns	storecallcount
 	inc	[ebx+ecx*4]Composer.ncallsleft
-	jmp	sublennextcall
+	jmp	lbl_sublennextcall
 storecallcount:
 	mov	[ebx+edx*4]Composer.ncallsleftperpos,eax
 #endif // CALLCOUNT
@@ -337,7 +337,7 @@ storecallcount:
 	mov	edx,[esi+ecx*8]Node.falsebits
 	mov	eax,[esi+ecx*8+4]Node.falsebits
 	and	eax,[edx]
-	jne	loadcallnextcall
+	jne	lbl_loadcallnextcall
 	dec	ecx
 //	cmp	ecx,[esi]Node.nfalsenodes
 	je	leadok
@@ -346,7 +346,7 @@ falsenodeloop:				// Check false nodes for next lead
 	mov	edx,[esi+ecx*8]Node.falsebits
 	mov	eax,[esi+ecx*8+4]Node.falsebits
 	and	eax,[edx]
-	jne	loadcallnextcall
+	jne	lbl_loadcallnextcall
 	dec	ecx
 //	cmp	ecx,[esi]Node.nfalsenodes
 	jne	falsenodeloop
@@ -358,7 +358,7 @@ falsenodeloop:				// Check false nodes for next lead
 	mov	eax,[esi]Node.falsenodes
 	mov	ecx,1
 	cmp	[eax]Node.included,0
-	jne	loadcallnextcall
+	jne	lbl_loadcallnextcall
 #else
 	xor	ecx,ecx
 #endif
@@ -373,7 +373,7 @@ falsenodeloop:				// Check false nodes for next lead
 #else
 	cmp	[eax]Node.included,0
 	je	falsenodeloop
-	jmp	loadcallnextcall
+	jmp	lbl_loadcallnextcall
 #endif
 #endif // FALSEBITS
 #endif // CLEANPROOF
@@ -391,20 +391,20 @@ leadok:	STOPTIMEF
 	je	notfrag
 // Check call pattern against fragment list
 	mov	ecx,[edx]
-	add	edx,sizeof(int)
+	add	edx,4 // size int
 pattloop:	dec	ecx
 	js	notfrag
 	movq	mm6,mm2
 	movq	mm7,[edx]
 	pand	mm6,[edx+8]
 	pcmpeqd	mm6,mm7
-	add	edx,sizeof(CompressedFrag)
+	add	edx,size CompressedFrag
 	packssdw	mm6,mm6
 	movd	eax,mm6
 	cmp	eax,0
 	je	pattloop
 	inc	[ebx]Composer.stats.prunecount
-	jmp	loadcallnextcall
+	jmp	lbl_loadcallnextcall
 notfrag:
 #endif
 #ifdef PALINDROMIC
@@ -414,8 +414,8 @@ notfrag:
 	je	reachednodeheadapex
 	mov	eax,[eax+ecx*4]Node.prevnode
 	cmp	eax,0
-	je	sublennextcall
-	mov	[edi+sizeof(Composition)]Composition.palinode,eax
+	je	lbl_sublennextcall
+	mov	[edi+size Composition]Composition.palinode,eax
 	cmp	esi,eax
 	je	reachedmidnodeapex
 #endif
@@ -430,7 +430,7 @@ notfrag:
 	mov	[eax]Node.included,1	// Mark palindromic node included
 #endif
 #endif
-	add	edi,sizeof(Composition)	// Increment comp ptr
+	add	edi,size Composition	// Increment comp ptr
 #ifdef FALSEBITS
 	mov	edx,[esi]Node.falsebits
 	mov	eax,[esi+4]Node.falsebits
@@ -476,7 +476,7 @@ reachedmidnodeapex:
 reachednodeheadapex:
 	mov	[ebx]Composer.midnodeapex,0
 	mov	eax,[ebx]Composer.maxpalilength
-inccomp:	add	edi,sizeof(Composition)	// Increment comp ptr
+inccomp:	add	edi,size Composition	// Increment comp ptr
 #ifdef FALSEBITS
 	mov	edx,[esi]Node.falsebits
 	mov	eax,[esi+4]Node.falsebits

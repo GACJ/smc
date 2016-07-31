@@ -6,7 +6,7 @@
 // Bulk Hash class
 // Copyright Mark B Davies 1998
 
-typedef (*HashItemMatchFn)(void *item,int hashvalue,void *fndata);
+typedef int (*HashItemMatchFn)(void *item,int hashvalue,void *fndata);
 
 // Hash table using BulkList classes for expansion
 // Caller must supply hash values
@@ -29,7 +29,7 @@ public:
  void freeall() {if (hashtable) for (int i=0; i<tablesize; i++)
  			   safedelete(hashtable[i]);
  			  hashtable=NULL;}
- inline init(int tsize,int bulksize,int itemsize,int bulklimit=-1);
+ inline int init(int tsize,int bulksize,int itemsize,int bulklimit=-1);
  BulkListError geterror() {BulkListError ret=err; err=BULKLISTOK; return(ret);}
  inline void *add(void *item,int hashvalue);
  int gettablesize() {return tablesize;}
@@ -40,7 +40,7 @@ public:
  inline void *finditem(int hashvalue,HashItemMatchFn f,void *fndata);
 };
 
-BulkHash::init(int tsize,int bulksize,int itemsize,int bulklimit)
+int BulkHash::init(int tsize,int bulksize,int itemsize,int bulklimit)
 {
  int i;
 

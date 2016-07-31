@@ -37,7 +37,7 @@ void File::changeexttype(char *ext)
 }
 
 // Checks first two characters only
-File::sameexttype(char *ext)
+int File::sameexttype(char *ext)
 {
  char *p;
 
@@ -47,7 +47,7 @@ File::sameexttype(char *ext)
  return strncmpi(p+1,ext,2)==0;
 }
 
-File::incextension(char *ext)
+int File::incextension(char *ext)
 {
  close();
  changeextension(ext);
@@ -64,7 +64,7 @@ File::incextension(char *ext)
  return(TRUE);
 }
 
-File::resetpos()
+int File::resetpos()
 {
  if (!open())
  {
@@ -80,7 +80,7 @@ File::resetpos()
 }
 
 // Prints error message and returns FALSE if write failed
-LineFile::writeline(char *line)
+int LineFile::writeline(char *line)
 {
  if (!open())
  {
@@ -96,7 +96,7 @@ LineFile::writeline(char *line)
 }
 
 // Prints error message and returns FALSE if write failed
-LineFile::multiwrite(char *buf)
+int LineFile::multiwrite(char *buf)
 {
  if (!open())
  {
@@ -112,7 +112,7 @@ LineFile::multiwrite(char *buf)
 }
 
 // Returns NULL and closes the file if nothing read
-LineFile::readline()
+int LineFile::readline()
 {
  char *buf = buffer;
  int c;

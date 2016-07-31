@@ -8,7 +8,7 @@
 #include <string.h>
 #include "smc.h"
 
-Composer::findfalseLHs()
+int Composer::findfalseLHs()
 {
  char *rowptr,*p;
  int treblepos;

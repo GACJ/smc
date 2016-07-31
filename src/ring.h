@@ -7,13 +7,13 @@
 
 #include "basedef.h"
 
-const MINNBELLS = 3;
-const MAXNBELLS = 20;
-const MAXABBREV = 3;
-const MAXLEADLEN = 1260;
-const MAXCALLPOS = 4;
+const int MINNBELLS = 3;
+const int MAXNBELLS = 20;
+const int MAXABBREV = 3;
+const int MAXLEADLEN = 1260;
+const int MAXCALLPOS = 4;
 #define NDIFFCALLS 4
-const PBLEADCODE = 0x80;
+const int PBLEADCODE = 0x80;
 
 const char CHARCROSS = 'x';
 const char CHARLH = 'l';
@@ -47,26 +47,26 @@ protected:
  char *pn;
  char *pnptrs[MAXLEADLEN];
  char *callpn[NDIFFCALLS];		// Only leadend calls at the moment
- MethodType type;
+ int type;
  char leadheadcode;
  char symmetrical;
 
 public:
  Method() {pn=0; name=0; for (int i=0;i<NDIFFCALLS;i++) callpn[i]=0;}
  ~Method() {delete name; delete pn; for (int i=0;i<NDIFFCALLS;i++) delete callpn[i];}
- newmethod(char *newname,char *newpn);
- newcall(Call call,char *newpn);
+ int newmethod(char *newname,char *newpn);
+ int newcall(Call call,char *newpn);
  void setcompletename(char *buf,int abbreviated);
  void showleadcode(char *buf);
- MethodType gettype() {return type;}
- fourthsplacebobs();
+ MethodType gettype() {return (MethodType)type;}
+ int fourthsplacebobs();
  int courselength();
  char *getpn() {return pn;}
- issamepn(char *testpn);
+ int issamepn(char *testpn);
  char *getcallpn(int call) {return callpn[call];}
 
 protected:
- parsepn();
+ int parsepn();
  void analyse();
  void findleadheadcode();
 // char *buildclass(char *p,char *class,int abbreviated);
@@ -104,7 +104,7 @@ public:
  void transpose(char *source,char *transposer,char *dest);
  void inversetrans(char *source,char *transposer,char *dest);
  void unknowntrans(char *source,char *transposer,char *dest);
- inline samerow(char *row1,char *row2) {for (int i=0; i<nbells; i++) \
+ inline int samerow(char *row1,char *row2) {for (int i=0; i<nbells; i++) \
  				 if (row1[i]!=row2[i]) return(FALSE); \
  				return(TRUE);}
  inline void copyrow(char *source,char *dest) {for (int i=0; i<nbells; i++) \

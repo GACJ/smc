@@ -19,7 +19,7 @@ int badusage()
  return(1);
 }
 
-main(int argc,char **argv)
+int main(int argc,char **argv)
 {
  ExtMethod method;
  char *ext;
@@ -77,7 +77,7 @@ main(int argc,char **argv)
  return(0);
 }
 
-Composer::newsearch()
+int Composer::newsearch()
 {
  char lhcode[10];
 
@@ -141,20 +141,22 @@ Composer::newsearch()
 }
 
 // Returns true if an mmx processor is present
-isMMXsupported()
+int isMMXsupported()
 {
 #if 0
  return FALSE;
 #else
  __try
+ {
 // the cpuid instruction sets bit 23 if an mmx processor is present
- asm
+ __asm
  {
 	mov	eax,1
 	cpuid
 	mov	eax,edx
 	shr	eax,23
 	and	eax,1
+ }
  }
  __except(EXCEPTION_EXECUTE_HANDLER)
  {
@@ -163,7 +165,7 @@ isMMXsupported()
 #endif
 }
 
-Composer::setdefaults()
+int Composer::setdefaults()
 {
  int i,j;
 
@@ -294,7 +296,7 @@ void Composer::defaultcallingpositions(int call)
 
 // Sets up various required tables and fields
 // Must call after setdefaults() but before table-building
-Composer::setup()
+int Composer::setup()
 {
  char tmprow[MAXNBELLS];
  int call,call2;
