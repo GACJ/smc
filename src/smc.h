@@ -10,7 +10,7 @@
 #include "filer.h"
 #include "fragment.h"
 
-#define VERSION "SMC32 v0.965"
+#define VERSION "SMC32 v0.965.2-msvc"
 #define COPYRIGHT "(c) 1998-2003 Mark B Davies & Graham A C John"
 #define INEXT "smc"
 #define MUSEXT "mus"
