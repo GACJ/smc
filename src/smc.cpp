@@ -167,7 +167,7 @@ int isMMXsupported()
 
 int Composer::setdefaults()
 {
- int i,j;
+ int i;
 
  showlongestyet = FALSE;
  showbestyet = FALSE;
@@ -299,7 +299,7 @@ void Composer::defaultcallingpositions(int call)
 int Composer::setup()
 {
  char tmprow[MAXNBELLS];
- int call,call2;
+ int call;
  int i,j,b,c;
  int index1;
 

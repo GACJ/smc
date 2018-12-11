@@ -18,8 +18,6 @@
 
 void Ring::transpose(char *source,char *transposer,char *dest)
 {
- int i,j;
-
  __asm
  {
 	mov	ecx,[this]

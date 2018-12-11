@@ -157,7 +157,6 @@ double Composer::calcpercentcomplete()
  Node *node = comp[0].node;
  double percent = -percent0;
  double treefraction = percentrange;
- double trianglenum;
  int i,c,call,ncallpos;
 
  for (i=0; i<ncompnodes; i++)
@@ -657,7 +656,6 @@ int Composer::inputcomp(char *compbuf)
  CompMusicStore storedcomp;
  char *p;
  int inputlength;
- int i;
 
 // First read length, score and number of parts
  p = strtok(compbuf," \t");
@@ -919,7 +917,7 @@ int Composer::readblockcalling(Block *block)
  char *c,*p = block->calling;
  NodeExtra *nodex = block->entrynode;
  NodeExtra *tmpnode;
- int i,j,call;
+ int j,call;
 
  nodex->blockentry = TRUE;
  if (coursestructured)

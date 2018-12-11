@@ -44,9 +44,6 @@ int ExtMethod::buildtables(Composer &ring)
 // Stores nodeheads found in a BulkHash for later use
 int Composer::findtablesize()
 {
- int maxnleads,tablesize;
- int i;
-
  printf(" Counting number of non-excluded nodes...");
 // Initialise node hash table
  if (!nodehasher.init(1<<16,4,sizeof(HashedNode)))
@@ -479,7 +476,6 @@ void Composer::gennodex(int n)
  char nodeend[MAXNBELLS];
  int lead;
  int call;
- int rounds;
 
  copyrow(nodex->nodehead,row);
  nodex->inmusthaveblock = FALSE;
@@ -615,8 +611,8 @@ int Composer::preparemusthaveblocks()
 {
  Block *b;
  HashedNode *hnode;
- NodeExtra *nodex,*nextnode;
- int i,j;
+ NodeExtra *nextnode;
+ int i;
 
  for (i=0; i<musthaveblocks->listsize(); i++)
  {
@@ -785,7 +781,6 @@ void Composer::calcfalsenodes(int n)
 // Note if two essential nodes are mutually false, they are both left in.
 void Composer::processessentialnodes()
 {
- NodeExtra *nodex;
  int i,j;
 
  for (i=0; i<nodesincluded; i++)
@@ -820,7 +815,6 @@ void Composer::processessentialnodes()
 // nodes too. We repeat until no more excluded or stranded nodes are left.
 void Composer::processexcludednodes()
 {
- NodeExtra *nodex;
  int i,j,k,firstfalse = 0;
 
 // If using bitwise truth table, false node lists start with self node - ignore

@@ -492,7 +492,6 @@ int FragmentLibrary::newfile(char *filename)
 int FragmentLibrary::writefragment(Composer *ring,Fragment *frag,int endplacebell)
 {
  char *buf;
- int i,j;
 
  f.setmode("a");
  if (!f.open())

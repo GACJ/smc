@@ -55,8 +55,6 @@ extern int maxnparts[];
 // Also write a 'checkpoint' with the current state of the engine
 int Composer::flushcompbuffer(int checkpoint)
 {
- int i;
-
  if (!outfile.resetpos())
   return(FALSE);
  lastcheckpoint = clock(); //stats.lastdisplaytime;
@@ -626,8 +624,7 @@ int Composer::readinputfile(LineFile &f)
  char *buf = f.buffer;
  char buf2[MAXLINEBUF];
  char *p,*b;
- char callposgiven[NDIFFCALLS];
- int i,j,call,leadheadrounds;
+ int i,call,leadheadrounds;
  int musthave=0,shouldhave=0;
 
  safedelete(musthaveblocks);
@@ -1237,10 +1234,10 @@ int Composer::readmusicfile(LineFile &f)
 {
  char *buf = f.buffer;
  char buf2[MAXLINEBUF];
- char *p,*b;
+ char *p;
  int nrows;
  int weight,min;
- int i,j,k;
+ int i,j;
 
  if (!f.open())
  {

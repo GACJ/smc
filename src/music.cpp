@@ -15,12 +15,10 @@
 int Composer::musicsort(int maxncomps)
 {
  CompMusicStore topcomp;
- CompMusicStore *compptr;
  Node *node;
  Block *block;
  char titleline[MAXLINEBUF];
  int rotationalsortsave;
- int rot;
  int ncomps,noutput;
  int i;
 
@@ -861,7 +859,7 @@ int Composer::isrowmatch(MusicRow &m)
 {
  MusicRow tempmus;
  char tmprow[MAXNBELLS];
- int i,sign;
+ int i;
 
 // Check sign
  if (m.sign)

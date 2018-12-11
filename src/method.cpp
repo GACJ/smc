@@ -12,7 +12,6 @@ int Composer::findfalseLHs()
 {
  char *rowptr,*p;
  int treblepos;
- int call;
  int i,j;
 
  safedelete(workinglead);
