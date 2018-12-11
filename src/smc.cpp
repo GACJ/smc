@@ -10,6 +10,13 @@
 #include <stdlib.h>
 #include <string.h>
 
+#if defined(__GNUC__) && (defined(__x86_64__) || defined(__i386__))
+#include <cpuid.h>
+#elif defined(_MSC_VER) && (_MSC_VER >= 1500) && (defined(_M_X64) || defined(_M_IX86)) // VS2008
+#include <intrin.h>
+#include <nmmintrin.h>
+#endif
+
 int badusage()
 {
     printf("Usage:\n");
@@ -141,27 +148,22 @@ int Composer::newsearch()
 // Returns true if an mmx processor is present
 int isMMXsupported()
 {
-#if 0
- return FALSE;
-#else
+#if defined(__GNUC__) && (defined(__x86_64__) || defined(__i386__))
+    return __builtin_cpu_supports("mmx");
+#elif defined(_MSC_VER) && (_MSC_VER >= 1500) && (defined(_M_X64) || defined(_M_IX86)) // VS2008
     __try
     {
         // the cpuid instruction sets bit 23 if an mmx processor is present
-        // clang-format off
-        __asm
-        {
-            mov eax,1
-            cpuid
-            mov eax,edx
-            shr eax,23
-            and eax,1
-        }
-        // clang-format on
+        int regs[4];
+        __cpuid(regs, 1);
+        return (regs[3] & (1 << 23)) != 0;
     }
     __except (EXCEPTION_EXECUTE_HANDLER)
     {
         return FALSE;
     }
+#else
+    return FALSE;
 #endif
 }
 
