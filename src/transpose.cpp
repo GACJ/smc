@@ -16,76 +16,33 @@
 //        ------          ------          ------
 // C  =  [156342]     =   156342       =  156342     C
 
-void Ring::transpose(char* source, char* transposer, char* dest)
+void Ring::transpose(const char* source, const char* transposer, char* dest)
 {
-    // clang-format off
-     __asm
-     {
-          mov ecx,[this]
-          mov ecx,[ecx]Ring.nbells
-          mov esi,[source]
-          mov eax,0
-          mov edi,[dest]
-          mov edx,[transposer]
-     normalloop:
-          mov al,[edx]
-          inc edx
-          mov al,[esi+eax]
-          mov [edi],al
-          inc edi
-          dec ecx
-          jnz normalloop
-     }
-    // clang-format on
-}
-
-void Ring::unknowntrans(char* source, char* transposer, char* dest)
-{
-    // clang-format off
-     __asm
-     {
-          mov ecx,[this]
-          mov ecx,[ecx]Ring.nbells
-          mov eax,0
-          mov esi,[source]
-          mov edi,[dest]
-          mov edx,[transposer]
-     unknownloop:
-          mov ch,[edi]
-          inc edi
-          mov al,-1
-     findloop:   inc al
-          cmp ch,[esi+eax]
-          jne findloop
-          mov [edx],al
-          inc edx
-          dec cl
-          jnz unknownloop
-     }
-    // clang-format on
-}
-
-void Ring::inversetrans(char* source, char* transposer, char* dest)
-{
-    // clang-format off
-    __asm
+    for (int i = 0; i < nbells; i++)
     {
-         mov ecx,[this]
-         mov ecx,[ecx]Ring.nbells
-         mov esi,[source]
-         mov eax,0
-         mov edi,[dest]
-         mov edx,[transposer]
-    inverseloop:
-         mov ch,[edi]
-         inc edi
-         mov al,[edx]
-         inc edx
-         mov [esi+eax],ch
-         dec cl
-         jnz inverseloop
+        *dest++ = source[*transposer++];
     }
-    // clang-format on
+}
+
+void Ring::unknowntrans(const char* source, char* transposer, char* dest)
+{
+    for (int i = 0; i < nbells; i++)
+    {
+        auto b = *dest++;
+        auto j = -1;
+        while (source[++j] != b)
+        {
+        }
+        *transposer++ = j;
+    }
+}
+
+void Ring::inversetrans(char* source, const char* transposer, const char* dest)
+{
+    for (int i = 0; i < nbells; i++)
+    {
+        source[*transposer++] = *dest++;
+    }
 }
 
 int factorial[MAXNBELLS];
