@@ -29,10 +29,10 @@ public:
  void clear() {length=0; for (int i=0; i<NPATTS; i++)
  		      duplicate[i] = primary[i] = 0; }
  void shiftupduplicate() {for (int i=NPATTS-1; i>0; i--)
- 		       duplicate[i] = (duplicate[i]<<2)|(duplicate[i-1]>>sizeof(Pattern)*8-2);
+ 		       duplicate[i] = (duplicate[i]<<2)|(duplicate[i-1]>>(sizeof(Pattern)*8-2));
  		      duplicate[0]<<= 2;}
  void shiftupprimary() {for (int i=NPATTS-1; i>0; i--)
- 		     primary[i] = (primary[i]<<2)|(primary[i-1]>>sizeof(Pattern)*8-2);
+ 		     primary[i] = (primary[i]<<2)|(primary[i-1]>>(sizeof(Pattern)*8-2));
  		    primary[0]<<= 2;}
  inline int isdup(Pattern *testpatt);
  int sameduplicate(Fragment *f) { if (length!=f->length) return(FALSE);
