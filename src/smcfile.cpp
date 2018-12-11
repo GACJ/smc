@@ -113,14 +113,14 @@ void Composer::finaloutput()
  printf("%s\n",outfile.buffer);
  outfile.writeline();
  if (((int *)&stats.ncompsfound)[1])
-  sprintf(outfile.buffer,"%d million compositions found, ",stats.ncompsfound/1000000);
+  sprintf(outfile.buffer,"%llu million compositions found, ",stats.ncompsfound/1000000);
  else
-  sprintf(outfile.buffer,"%d Compositions found, ",stats.ncompsfound);
+  sprintf(outfile.buffer,"%llu Compositions found, ",stats.ncompsfound);
  if (rotationalsort)
   if (((int *)&stats.nrotsfound)[1])
-   sprintf(outfile.buffer+strlen(outfile.buffer),"%d million rotations, ",stats.nrotsfound/1000000);
+   sprintf(outfile.buffer+strlen(outfile.buffer),"%lld million rotations, ",stats.nrotsfound/1000000);
   else
-   sprintf(outfile.buffer+strlen(outfile.buffer),"%d rotations, ",stats.nrotsfound);
+   sprintf(outfile.buffer+strlen(outfile.buffer),"%lld rotations, ",stats.nrotsfound);
  sprintf(outfile.buffer+strlen(outfile.buffer),"%d output",stats.ncompsoutput);
  printf("%s\n",outfile.buffer);
  outfile.writeline();
@@ -172,7 +172,7 @@ void Composer::printelapsed(char *buf,int nearestsecond)
  if (nearestsecond)
   sprintf(buf,"%d:%02d:%02d",hours,minutes,seconds);
  else
-  sprintf(buf,"%d:%02d:%02d.%03d",hours,minutes,seconds,stats.elapsed%CLOCKS_PER_SEC);
+  sprintf(buf,"%d:%02d:%02d.%03lld",hours,minutes,seconds,stats.elapsed%CLOCKS_PER_SEC);
 }
 
 char *calltokens[NDIFFCALLS] = {TOKEN_PLAIN,TOKEN_BOB,TOKEN_SINGLE,TOKEN_EXTREME};
