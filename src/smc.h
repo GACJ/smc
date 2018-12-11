@@ -272,8 +272,9 @@ struct HashedNode
 
 // Data defining one node (i.e. a lead or a number of leads between calling
 // positions) which is used by the composing loop
-struct Node
+class Node
 {
+public:
  char included;		// Set if included in composition
  char nparts;
  char comesround;
