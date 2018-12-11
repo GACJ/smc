@@ -105,8 +105,8 @@ void *BulkList::add(void *item)
  }
 // Copy item into correct place in final block
  allocptr = &last->itemstorage[i*bytesperitem];
- for (i=0; i<bytesperitem; i++)
-  allocptr[i] = ((char *)item)[i];
+ for (unsigned int j=0; j<bytesperitem; j++)
+  allocptr[j] = ((char *)item)[j];
  nitems++;
  return allocptr;
 }
