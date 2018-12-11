@@ -143,7 +143,7 @@ int Method::parsepn()
             pnptrs[leadlen++] = p - 1;
             do
             {
-                j = q - rounds;
+                j = (int)(q - rounds);
                 if (j >= nbells) // Find largest bell
                     nbells = j + 1;
                 c = *p++;
@@ -179,11 +179,11 @@ void Method::analyse()
     while (ring.changen < leadlen)
     {
         if (treblepath)
-            treblepath[ring.changen] = strchr(ring.row, rounds[0]) - ring.row;
+            treblepath[ring.changen] = (char)(strchr(ring.row, rounds[0]) - ring.row);
         ring.change();
     }
     if (treblepath)
-        treblepath[ring.changen] = strchr(ring.row, rounds[0]) - ring.row;
+        treblepath[ring.changen] = (char)(strchr(ring.row, rounds[0]) - ring.row);
     strcpy(leadhead, ring.row);
     findleadheadcode();
     classify(treblepath);
@@ -291,7 +291,7 @@ void Method::findleadheadcode()
         return;
     // Must have a Plain Bob leadhead
     i = 2;
-    b = strchr(rounds, leadhead[1]) - rounds + 1;
+    b = (int)(strchr(rounds, leadhead[1]) - rounds + 1);
     if (b == 2)
     {
         leadheadcode = '-'; // 2nd is a hunt bell
@@ -338,7 +338,7 @@ void Method::findleadheadcode()
         c = 'a';
     else
         c = 'g';
-    b = strchr(rounds, leadhead[1]) - rounds + 1;
+    b = (int)(strchr(rounds, leadhead[1]) - rounds + 1);
     i = (b <= 8 ? b : 8);
     if (b & 1)
         c = c + (i - 3) / 2;
@@ -567,7 +567,7 @@ int pnlen(char* pn)
         return (1);
     UNTILPNSEP
     c = *++p;
-    return (p - pn);
+    return (int)(p - pn);
 }
 
 void Ring::starttouch()

@@ -44,7 +44,7 @@ int Composer::newcomp()
         printf("ERROR: failed to alloc composition array!\n");
         return (FALSE);
     }
-    comp = (Composition*)(int(compalloc) + ALIGNMENT - 1 & ~(ALIGNMENT - 1));
+    comp = (Composition*)((uintptr_t)compalloc + ALIGNMENT - 1 & ~(ALIGNMENT - 1));
     // The first courselen entries in comp[] are reserved for copying by the regeneration
     // (rotational sort) code, in the case where not all calling positions are allowed
     for (i = 0; i <= courselen; i++)
@@ -763,7 +763,7 @@ int Composer::readcalling(char* buf, CompStore& storedcomp, Node* node, int nnod
             c = strchr(callchars, *p); // See if there is a single prefix
             if (c)
             {
-                call = c - callchars;
+                call = (int)(c - callchars);
                 if (call > 1)
                 {
                     call = internalcallnums[c - callchars];
@@ -942,7 +942,7 @@ int Composer::readblockcalling(Block* block)
             c = strchr(callchars, *p); // See if there is a single prefix
             if (c)
             {
-                call = c - callchars;
+                call = (int)(c - callchars);
                 if (call > 1)
                 {
                     call = internalcallnums[c - callchars];

@@ -450,7 +450,7 @@ int Composer::gennodetable()
         return (FALSE);
     }
     // Align on 8-byte boundary
-    nodes = (char*)(int(nodealloc) + ALIGNMENT - 1 & ~(ALIGNMENT - 1));
+    nodes = (char*)((uintptr_t)nodealloc + ALIGNMENT - 1 & ~(ALIGNMENT - 1));
     // Fill each Node structure - also find starting node
     startnode = nullptr;
     for (i = 0; i < nodesincluded; i++)

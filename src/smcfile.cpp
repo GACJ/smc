@@ -434,7 +434,7 @@ int FragmentLibrary::read(Composer* ring, char* filename)
             printf("ERROR: bad fragment start place bell %s\n", p);
             return (FALSE);
         }
-        frag.startplacebell = q - rounds;
+        frag.startplacebell = (char)(q - rounds);
         p = strtok(nullptr, DELIMITERS);
         if (p == nullptr)
         {
@@ -447,7 +447,7 @@ int FragmentLibrary::read(Composer* ring, char* filename)
             printf("ERROR: bad fragment final place bell %s\n", p);
             return (FALSE);
         }
-        endplacebell = q - rounds;
+        endplacebell = (int)(q - rounds);
         // Find node which starts at this placebell
         startnode = ring->findstartingnode(frag.startplacebell);
         if (startnode == nullptr)
@@ -777,7 +777,7 @@ int Composer::readinputfile(LineFile& f)
                     printf("ERROR: unrecognised calling bell %s\n", p);
                     return (FALSE);
                 }
-                callingbell = b - rounds;
+                callingbell = (int)(b - rounds);
                 // Copy into buf2, count how many courseend row matches
                 p = strtok(nullptr, "");
                 if (p == nullptr)
@@ -1026,7 +1026,7 @@ int Composer::readlh(char* p, char* buf, char* errprefix)
             printf("%s:\nbad character in %s\n", errprefix, p);
             return (FALSE);
         }
-        buf[i] = b - rounds;
+        buf[i] = (char)(b - rounds);
     }
     return (TRUE);
 }
@@ -1142,13 +1142,13 @@ int Composer::readcall(int call)
             printf("ERROR: unrecognised calling position %s\n", p);
             return (FALSE);
         }
-        i = b - rounds;
+        i = (int)(b - rounds);
         exclude.allowedcalls[call][i] = TRUE;
         l = MAXCALLPOSNAME;
         // See if there is a call limit (e.g. "<12") immediately after call pos name
         b = strchr(p + 1, LIMITCALLCHAR);
         if (b != nullptr)
-            l = b - (p + 1);
+            l = (int)(b - (p + 1));
         if (calltypes[call] == PLAIN)
         {
             if (p[1] != 0 && p[1] != LIMITCALLCHAR)
@@ -1495,7 +1495,7 @@ int Composer::readrowmatch(char* buffer, MusicRow& m)
                 printf("ERROR: row %s contains bad character\n", buffer);
                 return (FALSE);
             }
-            m.row[i] = b - rounds;
+            m.row[i] = (char)(b - rounds);
         }
     switch (buffer[i])
     {
@@ -1519,7 +1519,7 @@ int Composer::readrowmatch(char* buffer, MusicRow& m)
                         printf("ERROR: musicdef row %s contains bad character\n", buffer);
                         return (FALSE);
                     }
-                    m.wrapbackstroke[j] = b - rounds;
+                    m.wrapbackstroke[j] = (char)(b - rounds);
                 }
             i++;
             break;

@@ -82,7 +82,7 @@ int Method::courselength()
 
     for (i = 0; i < nbells; i++)
     {
-        lead1[i] = strchr(rounds, leadhead[i]) - rounds;
+        lead1[i] = (char)(strchr(rounds, leadhead[i]) - rounds);
         binrounds[i] = i;
     }
     ring.copyrow(binrounds, lh);
@@ -128,7 +128,7 @@ void Composer::findcourseenddists()
         {
             if (leadspernode[b])
                 n++;
-            b = strchr(m->leadhead, rounds[b]) - m->leadhead;
+            b = (int)(strchr(m->leadhead, rounds[b]) - m->leadhead);
             // If it's stuck in a loop and won't reach callingbell, set courseenddist to
             // courselen. This will make the rotational sort insert an entire course
             // of plain leads, which should be enough to make the touch run false and require
