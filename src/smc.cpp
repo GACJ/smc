@@ -19,7 +19,7 @@ int badusage()
  return(1);
 }
 
-int main(int argc,char **argv)
+int __cdecl main(int argc,char **argv)
 {
  ExtMethod method;
  char *ext;
