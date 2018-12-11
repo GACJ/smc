@@ -158,7 +158,7 @@ void Composer::printelapsed(char *buf,int nearestsecond)
 {
  int seconds,minutes=0,hours=0;
 
- seconds = stats.elapsed/CLOCKS_PER_SEC;
+ seconds = (int)(stats.elapsed/CLOCKS_PER_SEC);
  if (seconds>=60)
  {
   minutes = seconds/60;

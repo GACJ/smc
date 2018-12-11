@@ -127,10 +127,10 @@ void Composer::showstats()
  stats.elapsed = clock();
  interval = float(stats.elapsed-stats.lastdisplaytime)/CLOCKS_PER_SEC;
 // Number of million nodes checked per second
- nodespeed = float(stats.nodecount)/(interval*1e6);
+ nodespeed = float(stats.nodecount/(interval*1e6));
 // Number of comps evaluated (including rotations) per second
  evalspeed = float(stats.evalcount)/interval;
- stats.lastdisplaytime = stats.elapsed;
+ stats.lastdisplaytime = (clock_t)stats.elapsed;
  stats.elapsed-= stats.starttime;
  stats.nodesgenerated+= stats.nodecount;
  stats.nodecount = stats.evalcount = 0;
@@ -179,7 +179,7 @@ double Composer::calcpercentcomplete()
  }
 #if 1
  if (rotationalsort)
-  percent = powf(percent,0.5); //1.0/M_E);
+  percent = pow(percent,0.5); //1.0/M_E);
 #endif
  return percent;
 }

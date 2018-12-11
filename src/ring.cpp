@@ -612,7 +612,7 @@ void Ring::change()
   pn = m->pnptrs[changen];
  if ((c=*pn)==CHARCROSS)
  {
-  c = 255;		// Ensure no match with an 'X' bell!
+  c = (char)255;		// Ensure no match with an 'X' bell!
   pn++;
  }
  i = 0;
