@@ -95,7 +95,7 @@ int Composer::newsearch()
   if (!readmusicfile(musicfile))
    return(FALSE);
   musicfile.close();
-  if (!readmusicminoverrides(outfile))	// Read any musicdef minimum overrides
+  if (!readmusicminoverrides(outfile))  // Read any musicdef minimum overrides
    return(FALSE);
  }
 // Otherwise, music definitions can be in the method file
@@ -119,7 +119,7 @@ int Composer::newsearch()
   return(FALSE);
  if (usefraglib)
  {
-  if (!fraglib.read(this,NULL))	// Filename is set up in readinputfile()
+  if (!fraglib.read(this,NULL)) // Filename is set up in readinputfile()
    return(FALSE);
   if (!fraglib.compress())
    return(FALSE);
@@ -151,11 +151,11 @@ int isMMXsupported()
 // the cpuid instruction sets bit 23 if an mmx processor is present
  __asm
  {
-	mov	eax,1
-	cpuid
-	mov	eax,edx
-	shr	eax,23
-	and	eax,1
+    mov eax,1
+    cpuid
+    mov eax,edx
+    shr eax,23
+    and eax,1
  }
  }
  __except(EXCEPTION_EXECUTE_HANDLER)
@@ -171,7 +171,7 @@ int Composer::setdefaults()
 
  showlongestyet = FALSE;
  showbestyet = FALSE;
- showallrots = FALSE;		// Only shows best rotation
+ showallrots = FALSE;       // Only shows best rotation
  singleleadnodes = FALSE;
  rotationalsort = TRUE;
  disableregen = FALSE;
@@ -191,10 +191,10 @@ int Composer::setdefaults()
   finishrow[i] = i;
  }
  ncompstostore = 0;
- ncalltypes = 1;			// Does NOT include PLAIN
- exclude.nointernalrounds = TRUE;	// Must be set if rotationalsort is on!
+ ncalltypes = 1;            // Does NOT include PLAIN
+ exclude.nointernalrounds = TRUE;   // Must be set if rotationalsort is on!
  exclude.noleadheadrounds = FALSE;
- exclude.allpartsallowed = TRUE;	// Allow all numbers of parts
+ exclude.allpartsallowed = TRUE;    // Allow all numbers of parts
  exclude.minnparts = 1;
  for (i=1; i<=MAXNPARTS; i++)
   exclude.allowedparts[i] = TRUE;
@@ -248,7 +248,7 @@ void Composer::defaultcallingpositions(int call)
  if (calltypes[call]==PLAIN)
  {
   for (i=0; i<nbells; i++)
-   exclude.allowedcalls[call][i] = TRUE;	// All positions allowed at plain!
+   exclude.allowedcalls[call][i] = TRUE;    // All positions allowed at plain!
  }
  else
  {
@@ -265,18 +265,18 @@ void Composer::defaultcallingpositions(int call)
   if (m->fourthsplacebobs())
   {
    if (nbells<=8 && calltypes[call]==BOB)
-    exclude.allowedcalls[call][2] = TRUE;	// Before
-   exclude.allowedcalls[call][nbells-3] = TRUE;	// Middle
-   exclude.allowedcalls[call][nbells-2] = TRUE;	// Wrong
-   exclude.allowedcalls[call][nbells-1] = TRUE;	// Home
+    exclude.allowedcalls[call][2] = TRUE;   // Before
+   exclude.allowedcalls[call][nbells-3] = TRUE; // Middle
+   exclude.allowedcalls[call][nbells-2] = TRUE; // Wrong
+   exclude.allowedcalls[call][nbells-1] = TRUE; // Home
   }
   else
   {
-    exclude.allowedcalls[call][1] = TRUE;	// In
-    exclude.allowedcalls[call][2] = TRUE;	// Out
-    exclude.allowedcalls[call][4] = TRUE;	// V
+    exclude.allowedcalls[call][1] = TRUE;   // In
+    exclude.allowedcalls[call][2] = TRUE;   // Out
+    exclude.allowedcalls[call][4] = TRUE;   // V
     if (nbells<=8 && calltypes[call]==BOB)
-     exclude.allowedcalls[call][nbells-1] = TRUE;	// Home
+     exclude.allowedcalls[call][nbells-1] = TRUE;   // Home
   }
  }
  maxcalls[call] = INT_MAX;

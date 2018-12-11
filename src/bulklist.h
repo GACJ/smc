@@ -5,7 +5,7 @@
 // Copyright Mark B Davies 1997
 
 enum BulkListError {BULKLISTOK,BULKLISTBADINIT,BULKLISTNOTINLIST,BULKLISTNOMEM,
-		BULKLISTFULL,BULKLISTINTERNAL};
+        BULKLISTFULL,BULKLISTINTERNAL};
 
 class BulkAlloc
 {
@@ -25,27 +25,27 @@ public:
 class BulkList
 {
 protected:
- unsigned int nitems;	// Current number of items stored in BulkAlloc chain
- unsigned int itemsperalloc;	// Number of items possible in each BulkAlloc
- unsigned int maxitems;	// Limit on total number of items possible in chain
- unsigned int bytesperitem;	// Item size in bytes
- BulkAlloc *alloc;		// Allocation pointer
- BulkAlloc *last;		// Final BulkAlloc node on chain
- BulkListError err;		// Set if error conditition occurs
+ unsigned int nitems;   // Current number of items stored in BulkAlloc chain
+ unsigned int itemsperalloc;    // Number of items possible in each BulkAlloc
+ unsigned int maxitems; // Limit on total number of items possible in chain
+ unsigned int bytesperitem; // Item size in bytes
+ BulkAlloc *alloc;      // Allocation pointer
+ BulkAlloc *last;       // Final BulkAlloc node on chain
+ BulkListError err;     // Set if error conditition occurs
 
 public:
 // BulkList constructor needs maxitems and itemsize. These are automatically
 // passed on to any succeeding BulkList nodes in the chain (via 'next')
  BulkList(unsigned int granularity,unsigned int itemsize)
- 	{itemsperalloc=granularity; bytesperitem=itemsize;
- 	 maxitems = -1;		// No limit
- 	 nitems=0; alloc=last=NULL;
- 	 err=BULKLISTOK;}
+    {itemsperalloc=granularity; bytesperitem=itemsize;
+     maxitems = -1;     // No limit
+     nitems=0; alloc=last=NULL;
+     err=BULKLISTOK;}
  BulkList(unsigned int granularity,unsigned int itemsize,unsigned int itemlimit)
- 	{itemsperalloc=granularity; bytesperitem=itemsize;
- 	 maxitems = itemlimit;
- 	 nitems=0; alloc=last=NULL;
- 	 err=BULKLISTOK;}
+    {itemsperalloc=granularity; bytesperitem=itemsize;
+     maxitems = itemlimit;
+     nitems=0; alloc=last=NULL;
+     err=BULKLISTOK;}
 // Destructor destroys this node's allocation, and any attached chain
 // !!! Items in the list do not have destructors called !!!
  ~BulkList() {freeall();}
@@ -125,7 +125,7 @@ void *BulkList::getitem(unsigned int n)
  {
   n-= itemsperalloc;
   allocptr = allocptr->next;
-  if (allocptr==0)			// Internal check
+  if (allocptr==0)          // Internal check
   {
    err = BULKLISTINTERNAL;
    return(NULL);

@@ -93,7 +93,7 @@ int Composer::musicsort(int maxncomps)
  topcomp.calling = NULL;
  topcomp.allocsize = 0;
  ncomps = 0;
- minscore = 0;		// Ignore minscore in smc file
+ minscore = 0;      // Ignore minscore in smc file
  while (outfile.readline())
  {
   if (*outfile.buffer==CHECKPOINT_SYMBOL)
@@ -151,7 +151,7 @@ int Composer::musicsort(int maxncomps)
     if (!compsorter.addcomp(topcomp))
      return(FALSE);
     if (topcomp.nmusthaveblocks>specialcomps[nmusicdefs].nmusthaveblocks
-    	|| topcomp.nmusthaveblocks==specialcomps[nmusicdefs].nmusthaveblocks && score>specialcomps[i].score)
+        || topcomp.nmusthaveblocks==specialcomps[nmusicdefs].nmusthaveblocks && score>specialcomps[i].score)
     {
       specialcomps[nmusicdefs].rot = comprot;
       specialcomps[nmusicdefs].score = score;
@@ -163,8 +163,8 @@ int Composer::musicsort(int maxncomps)
     }
     for (i=0; i<nmusicdefs; i++)
      if (musicdefs[i].weighting>0 &&
-     	(music.score[i]>specialcomps[i].music.score[i]
-	|| music.score[i]==specialcomps[i].music.score[i] && score>specialcomps[i].score))
+        (music.score[i]>specialcomps[i].music.score[i]
+    || music.score[i]==specialcomps[i].music.score[i] && score>specialcomps[i].score))
      {
       specialcomps[i].rot = comprot;
       specialcomps[i].score = score;
@@ -180,14 +180,14 @@ int Composer::musicsort(int maxncomps)
 // Move on to next rotation
    if (coursestructured)
    {
-    node = comp[0].node;	// Find next course end - start from rounds!
+    node = comp[0].node;    // Find next course end - start from rounds!
     while (comprot<nodesperpart && node &&
-	node->nodex->callingbellpos[comp[comprot].call]!=callingbell)
+    node->nodex->callingbellpos[comp[comprot].call]!=callingbell)
     {
      node = node->nextnode[comp[comprot].call];
      comprot++;
     }
-    if (node==NULL)		// Bad comp!
+    if (node==NULL)     // Bad comp!
      break;
    }
    comprot++;
@@ -206,7 +206,7 @@ int Composer::musicsort(int maxncomps)
  }
  printf("Saving compositions...");
  sprintf(titleline,"/ Analysis of compositions from %s",outfile.getname());
- outfile.changeexttype(COMPEXT);	// Leaves number in place
+ outfile.changeexttype(COMPEXT);    // Leaves number in place
  outfile.setmode("w");
  if (!outfile.open())
  {
@@ -252,7 +252,7 @@ int Composer::musicsort(int maxncomps)
   }
   for (i=0; i<nmusicdefs; i++)
    if (musicdefs[i].weighting>0 &&
-   	specialcomps[i].score>0 && specialcomps[i].music.score[i]>0)
+    specialcomps[i].score>0 && specialcomps[i].music.score[i]>0)
    {
     displaycomp(-i,&specialcomps[i],outfile);
     noutput++;
@@ -386,14 +386,14 @@ int CompSorter::addcomp(CompMusicStore &newcomp)
 #ifdef TVS
   if (newcomp.score==list[i]->score)
   {
-   whichTV = list[i]->isTV(newcomp);	// Is new composition a TV?
+   whichTV = list[i]->isTV(newcomp);    // Is new composition a TV?
    if (whichTV)
-    if (whichTV>0)			// Yes, and old composition is better
+    if (whichTV>0)          // Yes, and old composition is better
     {
      list[i]->nTVs++;
      return(TRUE);
     }
-    else				// New composition is the better TV
+    else                // New composition is the better TV
     {
      replace = list[i];
      newcomp.nTVs = 1+replace->nTVs;
@@ -436,9 +436,9 @@ copy:
   safedelete(replace->music.score);
   *replace = newcomp;
 resetnewcomp:
-  newcomp.calling = NULL;	// Calling has been transferred - dereference in newcomp
+  newcomp.calling = NULL;   // Calling has been transferred - dereference in newcomp
   newcomp.allocsize = 0;
-  newcomp.music.score = NULL;	// Similarly, unlink music array
+  newcomp.music.score = NULL;   // Similarly, unlink music array
   newcomp.music.nmusicdefs = 0;
  }
  return(TRUE);
@@ -469,9 +469,9 @@ CompSorter::adduniquecomp(CompMusicStore &newcomp,Composer *ring)
  }
  list[n] = (CompMusicStore *)bulkalloc.getitem(n);
  n++;
- newcomp.calling = NULL;	// Calling has been transferred - dereference in newcomp
+ newcomp.calling = NULL;    // Calling has been transferred - dereference in newcomp
  newcomp.allocsize = 0;
- newcomp.music.score = NULL;	// Similarly, unlink music array
+ newcomp.music.score = NULL;    // Similarly, unlink music array
  newcomp.music.nmusicdefs = 0;
  return(TRUE);
 }
@@ -602,7 +602,7 @@ int Composer::displaycomp(int compn,CompMusicStore *thiscomp,LineFile &f)
  buf = displaybuf;
 
 // Print composition
- node = comp[0].node;		// Start from rounds regardless of rotation
+ node = comp[0].node;       // Start from rounds regardless of rotation
  copyrow(node->nodex->nodehead,row);
  queuedcall = PLAIN;
  queuedcolumn = 0;
@@ -619,7 +619,7 @@ int Composer::displaycomp(int compn,CompMusicStore *thiscomp,LineFile &f)
 // the current and previous calls aren't both bobs, print the old call
    callpos = node->nodex->callingbellpos[call];
    if (queuedcall!=PLAIN && (callpos!=callposorder[queuedcolumn] ||
-   		queuedcall!=BOB || calltypes[call]!=BOB))
+        queuedcall!=BOB || calltypes[call]!=BOB))
    {
     if (queuedcall==BOB && nbobs>1)
      buf+= sprintf(buf,"%3d",nbobs);
@@ -633,14 +633,14 @@ int Composer::displaycomp(int compn,CompMusicStore *thiscomp,LineFile &f)
 // position can be reached by this type of call
    columnchecker = 0;
    while (callpos!=callposorder[queuedcolumn] ||
-   		(callposcallmasks[queuedcolumn]&(1<<call))==0)
+        (callposcallmasks[queuedcolumn]&(1<<call))==0)
     if (callposorder[queuedcolumn]<0)
     {
 // Check we don't wrap round to second course end without finding correct column!
      if (++columnchecker>1)
      {
       printf("INTERNAL ERROR: cannot find calling position %c for call %c\n",
-      		rounds[callpos],callchars[calltypes[call]]);
+            rounds[callpos],callchars[calltypes[call]]);
       return(FALSE);
      }
 // Print course end
@@ -907,16 +907,16 @@ int Composer::isrowmatch(MusicRow &m)
 // The backstroke won't match unless the immediately preceeding h/stroke set the flag
 // !!! Relies on even lead length
  if (m.type==MUSICWRAP)
-  if (changen&1)			// Clear the flag before every handstroke
+  if (changen&1)            // Clear the flag before every handstroke
    m.handstrokewrapmatch = FALSE;
   else
   {
-   if (!m.handstrokewrapmatch)	// Backstrokes don't match unless flag set
+   if (!m.handstrokewrapmatch)  // Backstrokes don't match unless flag set
     return(FALSE);
-   for (i=0; i<nbells; i++)		// Check b/stroke against wrapbackstroke match
+   for (i=0; i<nbells; i++)     // Check b/stroke against wrapbackstroke match
     if (m.wrapbackstroke[i]>=0 && row[i]!=m.wrapbackstroke[i])
      return(FALSE);
-   return(TRUE);			// Yes! Both strokes of wrap match
+   return(TRUE);            // Yes! Both strokes of wrap match
   }
 // Normal row type matches at any position in lead
  for (i=0; i<nbells; i++)
@@ -924,8 +924,8 @@ int Composer::isrowmatch(MusicRow &m)
    return(FALSE);
  if (m.type==MUSICWRAP)
  {
-  m.handstrokewrapmatch = TRUE;	// Handstroke of wrap passed - set flag
-  return(FALSE);			// But return FALSE - b/stroke must match too
+  m.handstrokewrapmatch = TRUE; // Handstroke of wrap passed - set flag
+  return(FALSE);            // But return FALSE - b/stroke must match too
  }
  return(TRUE);
 }

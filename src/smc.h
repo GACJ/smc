@@ -29,21 +29,21 @@
 // !!! No longer works
 //#define SWAPCALLORDER
 
-const int MAXSTACKDEPTH = 5000;		// In recursefindnodes()
-const int ALIGNMENT = 8;		// !! Must be a power of two
+const int MAXSTACKDEPTH = 5000;     // In recursefindnodes()
+const int ALIGNMENT = 8;        // !! Must be a power of two
 const int TRUTHTABLEWORDSIZE = 32;
-const int BULKROWALLOC = 4096;		// Number of rows in each BulkList
-const int MAXCOMPSPACE = MAXLINEBUF;	// Maximum length in chars of output comp
+const int BULKROWALLOC = 4096;      // Number of rows in each BulkList
+const int MAXCOMPSPACE = MAXLINEBUF;    // Maximum length in chars of output comp
 const int COMPBUFFERSIZE = 4000 + MAXCOMPSPACE;
 const char CHECKPOINT_SYMBOL = '!';
 
-const int MAXBLOCKCHARS = 256;		// Maximum length in chars of a "must-have" block
+const int MAXBLOCKCHARS = 256;      // Maximum length in chars of a "must-have" block
 
 const int MAXCALLPOSNAME = 8;
-const int MAXNPARTS = 3*4*5*7;		// Maximum number of parts for 20 bells!!
+const int MAXNPARTS = 3*4*5*7;      // Maximum number of parts for 20 bells!!
 
-const int COMPSPERBULKLIST = 1000;	// Comps per BulkList
-const int COMPSPERBULKHASH = 16;		// Comps per BulkHash
+const int COMPSPERBULKLIST = 1000;  // Comps per BulkList
+const int COMPSPERBULKHASH = 16;        // Comps per BulkHash
 
 char * const TOKEN_MUSIC = "MUSIC";
 char * const TOKEN_START = "SMC32";
@@ -61,15 +61,15 @@ protected:
 };
 
 enum MusicType {MUSICANYROW,MUSICHANDSTROKE,MUSICBACKSTROKE,MUSICLEADHEAD,
-		MUSICCOURSINGORDER,MUSICWRAP};
+        MUSICCOURSINGORDER,MUSICWRAP};
 
 struct MusicRow
 {
- char row[MAXNBELLS];	// Wildcard indicated with -1
+ char row[MAXNBELLS];   // Wildcard indicated with -1
  char wrapbackstroke[MAXNBELLS];
- char handstrokewrapmatch;	// Set when a handstroke matches first part of wrap
- char sign;		// 0 = any, -1 = negative, +1 = positive
- char type;		// enum MusicType
+ char handstrokewrapmatch;  // Set when a handstroke matches first part of wrap
+ char sign;     // 0 = any, -1 = negative, +1 = positive
+ char type;     // enum MusicType
 };
 
 // MusicDef defines one type of musical row. A row matches a particular MusicDef
@@ -103,7 +103,7 @@ public:
  MusicCount() {score=NULL; nmusicdefs=0;}
  ~MusicCount() {delete score;}
  int alloc(int n) {delete score; score = new int[n]; if (score==NULL) return(FALSE);
- 					nmusicdefs = n; return(TRUE);}
+                    nmusicdefs = n; return(TRUE);}
  int ensurespace(int n);
  int set(MusicCount &m);
 };
@@ -112,12 +112,12 @@ public:
 class Block
 {
 public:
- int blocknumber;	// Seperate numbering for musthave and shouldhave blocks; starts at 1 for each
+ int blocknumber;   // Seperate numbering for musthave and shouldhave blocks; starts at 1 for each
 // Fields read from input
  char entrylh[MAXNBELLS];
  char exitlh[MAXNBELLS];
  char calling[MAXBLOCKCHARS];
- char essential;	// Set for musthave blocks, clear for shouldhave
+ char essential;    // Set for musthave blocks, clear for shouldhave
  char spare1;
  char spare2;
  char spare3;
@@ -147,7 +147,7 @@ class CompStore
 public:
  char *calling;
  int allocsize;
- unsigned int hashvalue;	// Unmasked hash value - quick test for node-indentity
+ unsigned int hashvalue;    // Unmasked hash value - quick test for node-indentity
  int nparts;
  int length;
  int nodesperpart;
@@ -167,7 +167,7 @@ public:
  int nTVs;
  int callcount[NDIFFCALLS];
  int ncalls;
- int nmusthaveblocks;	// Includes shouldhaves
+ int nmusthaveblocks;   // Includes shouldhaves
  char *author;
 public:
  CompMusicStore(): CompStore() {nTVs=0; author=NULL;}
@@ -179,12 +179,12 @@ class CompSorter
 {
 public:
  CompSorter(): bulkalloc(COMPSPERBULKLIST,sizeof(CompMusicStore))
- 		{n=listsize=0; list=NULL;}
+        {n=listsize=0; list=NULL;}
  int init(int ncomps) {safedelete(list); bulkalloc.freeall(); listsize = n = 0;
-	 	list = new CompMusicStore*[ncomps]; if (list==NULL) return(FALSE);
-	 	listsize = ncomps; return(TRUE);}
+        list = new CompMusicStore*[ncomps]; if (list==NULL) return(FALSE);
+        listsize = ncomps; return(TRUE);}
  int addcomp(CompMusicStore &newcomp);
- int adduniquecomp(CompMusicStore &newcomp,Composer *ring);	// Debug only
+ int adduniquecomp(CompMusicStore &newcomp,Composer *ring); // Debug only
  int ncompslisted() {return n;}
  CompMusicStore *get(int compn) {if (compn<0 || compn>=n) return(NULL); return list[compn];}
 protected:
@@ -215,33 +215,33 @@ class NodeExtra
 {
 public:
  Node *node;
- char nodehead[MAXNBELLS];		// Leadhead row for start of node
- int num;				// Consecutive numbering
- int truthflagbit;			// Optimised numbering for bitwise truthtables
+ char nodehead[MAXNBELLS];      // Leadhead row for start of node
+ int num;               // Consecutive numbering
+ int truthflagbit;          // Optimised numbering for bitwise truthtables
  int truthflagword;
  int nleads;
  union
  {
   int *music;
-  int combinedscore;		// Used if 'optimisemusic' is set
+  int combinedscore;        // Used if 'optimisemusic' is set
  };
- char callingbellpos[NDIFFCALLS];	// Position at end of node, after call
+ char callingbellpos[NDIFFCALLS];   // Position at end of node, after call
  char negative;
- char excluded;			// Set if contains excluded change (must be allowed in regen search until composition rot check)
+ char excluded;         // Set if contains excluded change (must be allowed in regen search until composition rot check)
  char musicallocated;
- char renumbered;			// When using bitwise truth, set if node number optimised
- char inmusthaveblock;		// Set if this node contained in a "must-have" block (but not entry node)
- char blockentry;			// Set if this node is the entry point to a "must-have" block
- char essential;			// Set if this node must be contained in the comp (ie exclude all false nodes)
+ char renumbered;           // When using bitwise truth, set if node number optimised
+ char inmusthaveblock;      // Set if this node contained in a "must-have" block (but not entry node)
+ char blockentry;           // Set if this node is the entry point to a "must-have" block
+ char essential;            // Set if this node must be contained in the comp (ie exclude all false nodes)
 // The following are duplicates of fields in Node
 // They are needed here because the NodeExtra array is allocated before
 // the Node array, and we need somewhere to put them in the interval!
  char comesround;
- int nrows;			// to rounds if present
+ int nrows;         // to rounds if present
  int nfalsenodes;
  int *falsenodes;
  int nfalsebits;
- FalseBits *falsebits;		// Only used if Composer.bitwisetruthflags set
+ FalseBits *falsebits;      // Only used if Composer.bitwisetruthflags set
  int nextnode[NDIFFCALLS] = { -1 };
 #ifdef PREVNODES
  int prevnode[NDIFFCALLS] = { -1 };
@@ -252,9 +252,9 @@ public:
  ~NodeExtra() {delete falsenodes; if (musicallocated) delete music;}
  // Kills all nextnode pointers except that for calltype "call" (internal call num)
  void forcenextnodeto(int call) {
- 			for (int i=0; i<NDIFFCALLS; i++)
- 			 if (i!=call)
- 			  nextnode[i] = -1;}
+            for (int i=0; i<NDIFFCALLS; i++)
+             if (i!=call)
+              nextnode[i] = -1;}
 };
 
 // A basic structure which is stored in a BulkHash during the initial recursive
@@ -264,10 +264,10 @@ public:
 struct HashedNode
 {
  int factnum;
- char included;		// Set if node visited AND included
- char excluded;		// Set if contains excluded change
+ char included;     // Set if node visited AND included
+ char excluded;     // Set if contains excluded change
  char nodehead[MAXNBELLS];
- NodeExtra *nodex;		// Used for quick lookup in false node calculation
+ NodeExtra *nodex;      // Used for quick lookup in false node calculation
 };
 
 // Data defining one node (i.e. a lead or a number of leads between calling
@@ -275,10 +275,10 @@ struct HashedNode
 class Node
 {
 public:
- char included;		// Set if included in composition
+ char included;     // Set if included in composition
  char nparts;
  char comesround;
- char callcountposindex;	// NDIFFCALLS * (position of calling bell at start of node)
+ char callcountposindex;    // NDIFFCALLS * (position of calling bell at start of node)
  NodeExtra *nodex;
  int unvisitable;
  int regenoffset[NDIFFCALLS];
@@ -289,13 +289,13 @@ public:
  Node *prevnode[NDIFFCALLS];
 #endif
  Node *nextnode[NDIFFCALLS];
- int nrows;		// to rounds if present
+ int nrows;     // to rounds if present
  int nfalsenodes;
 // !!! MUST be the last field in structure - extended with extra alloc
  union
  {
   Node *falsenodes[1];
-  FalseBits falsebits[1];	// This one is used if "bitwisetruthflags" is set.
+  FalseBits falsebits[1];   // This one is used if "bitwisetruthflags" is set.
  };
 };
 
@@ -305,12 +305,12 @@ public:
  char nointernalrounds;
  char noleadheadrounds;
  char allpartsallowed;
- char allowedcalls[NDIFFCALLS][MAXNBELLS];	// wrt callingbell
- char defaultcalls[NDIFFCALLS];		// cleared if call positions or limits given
+ char allowedcalls[NDIFFCALLS][MAXNBELLS];  // wrt callingbell
+ char defaultcalls[NDIFFCALLS];     // cleared if call positions or limits given
  int minnparts;
  char allowedparts[MAXNPARTS+1];
  int nrows;
- MusicRow *rows;				// excluded row matches
+ MusicRow *rows;                // excluded row matches
 
 public:
  Exclusions() {nrows=0; rows=0;}
@@ -325,14 +325,14 @@ public:
  unsigned int ncompsoutput;
  unsigned int nfragsfound;
  unsigned long long nodesgenerated;
- unsigned int nodecount;	// temporary count, added in to nodesgenerated
- unsigned int evalcount;	// # comps evaluated in this display interval
+ unsigned int nodecount;    // temporary count, added in to nodesgenerated
+ unsigned int evalcount;    // # comps evaluated in this display interval
  int bestscore;
  int longestlength;
- unsigned int prunecount;	// # successful fragment prunes
+ unsigned int prunecount;   // # successful fragment prunes
  long long starttime;
  long long elapsed;
- clock_t lastdisplaytime;	// time when last showstats() done
+ clock_t lastdisplaytime;   // time when last showstats() done
 // The following are copies of the above which are saved when a composition is
 // buffered. This is so that they can be output later with the composition.
  unsigned long long save_ncompsfound;
@@ -342,12 +342,12 @@ public:
 
 public:
  void clear() {ncompsfound = nrotsfound = nodesgenerated = 0;
- 		ncompsoutput = nfragsfound = nodecount = evalcount = 0;
- 		prunecount = 0;
- 		bestscore = longestlength = 0;
- 		elapsed = 0; lastdisplaytime = 0;}
+        ncompsoutput = nfragsfound = nodecount = evalcount = 0;
+        prunecount = 0;
+        bestscore = longestlength = 0;
+        elapsed = 0; lastdisplaytime = 0;}
  void save() {save_ncompsfound = ncompsfound; save_nrotsfound = nrotsfound;
- 	save_nodesgenerated = nodesgenerated; save_elapsed = elapsed;}
+    save_nodesgenerated = nodesgenerated; save_elapsed = elapsed;}
 };
 
 // This is used to store the false LHs of the first lead (from rounds)
@@ -367,27 +367,27 @@ public:
  char methodname[200];
 
 // Various flags controlling operation of composing loop
- char coursestructured;	// Clear to allow any part end for multiparts
- char singleleadnodes;	// Don't use nodes if set
- char useMMX;		// Use MMX instructions if set
- char rotationalsort;	// Use comp regeneration if set
- char disableregen;		// Debugging flag, forces rotationalsort off
- char palindromic;		// Set for palindromic search
- char midnodeapex;		// Set if mid-node apex found
- char showbestyet;		// If set, show highest-scoring comp so far
- char showlongestyet;	// If set, show longest length so far
- char showallrots;		// If not set, show best rotation only
- char optimisemusic;	// Set if no music minimums
- char countingcalls;	// Set if call counting
- char bitwisetruthflags;	// Set if using bitwise truth flags (see Composer.truthtable)
- char startinrounds;	// FALSE if using a non-rounds starting point
- char endinrounds;		// FALSE if using a non-rounds ending point
- char samestartandend;	// Set if start row = end row
+ char coursestructured; // Clear to allow any part end for multiparts
+ char singleleadnodes;  // Don't use nodes if set
+ char useMMX;       // Use MMX instructions if set
+ char rotationalsort;   // Use comp regeneration if set
+ char disableregen;     // Debugging flag, forces rotationalsort off
+ char palindromic;      // Set for palindromic search
+ char midnodeapex;      // Set if mid-node apex found
+ char showbestyet;      // If set, show highest-scoring comp so far
+ char showlongestyet;   // If set, show longest length so far
+ char showallrots;      // If not set, show best rotation only
+ char optimisemusic;    // Set if no music minimums
+ char countingcalls;    // Set if call counting
+ char bitwisetruthflags;    // Set if using bitwise truth flags (see Composer.truthtable)
+ char startinrounds;    // FALSE if using a non-rounds starting point
+ char endinrounds;      // FALSE if using a non-rounds ending point
+ char samestartandend;  // Set if start row = end row
 
- char cancomeround;		// Check during table building
- char extendinglead;	// Set if call at Home produces Home
- char redomusic;		// Set if analyser to use music in .sf file
- char printcourseendsfirst;	// Set to print course ends in left column
+ char cancomeround;     // Check during table building
+ char extendinglead;    // Set if call at Home produces Home
+ char redomusic;        // Set if analyser to use music in .sf file
+ char printcourseendsfirst; // Set to print course ends in left column
 
 // False LHs for 1st lead from rounds
  int nfalseLHs;
@@ -395,80 +395,80 @@ public:
  char *workinglead;
 
  char binrounds[MAXNBELLS];
- char startrow[MAXNBELLS];	// The row to start composing from (rounds if startinrounds set)
- char finishrow[MAXNBELLS];	// Finishing row - see also Composer::isfinishrow()
+ char startrow[MAXNBELLS];  // The row to start composing from (rounds if startinrounds set)
+ char finishrow[MAXNBELLS]; // Finishing row - see also Composer::isfinishrow()
 
 // Node data
  int nodespercourse;
  int nodesincluded;
  int leadspernode[MAXNBELLS];
  int leadstonodeend[MAXNBELLS];
- int nodesize;			// Size (in bytes) of Node structure
+ int nodesize;          // Size (in bytes) of Node structure
  char *nodealloc;
- int maxnodefalse;			// Controls Node alloc size
- int maxnodealloc;			// Used when bitwisefalseflags set to control Node alloc size
+ int maxnodefalse;          // Controls Node alloc size
+ int maxnodealloc;          // Used when bitwisefalseflags set to control Node alloc size
  int minnodefalse;
- int courseenddist[MAXNBELLS];	// For each place bell - used by regen code
- Node *startnode;			// If start row = finish row, will be "extra" node 0
- NodeExtra *finishrounds;		// -> finishing rounds
- int truthtablesize;		// Only used if bitwisetruthflags set
+ int courseenddist[MAXNBELLS];  // For each place bell - used by regen code
+ Node *startnode;           // If start row = finish row, will be "extra" node 0
+ NodeExtra *finishrounds;       // -> finishing rounds
+ int truthtablesize;        // Only used if bitwisetruthflags set
 // For temporary use in table building - keeps a list of every visited nodehead
  BulkHash nodehasher;
  HashedNode nodehashitem;
- int maxstackdepth;			// Max allowed recursion depth
- int stackhiwater;			// Max recursion depth reached
+ int maxstackdepth;         // Max allowed recursion depth
+ int stackhiwater;          // Max recursion depth reached
 
 // Fields used by inner composing loop
- char *nodes;			// Node structure is variable size!
+ char *nodes;           // Node structure is variable size!
  Composition *comp;
- unsigned int *truthtable;		// Used in place of Node.included if bitwisetruthflags set
- int ncompnodes;			// Length of comp in nodes
- int complength;			// Length of comp in changes
- int lengthcountdown;		// = ebp in composing loop
+ unsigned int *truthtable;      // Used in place of Node.included if bitwisetruthflags set
+ int ncompnodes;            // Length of comp in nodes
+ int complength;            // Length of comp in changes
+ int lengthcountdown;       // = ebp in composing loop
  int regenptr;
  Composition *lastregen;
 // Normally minlengthnow = minlength. However, when 'showlongestyet' is set,
 // this is set to 0 and gradually works up to minlength
  int minlengthnow;
- int maxpartlength;			// Actually maxlength-maxpartlength!
+ int maxpartlength;         // Actually maxlength-maxpartlength!
  int maxlength;
- int maxpalilength;			// = maxlength/2 for palindromic search
+ int maxpalilength;         // = maxlength/2 for palindromic search
  int minlength;
- int ncallsleft[NDIFFCALLS];		// Current remaining allowed # of calls in comp
+ int ncallsleft[NDIFFCALLS];        // Current remaining allowed # of calls in comp
  int ncallsleftperpos[MAXNBELLS][NDIFFCALLS]; // Remaining allowed # of calls per pos
- int maxcalls[NDIFFCALLS];		// Max number of calls of each type allowed
+ int maxcalls[NDIFFCALLS];      // Max number of calls of each type allowed
  int maxcallsperpos[MAXNBELLS][NDIFFCALLS]; // Max calls allowed at each calling pos
- int npartcalls[NDIFFCALLS];		// Ncallsleft allowed at 1st part end
+ int npartcalls[NDIFFCALLS];        // Ncallsleft allowed at 1st part end
  int npartcallsperpos[MAXNBELLS][NDIFFCALLS]; // Ncallsperpos allowed at 1st part end
 
 // Tables
  NodeExtra *nodeextra;
  Stats stats;
- MusicCount music;			// Total music in this comp
+ MusicCount music;          // Total music in this comp
  int nmusicdefs;
  MusicDef *musicdefs;
  Exclusions exclude;
  int score;
  int minscore;
- BulkList *musthaveblocks;		// "Must-have" blocks
+ BulkList *musthaveblocks;      // "Must-have" blocks
 
 // Composition and call fields
  int callingbell;
  MusicDef courseend;
- int courselen;			// In leads
+ int courselen;         // In leads
  int nparts;
  int nodesperpart;
  int comprot;
- char *compalloc;			// Extra alloced for use by regen optimisation
- int ncalltypes;			// Inclusive count i.e. not counting PLAIN
- Call calltypes[NDIFFCALLS];		// Maps internal call number -> Call type
- int internalcallnums[NDIFFCALLS];	// Maps Call -> internal call number
- char calltrans[NDIFFCALLS][MAXNBELLS];	// Lead tranpositions for each call
+ char *compalloc;           // Extra alloced for use by regen optimisation
+ int ncalltypes;            // Inclusive count i.e. not counting PLAIN
+ Call calltypes[NDIFFCALLS];        // Maps internal call number -> Call type
+ int internalcallnums[NDIFFCALLS];  // Maps Call -> internal call number
+ char calltrans[NDIFFCALLS][MAXNBELLS]; // Lead tranpositions for each call
  char callposnames[NDIFFCALLS][MAXNBELLS][MAXCALLPOSNAME+1];
- int callposorder[(NDIFFCALLS-1)*MAXNBELLS];	// Place bells of call pos, in order
- int callposcallmasks[(NDIFFCALLS-1)*MAXNBELLS];	// Calls at each calling position
- double percent0;			// Tree percentage of plain course (0.0-1.0)
- double percentrange;		// 1.0/tree range between bob and plain course
+ int callposorder[(NDIFFCALLS-1)*MAXNBELLS];    // Place bells of call pos, in order
+ int callposcallmasks[(NDIFFCALLS-1)*MAXNBELLS];    // Calls at each calling position
+ double percent0;           // Tree percentage of plain course (0.0-1.0)
+ double percentrange;       // 1.0/tree range between bob and plain course
  int callcount[NDIFFCALLS];
  int ncallsincomp;
 
@@ -482,28 +482,28 @@ public:
  clock_t lastcheckpoint;
 
 // Composition storage and fragment libraries
- char makefraglib;		// Set if want to create fragment library
- char usefraglib;		// Set if want to use fragment optimisation
- char storecomps;		// Set if we are storing comps
+ char makefraglib;      // Set if want to create fragment library
+ char usefraglib;       // Set if want to use fragment optimisation
+ char storecomps;       // Set if we are storing comps
  int ncompstostore;
  CompSorter compsorter;
  CompMusicStore *specialcomps;
  FragmentLibrary fraglib;
  CompHasher comphasher;
- char *author;		// Composer, if not SMC32
+ char *author;      // Composer, if not SMC32
 
 public:
  Composer(): Ring(), outfile("tmp"), musicfile("music"), fraglib(MAXFRAGTABLESIZE)
- 		{clear();}
+        {clear();}
  Composer(ExtMethod *method):
- 	Ring(method), outfile("tmp"), musicfile("music"), fraglib(MAXFRAGTABLESIZE)
- 		{clear();}
+    Ring(method), outfile("tmp"), musicfile("music"), fraglib(MAXFRAGTABLESIZE)
+        {clear();}
  void clear() {workinglead=0; nodealloc=0; compalloc=0;
- 	     musicdefs=0; nodeextra=0; resetcompbuffer();
- 	     falseLHs=NULL; specialcomps=NULL; truthtable=NULL; musthaveblocks=NULL;}
+         musicdefs=0; nodeextra=0; resetcompbuffer();
+         falseLHs=NULL; specialcomps=NULL; truthtable=NULL; musthaveblocks=NULL;}
  ~Composer() {delete workinglead; delete nodealloc; delete compalloc;
- 	    delete[] musicdefs; delete[] nodeextra;
- 	    delete falseLHs; delete truthtable; delete musthaveblocks;}
+        delete[] musicdefs; delete[] nodeextra;
+        delete falseLHs; delete truthtable; delete musthaveblocks;}
  void init(ExtMethod *method) {Ring::init(method);}
  int setdefaults();
  int writefileheader(LineFile &f);
@@ -562,20 +562,20 @@ protected:
  int isLHexcluded();
  int isrowexcluded();
  inline int isrounds(char *row) {for (int i=0; i<nbells; i++)
- 			if (row[i]!=i) return(FALSE);
- 		         return(TRUE);}
+            if (row[i]!=i) return(FALSE);
+                 return(TRUE);}
  inline int isfinishrow(char *row) {for (int i=0; i<nbells; i++)
- 			if (row[i]!=finishrow[i]) return(FALSE);
- 		         return(TRUE);}
+            if (row[i]!=finishrow[i]) return(FALSE);
+                 return(TRUE);}
  inline int isnegative(char *row);
  inline int findcallingbell(char *row)
- 			{for (int i=0; i<nbells; i++)
- 			  if (row[i]==callingbell) return(i); return(-1);}
+            {for (int i=0; i<nbells; i++)
+              if (row[i]==callingbell) return(i); return(-1);}
  inline int findcallingbell() {return findcallingbell(row);}
  inline void printrow(char *row)
- 			{for (int i=0; i<nbells; i++)
-			  printf("%c",rounds[row[i]]);
-			 printf("\n");}
+            {for (int i=0; i<nbells; i++)
+              printf("%c",rounds[row[i]]);
+             printf("\n");}
 
 inline void writerow(char * row, char * buf)
 {

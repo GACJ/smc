@@ -145,9 +145,9 @@ void Composer::showstats()
  else
   noutput = stats.ncompsoutput;
  printf("\r%-9d%-10d%-10d%-9.2f%-9.0f%-12s%.3f",
- 	stats.bestscore,noutput,
- 	int(stats.nodesgenerated/1000000),nodespeed,evalspeed,timebuf,
- 	100.0*calcpercentcomplete());
+    stats.bestscore,noutput,
+    int(stats.nodesgenerated/1000000),nodespeed,evalspeed,timebuf,
+    100.0*calcpercentcomplete());
 }
 
 // Probably still very inaccurate for rotation sort - based on percent^(1/e)
@@ -186,9 +186,9 @@ double Composer::calcpercentcomplete()
 
 // This routine calculates two numbers:
 // percent0 - the starting percentage-complete value for the search tree
-// 	    (i.e. percentage for a composition using plains wherever possible)
+//      (i.e. percentage for a composition using plains wherever possible)
 // percentrange - 100.0 / %age range in the search tree from plains-wherever-possible
-//	    to bobs-wherever possible. Range 100.0 up.
+//      to bobs-wherever possible. Range 100.0 up.
 int Composer::findpercentrange()
 {
  Node *node;
@@ -308,14 +308,14 @@ void Composer::analysecomp()
 // Move on to next rotation
    if (coursestructured)
    {
-    node = comp[0].node;	// Find next course end - !!! ASSUME START FROM ROUNDS
+    node = comp[0].node;    // Find next course end - !!! ASSUME START FROM ROUNDS
     while (comprot<nodesperpart && node &&
-    	 node->nodex->callingbellpos[comp[comprot].call]!=callingbell)
+         node->nodex->callingbellpos[comp[comprot].call]!=callingbell)
     {
      node = node->nextnode[comp[comprot].call];
      comprot++;
     }
-    if (node==NULL)		// Bad comp!
+    if (node==NULL)     // Bad comp!
      break;
    }
    comprot++;
@@ -331,10 +331,10 @@ void Composer::analysecomp()
 }
 
 // Maximum number of parts for each stage, assuming Principle!
-int maxnparts[MAXNBELLS+1] = {0,1,2,3,3,2*3,			// 0-5 bells
-			2*3,3*4,3*5,4*5,2*3*5,		// 6-10
-			2*3*5,3*4*5,3*4*5,3*5*6,3*5*7,	// 11-15
-			4*5*7,2*3*5*7,2*3*5*7,3*4*5*7,3*4*5*7};	// 16-20
+int maxnparts[MAXNBELLS+1] = {0,1,2,3,3,2*3,            // 0-5 bells
+            2*3,3*4,3*5,4*5,2*3*5,      // 6-10
+            2*3*5,3*4*5,3*4*5,3*5*6,3*5*7,  // 11-15
+            4*5*7,2*3*5*7,2*3*5*7,3*4*5*7,3*4*5*7}; // 16-20
 
 // Only needed if rotationalsort off
 void Composer::countparts()
@@ -373,7 +373,7 @@ void Composer::countparts()
 // Evaluate one particular rotation
 int Composer::evalcomp()
 {
- Node *node = comp[0].node;	// Start from rounds regardless of rotation
+ Node *node = comp[0].node; // Start from rounds regardless of rotation
  int goodenough = TRUE;
  int achievedminimums = TRUE;
  int rot = comprot;
@@ -392,134 +392,134 @@ int Composer::evalcomp()
 #ifdef ASMEVAL
   __asm
   {
-	push	ebx
-	mov	ebx,[this]
-	cmp	[ebx]Composer.optimisemusic,0
-	je	notoptimised
+    push    ebx
+    mov ebx,[this]
+    cmp [ebx]Composer.optimisemusic,0
+    je  notoptimised
 // If music optimisation on, count up combined score, not invidual music scores
 // Run through nodes, counting scores
-	mov	edx,0		// edx = running score
-	mov	esi,[rot]
-	mov	edi,[node]
-	mov	eax,[ebx]Composer.ncompnodes
-	imul	esi,sizeof(Composition)
-	mov	ecx,[ebx]Composer.comp
-	imul	eax,sizeof(Composition)
-	add	esi,ecx
-	add	eax,ecx
-	mov	[rotstart],esi
-	mov	[compend],eax
+    mov edx,0       // edx = running score
+    mov esi,[rot]
+    mov edi,[node]
+    mov eax,[ebx]Composer.ncompnodes
+    imul    esi,sizeof(Composition)
+    mov ecx,[ebx]Composer.comp
+    imul    eax,sizeof(Composition)
+    add esi,ecx
+    add eax,ecx
+    mov [rotstart],esi
+    mov [compend],eax
 // Do first half: rot to compend
-optnode1:	mov	ecx,[edi]Node.nodex
-	mov	eax,[esi]Composition.call
-	add	edx,[ecx]NodeExtra.combinedscore
-	mov	edi,[edi+eax*4]Node.nextnode
-	add	esi,sizeof(Composition)
-	cmp	edi,0
-	je	nullnode
-	cmp	esi,[compend]
-	jb	optnode1
-	mov	esi,[ebx]Composer.comp	// !! Relies on call field being 1st
-	cmp	esi,[rotstart]
-	jae	scoringdone
-optnode2:	cmp	edi,0
-	je	nullnode
-	mov	ecx,[edi]Node.nodex
-	mov	eax,[esi]Composition.call
-	add	edx,[ecx]NodeExtra.combinedscore
-	add	esi,sizeof(Composition)
-	mov	edi,[edi+eax*4]Node.nextnode
-	cmp	esi,[rotstart]
-	jb	optnode2
-	jmp	scoringdone
+optnode1:   mov ecx,[edi]Node.nodex
+    mov eax,[esi]Composition.call
+    add edx,[ecx]NodeExtra.combinedscore
+    mov edi,[edi+eax*4]Node.nextnode
+    add esi,sizeof(Composition)
+    cmp edi,0
+    je  nullnode
+    cmp esi,[compend]
+    jb  optnode1
+    mov esi,[ebx]Composer.comp  // !! Relies on call field being 1st
+    cmp esi,[rotstart]
+    jae scoringdone
+optnode2:   cmp edi,0
+    je  nullnode
+    mov ecx,[edi]Node.nodex
+    mov eax,[esi]Composition.call
+    add edx,[ecx]NodeExtra.combinedscore
+    add esi,sizeof(Composition)
+    mov edi,[edi+eax*4]Node.nextnode
+    cmp esi,[rotstart]
+    jb  optnode2
+    jmp scoringdone
 
 // Clear scores
 notoptimised:
-	mov	eax,0
-	mov	ecx,[ebx]Composer.nmusicdefs
-	mov	edx,[ebx]Composer.music.score
-	mov	[nmus],ecx
-clear:	mov	[edx+ecx*4-4],eax
-	dec	ecx
-	jg	clear
+    mov eax,0
+    mov ecx,[ebx]Composer.nmusicdefs
+    mov edx,[ebx]Composer.music.score
+    mov [nmus],ecx
+clear:  mov [edx+ecx*4-4],eax
+    dec ecx
+    jg  clear
 // Run through nodes, counting scores
-	mov	esi,[rot]
-	mov	edi,[node]
-	mov	eax,[ebx]Composer.ncompnodes
-	imul	esi,sizeof(Composition)
-	mov	ecx,[ebx]Composer.comp
-	imul	eax,sizeof(Composition)
-	add	esi,ecx
-	add	eax,ecx
-	mov	[rotstart],esi
-	mov	[compend],eax
+    mov esi,[rot]
+    mov edi,[node]
+    mov eax,[ebx]Composer.ncompnodes
+    imul    esi,sizeof(Composition)
+    mov ecx,[ebx]Composer.comp
+    imul    eax,sizeof(Composition)
+    add esi,ecx
+    add eax,ecx
+    mov [rotstart],esi
+    mov [compend],eax
 // Do first half: rot to compend
-node1:	mov	ebx,[edi]Node.nodex
-	mov	ecx,0
+node1:  mov ebx,[edi]Node.nodex
+    mov ecx,0
 // Check exclusions
-	cmp	[ebx]NodeExtra.excluded,0
-	jne	nullnode
-	mov	ebx,[ebx]NodeExtra.music
-music1:	mov	eax,[ebx+ecx*4]
-	inc	ecx
-	add	[edx+ecx*4-4],eax
-	cmp	ecx,[nmus]
-	jl	music1
-	mov	eax,[esi]Composition.call
-	add	esi,sizeof(Composition)
-	mov	edi,[edi+eax*4]Node.nextnode
-	cmp	esi,[compend]
-	jae	secondhalf
-	cmp	edi,0
-	jne	node1
-nullnode:	pop	ebx
+    cmp [ebx]NodeExtra.excluded,0
+    jne nullnode
+    mov ebx,[ebx]NodeExtra.music
+music1: mov eax,[ebx+ecx*4]
+    inc ecx
+    add [edx+ecx*4-4],eax
+    cmp ecx,[nmus]
+    jl  music1
+    mov eax,[esi]Composition.call
+    add esi,sizeof(Composition)
+    mov edi,[edi+eax*4]Node.nextnode
+    cmp esi,[compend]
+    jae secondhalf
+    cmp edi,0
+    jne node1
+nullnode:   pop ebx
   }
-  return(FALSE);		// Can't do this rotation (nextnode==NULL)
+  return(FALSE);        // Can't do this rotation (nextnode==NULL)
   __asm
   {
 // Do second half: compstart to rot
 secondhalf:
-	mov	ebx,[this]
-	mov	esi,[ebx]Composer.comp	// !! Relies on call field being 1st
-	cmp	esi,[rotstart]
-	jae	totalscore
-node2:	cmp	edi,0
-	je	nullnode
-	mov	ebx,[edi]Node.nodex
-	mov	ecx,0
+    mov ebx,[this]
+    mov esi,[ebx]Composer.comp  // !! Relies on call field being 1st
+    cmp esi,[rotstart]
+    jae totalscore
+node2:  cmp edi,0
+    je  nullnode
+    mov ebx,[edi]Node.nodex
+    mov ecx,0
 // Check exclusions
-	cmp	[ebx]NodeExtra.excluded,0
-	jne	nullnode
-	mov	ebx,[ebx]NodeExtra.music
-music2:	mov	eax,[ebx+ecx*4]
-	inc	ecx
-	add	[edx+ecx*4-4],eax
-	cmp	ecx,[nmus]
-	jl	music2
-	mov	eax,[esi]Composition.call
-	add	esi,sizeof(Composition)
-	mov	edi,[edi+eax*4]Node.nextnode
-	cmp	esi,[rotstart]
-	jb	node2
+    cmp [ebx]NodeExtra.excluded,0
+    jne nullnode
+    mov ebx,[ebx]NodeExtra.music
+music2: mov eax,[ebx+ecx*4]
+    inc ecx
+    add [edx+ecx*4-4],eax
+    cmp ecx,[nmus]
+    jl  music2
+    mov eax,[esi]Composition.call
+    add esi,sizeof(Composition)
+    mov edi,[edi+eax*4]Node.nextnode
+    cmp esi,[rotstart]
+    jb  node2
 // Calculate total score, and check minimums
 totalscore:
-	mov	ebx,[this]
-	mov	ecx,0
-	mov	esi,0
-	mov	edi,[ebx]Composer.musicdefs
-total:	mov	eax,[edx+ecx*4]
-	inc	ecx
-	add	esi,eax
-	cmp	eax,[edi]MusicDef.minscore
-	jge	nextmus
-	mov	[achievedminimums],FALSE
-nextmus:	add	edi,sizeof(MusicDef)
-	cmp	ecx,[nmus]
-	jl	total
-	mov	edx,esi
+    mov ebx,[this]
+    mov ecx,0
+    mov esi,0
+    mov edi,[ebx]Composer.musicdefs
+total:  mov eax,[edx+ecx*4]
+    inc ecx
+    add esi,eax
+    cmp eax,[edi]MusicDef.minscore
+    jge nextmus
+    mov [achievedminimums],FALSE
+nextmus:    add edi,sizeof(MusicDef)
+    cmp ecx,[nmus]
+    jl  total
+    mov edx,esi
 scoringdone:
-	mov	[ebx]Composer.score,edx
-	pop	ebx
+    mov [ebx]Composer.score,edx
+    pop ebx
   }
 #else
 // If music optimisation on, count up combined score, not invidual music scores;
@@ -529,7 +529,7 @@ scoringdone:
    {
     score+= node->nodex->combinedscore;
     node = node->nextnode[comp[rot].call];
-    if (node==NULL)			// Can't do this rotation
+    if (node==NULL)         // Can't do this rotation
       return(FALSE);
     if (++rot>=ncompnodes)
      rot = 0;
@@ -540,12 +540,12 @@ scoringdone:
     music.score[j] = 0;
    for (i=0; i<ncompnodes; i++)
    {
-    if (node->nodex->excluded)	// Check exclusions
+    if (node->nodex->excluded)  // Check exclusions
      return(FALSE);
     for (j=0; j<nmusicdefs; j++)
      music.score[j]+= node->nodex->music[j];
     node = node->nextnode[comp[rot].call];
-    if (node==NULL)			// Can't do this rotation
+    if (node==NULL)         // Can't do this rotation
       return(FALSE);
     if (++rot>=ncompnodes)
      rot = 0;
@@ -572,7 +572,7 @@ scoringdone:
   stats.longestlength = complength;
   if (showlongestyet)
   {
-   minlengthnow = complength+1;	// Must have a longer comp next
+   minlengthnow = complength+1; // Must have a longer comp next
    if (minlengthnow>minlength)
     minlengthnow = minlength;
    goodenough = TRUE;
@@ -585,7 +585,7 @@ scoringdone:
 // !! Must match with inputcomp() below
 int Composer::outputcomp()
 {
- Node *node = comp[0].node;	// Start from rounds regardless of rotation
+ Node *node = comp[0].node; // Start from rounds regardless of rotation
  int rot = comprot;
  int i;
 
@@ -745,12 +745,12 @@ int Composer::readcalling(char *buf,CompStore &storedcomp,Node *node,int nnodes)
   i = 0;
   while(*p)
   {
-   if (*p==' ')		// Skip spaces
+   if (*p==' ')     // Skip spaces
    {
     p++;
     continue;
    }
-   c = strchr(callchars,*p);	// See if there is a single prefix
+   c = strchr(callchars,*p);    // See if there is a single prefix
    if (c)
    {
     call = c-callchars;
@@ -763,7 +763,7 @@ int Composer::readcalling(char *buf,CompStore &storedcomp,Node *node,int nnodes)
      call = internalcallnums[BOB];
    }
    else
-    call = internalcallnums[BOB];	// If not, call is set to Bob
+    call = internalcallnums[BOB];   // If not, call is set to Bob
 // Run through all calling position names, find out which one this is
    for (j=0; j<nbells; j++)
     if (strncmp(p,callposnames[call][j],strlen(callposnames[call][j]))==0)
@@ -792,7 +792,7 @@ int Composer::readcalling(char *buf,CompStore &storedcomp,Node *node,int nnodes)
     }
     node = tmpnode;
     ++i;
-    if (++k>courselen)		// Check for infinite loop
+    if (++k>courselen)      // Check for infinite loop
     {
      ch = *++p;
      *p = 0;
@@ -924,12 +924,12 @@ int Composer::readblockcalling(Block *block)
  {
   while(*p)
   {
-   if (*p==' ')		// Skip spaces
+   if (*p==' ')     // Skip spaces
    {
     p++;
     continue;
    }
-   c = strchr(callchars,*p);	// See if there is a single prefix
+   c = strchr(callchars,*p);    // See if there is a single prefix
    if (c)
    {
     call = c-callchars;
@@ -942,7 +942,7 @@ int Composer::readblockcalling(Block *block)
      call = internalcallnums[BOB];
    }
    else
-    call = internalcallnums[BOB];	// If not, call is set to Bob
+    call = internalcallnums[BOB];   // If not, call is set to Bob
 // Run through all calling position names, find out which one this is
    for (j=0; j<nbells; j++)
     if (strncmp(p,callposnames[call][j],strlen(callposnames[call][j]))==0)
@@ -959,7 +959,7 @@ int Composer::readblockcalling(Block *block)
     nodex = &nodeextra[nodex->nextnode[internalcallnums[PLAIN]]];
     if (nodex==NULL)
      return musthaveblockerror(block, "Invalid calling!");
-    if (nodex==tmpnode)		// Check for infinite loop
+    if (nodex==tmpnode)     // Check for infinite loop
      return musthaveblockerror(block, "Calling position not reached!");
     if (nodex->inmusthaveblock)
      return musthaveblockerror(block, "Overlapping blocks not allowed!");
@@ -982,7 +982,7 @@ int Composer::readblockcalling(Block *block)
    nodex->essential = block->essential;
    nodex->forcenextnodeto(internalcallnums[PLAIN]);
    nodex = &nodeextra[nodex->nextnode[internalcallnums[PLAIN]]];
-   if (nodex==NULL || nodex==tmpnode)	// Check for infinite loop
+   if (nodex==NULL || nodex==tmpnode)   // Check for infinite loop
     return musthaveblockerror(block, "Exit leadhead not reached!");
    if (nodex->inmusthaveblock)
     return musthaveblockerror(block, "Overlapping blocks not allowed!");
@@ -990,7 +990,7 @@ int Composer::readblockcalling(Block *block)
   }
   nodex->essential = block->essential;
  }
- else				// Non course-structured
+ else               // Non course-structured
  {
   while (*p)
   {
@@ -1040,24 +1040,24 @@ int Composer::readblockcalling(Block *block)
 #define STOPTIMEF
 
 #ifdef CYCLETIMER
-#define CYCLESTART	asm	rdtsc; \
-		__asm	mov	[cyclelo],eax
-#define CYCLESTOP	asm 	rdtsc; \
-		__asm	sub	eax,[cyclelo]; \
-		__asm	cmp	eax,[ncycles]; \
-		__asm	ja	cont; \
-		__asm	mov	[ncycles],eax; \
-		__asm	mov	[cyclenfalse],edx \
-		__asm cont:
-#define CYCLESTOPF	asm 	rdtsc; \
-		__asm	sub	eax,[cyclelo]; \
-		__asm	cmp	ecx,6 \
-		__asm	jb	cont \
-		__asm	cmp	eax,[ncycles]; \
-		__asm	ja	cont; \
-		__asm	mov	[ncycles],eax; \
-		__asm	mov	[cyclenfalse],ecx \
-		__asm cont:
+#define CYCLESTART  asm rdtsc; \
+        __asm   mov [cyclelo],eax
+#define CYCLESTOP   asm     rdtsc; \
+        __asm   sub eax,[cyclelo]; \
+        __asm   cmp eax,[ncycles]; \
+        __asm   ja  cont; \
+        __asm   mov [ncycles],eax; \
+        __asm   mov [cyclenfalse],edx \
+        __asm cont:
+#define CYCLESTOPF  asm     rdtsc; \
+        __asm   sub eax,[cyclelo]; \
+        __asm   cmp ecx,6 \
+        __asm   jb  cont \
+        __asm   cmp eax,[ncycles]; \
+        __asm   ja  cont; \
+        __asm   mov [ncycles],eax; \
+        __asm   mov [cyclenfalse],ecx \
+        __asm cont:
 #if CYCLETIMER==TIMECOMPOSE
 #define STARTTIMEC CYCLESTART
 #define STOPTIMEC CYCLESTOP

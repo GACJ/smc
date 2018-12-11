@@ -20,17 +20,17 @@ const char CHARLH = 'l';
 
 enum Call {PLAIN,BOB,SINGLE,EXTREME,USER};
 enum MethodType {TYPENHUNT=0xC0,TYPEPRINCIPLE=0,TYPESINGLEHUNT=0x40,
-			TYPEMANYHUNT=0x80,TYPESLOWCOURSE=0xC0,
-		TYPEDOUBLE=0x20,TYPELITTLE=0x10,
-		TYPEPLAINM=0x08,TYPEBOB=0x04,
-		TYPE=0x03,
-		TYPETREBLEBOBM=0x04,TYPETB=0x01,TYPEDELIGHT=0x02,
-			TYPESURPRISE=0x03,
-		TYPEUNKNOWN=0,TYPETREBLEPLACE=0x01,TYPEALLIANCE=0x02,
-			TYPEHYBRID=0x03,
-		TYPESYMMETRICAL=0x100,
-		TYPEUNCLASSIFIED=0x200,
-		TYPEILLEGAL=0x400};
+            TYPEMANYHUNT=0x80,TYPESLOWCOURSE=0xC0,
+        TYPEDOUBLE=0x20,TYPELITTLE=0x10,
+        TYPEPLAINM=0x08,TYPEBOB=0x04,
+        TYPE=0x03,
+        TYPETREBLEBOBM=0x04,TYPETB=0x01,TYPEDELIGHT=0x02,
+            TYPESURPRISE=0x03,
+        TYPEUNKNOWN=0,TYPETREBLEPLACE=0x01,TYPEALLIANCE=0x02,
+            TYPEHYBRID=0x03,
+        TYPESYMMETRICAL=0x100,
+        TYPEUNCLASSIFIED=0x200,
+        TYPEILLEGAL=0x400};
 
 class Ring;
 
@@ -46,7 +46,7 @@ public:
 protected:
  char *pn;
  char *pnptrs[MAXLEADLEN];
- char *callpn[NDIFFCALLS];		// Only leadend calls at the moment
+ char *callpn[NDIFFCALLS];      // Only leadend calls at the moment
  int type;
  char leadheadcode;
  char symmetrical;
@@ -105,10 +105,10 @@ public:
  void inversetrans(char *source,char *transposer,char *dest);
  void unknowntrans(char *source,char *transposer,char *dest);
  inline int samerow(char *row1,char *row2) {for (int i=0; i<nbells; i++) \
- 				 if (row1[i]!=row2[i]) return(FALSE); \
- 				return(TRUE);}
+                 if (row1[i]!=row2[i]) return(FALSE); \
+                return(TRUE);}
  inline void copyrow(char *source,char *dest) {for (int i=0; i<nbells; i++) \
- 				   dest[i] = source[i]; }
+                   dest[i] = source[i]; }
 };
 
 #define UNTILPNSEP while (c!=0 && c!=CHARCROSS && c!=' ' && c!='.' && c!=CHARLH)

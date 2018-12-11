@@ -12,13 +12,13 @@ Method *mlibrary;
 
 char rounds[] = "1234567890ETABCDFGHJ";
 char *numbers[] = {"Singles","Minimus","Doubles","Minor","Triples",
-	"Major","Caters","Royal","Cinques","Maximus","Sextuples","Fourteen",
-	"Septuples","Sixteen","Octuples","Eighteen","Nonuples","Twenty"};
+    "Major","Caters","Royal","Cinques","Maximus","Sextuples","Fourteen",
+    "Septuples","Sixteen","Octuples","Eighteen","Nonuples","Twenty"};
 char callstrings[] = "-SXU";
 char fourthsbob[] = "14";
 char fourthssingle[] = "1234";
-char sixthsbob[] = "16";		// These get written to depending on
-char sixthssingle[] = "1678";		// number of bells!
+char sixthsbob[] = "16";        // These get written to depending on
+char sixthssingle[] = "1678";       // number of bells!
 
 char *nextpn(char *pn);
 int pnlen(char *pn);
@@ -146,7 +146,7 @@ int Method::parsepn()
    do
    {
     j = q-rounds;
-    if (j>=nbells)			// Find largest bell
+    if (j>=nbells)          // Find largest bell
      nbells = j+1;
     c = *p++;
     if (c==0)
@@ -296,7 +296,7 @@ void Method::findleadheadcode()
  b = strchr(rounds,leadhead[1])-rounds+1;
  if (b==2)
  {
-  leadheadcode = '-';		// 2nd is a hunt bell
+  leadheadcode = '-';       // 2nd is a hunt bell
   return;
  }
  while (i!=3)
@@ -376,9 +376,9 @@ void Method::classify(char *treblepath)
    hunts[i] = FALSE;
  }
  if (c>=nbells/2)
-  type|= TYPEILLEGAL;		// Too many hunts for CC requirements
+  type|= TYPEILLEGAL;       // Too many hunts for CC requirements
  if (nbells-c!=courselength()/leadlen)
-  type|= TYPEILLEGAL;		// CC requires #working bells = #leads
+  type|= TYPEILLEGAL;       // CC requires #working bells = #leads
  if (c>2)
   c = 2;
  type|= c*TYPESINGLEHUNT;
@@ -417,7 +417,7 @@ void Method::classify(char *treblepath)
   return;
  if (treblepath==0)
  {
-  type|= TYPEUNCLASSIFIED;		// Not enough memory to classify
+  type|= TYPEUNCLASSIFIED;      // Not enough memory to classify
   return;
  }
 
@@ -459,7 +459,7 @@ void Method::classify(char *treblepath)
   type|= TYPELITTLE;
 
 // If path is not alliance and there are no internal places,
-//	must be Plain or Treble Bob
+//  must be Plain or Treble Bob
  if (alliance==0 && ntrebleplaces==0 && halfleadplace)
  {
   if (leadlen==(nbells-little)*2)
@@ -485,7 +485,7 @@ void Method::classifyplain()
 
 void Method::classifytreblebob(int ndodges)
 // ndodges is the number of pairs of places dodged in, not how long
-//	each dodge lasts!
+//  each dodge lasts!
 {
  char c,*p,*p2;
  int i,j,sectionlen,internals=0;
@@ -504,7 +504,7 @@ void Method::classifytreblebob(int ndodges)
   }
   for (j=0; j<sectionlen-1; j++)
    p = nextpn(p);
-  if (i!=ndodges-1)		// Don't count half-lead
+  if (i!=ndodges-1)     // Don't count half-lead
   {
    c = *(p2=p);
    UNTILPNSEP
@@ -612,7 +612,7 @@ void Ring::change()
   pn = m->pnptrs[changen];
  if ((c=*pn)==CHARCROSS)
  {
-  c = (char)255;		// Ensure no match with an 'X' bell!
+  c = (char)255;        // Ensure no match with an 'X' bell!
   pn++;
  }
  i = 0;
@@ -660,7 +660,7 @@ void Ring::change()
   {
    ring.callqueued = TRUE;
    ring.callpn =
-	mlibrary->method[ring.nextmethodn].callpn[ring.nextcallpos][call-1];
+    mlibrary->method[ring.nextmethodn].callpn[ring.nextcallpos][call-1];
   }
   ring.nextcallpos++;
  }

@@ -5,7 +5,7 @@
 
 #include "smc.h"
 
-//	TITLE     TRANSP - Row Transposition
+//  TITLE     TRANSP - Row Transposition
 //
 //        (ah=0)          (ah=1)            (ah=2)
 //       Normal          Unknown      Inverse
@@ -20,20 +20,20 @@ void Ring::transpose(char *source,char *transposer,char *dest)
 {
  __asm
  {
-	mov	ecx,[this]
-	mov	ecx,[ecx]Ring.nbells
-	mov	esi,[source]
-	mov	eax,0
-	mov	edi,[dest]
-	mov	edx,[transposer]
+    mov ecx,[this]
+    mov ecx,[ecx]Ring.nbells
+    mov esi,[source]
+    mov eax,0
+    mov edi,[dest]
+    mov edx,[transposer]
 normalloop:
-	mov	al,[edx]
-	inc	edx
-	mov	al,[esi+eax]
-	mov	[edi],al
-	inc	edi
-	dec	ecx
-	jnz	normalloop
+    mov al,[edx]
+    inc edx
+    mov al,[esi+eax]
+    mov [edi],al
+    inc edi
+    dec ecx
+    jnz normalloop
  }
 }
 
@@ -41,23 +41,23 @@ void Ring::unknowntrans(char *source,char *transposer,char *dest)
 {
  __asm
  {
-	mov	ecx,[this]
-	mov	ecx,[ecx]Ring.nbells
-	mov	eax,0
-	mov	esi,[source]
-	mov	edi,[dest]
-	mov	edx,[transposer]
+    mov ecx,[this]
+    mov ecx,[ecx]Ring.nbells
+    mov eax,0
+    mov esi,[source]
+    mov edi,[dest]
+    mov edx,[transposer]
 unknownloop:
-	mov	ch,[edi]
-	inc	edi
-	mov	al,-1
-findloop:	inc	al
-	cmp	ch,[esi+eax]
-	jne	findloop
-	mov	[edx],al
-	inc	edx
-	dec	cl
-	jnz	unknownloop
+    mov ch,[edi]
+    inc edi
+    mov al,-1
+findloop:   inc al
+    cmp ch,[esi+eax]
+    jne findloop
+    mov [edx],al
+    inc edx
+    dec cl
+    jnz unknownloop
  }
 }
 
@@ -65,20 +65,20 @@ void Ring::inversetrans(char *source,char *transposer,char *dest)
 {
  __asm
  {
-	mov	ecx,[this]
-	mov	ecx,[ecx]Ring.nbells
-	mov	esi,[source]
-	mov	eax,0
-	mov	edi,[dest]
-	mov	edx,[transposer]
+    mov ecx,[this]
+    mov ecx,[ecx]Ring.nbells
+    mov esi,[source]
+    mov eax,0
+    mov edi,[dest]
+    mov edx,[transposer]
 inverseloop:
-	mov	ch,[edi]
-	inc	edi
-	mov	al,[edx]
-	inc	edx
-	mov	[esi+eax],ch
-	dec	cl
-	jnz	inverseloop
+    mov ch,[edi]
+    inc edi
+    mov al,[edx]
+    inc edx
+    mov [esi+eax],ch
+    dec cl
+    jnz inverseloop
  }
 }
 
@@ -98,8 +98,8 @@ void Composer::calcfactorials()
 //    for the supplied row. The LHO is a word indicating the segment address
 //    of the array element (ie real address / 16)
 //
-//    es:edi	    Source Row Address
-//    eax	    LHO Result
+//    es:edi        Source Row Address
+//    eax       LHO Result
 //    8              Number of bells
 //
 //    Rows are expected to be in internal format (binary 1 to 8)
@@ -124,16 +124,16 @@ int Composer::calcLHfactnum(char *row)
  int multiplier;
  int i,j;
 
- unknowntrans(row,trans,binrounds);	// Transpose row into bell positions
+ unknowntrans(row,trans,binrounds); // Transpose row into bell positions
  for (i=1; i<nbells; i++)
-  trans[i] = nbells-trans[i]-1;	// Invert positions
+  trans[i] = nbells-trans[i]-1; // Invert positions
  for (i=nbells-1; i>1; i--)
  {
   multiplier = trans[i];
   for (j=nbells-1; j>i; j--)
-   if (trans[i]>trans[j])		// in higher position in row
+   if (trans[i]>trans[j])       // in higher position in row
     if (--multiplier==0)
-     break;			// don't continue with multiplier if zero
+     break;         // don't continue with multiplier if zero
   LHnum+= factorial[i]*multiplier;
  }
  return(LHnum);
