@@ -1,7 +1,7 @@
 ## SMC32
 
 ### Building SMC32
-SMC32 can be built using Visual Studio 2015 Community or above.
+SMC32 can be built using Visual Studio 2017 Community or above.
 
 **via VS2015 developer prompt:**
 ```
