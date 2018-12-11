@@ -16,82 +16,88 @@
 //        ------          ------          ------
 // C  =  [156342]     =   156342       =  156342     C
 
-void Ring::transpose(char *source,char *transposer,char *dest)
+void Ring::transpose(char* source, char* transposer, char* dest)
 {
- __asm
- {
-    mov ecx,[this]
-    mov ecx,[ecx]Ring.nbells
-    mov esi,[source]
-    mov eax,0
-    mov edi,[dest]
-    mov edx,[transposer]
-normalloop:
-    mov al,[edx]
-    inc edx
-    mov al,[esi+eax]
-    mov [edi],al
-    inc edi
-    dec ecx
-    jnz normalloop
- }
+    // clang-format off
+     __asm
+     {
+          mov ecx,[this]
+          mov ecx,[ecx]Ring.nbells
+          mov esi,[source]
+          mov eax,0
+          mov edi,[dest]
+          mov edx,[transposer]
+     normalloop:
+          mov al,[edx]
+          inc edx
+          mov al,[esi+eax]
+          mov [edi],al
+          inc edi
+          dec ecx
+          jnz normalloop
+     }
+    // clang-format on
 }
 
-void Ring::unknowntrans(char *source,char *transposer,char *dest)
+void Ring::unknowntrans(char* source, char* transposer, char* dest)
 {
- __asm
- {
-    mov ecx,[this]
-    mov ecx,[ecx]Ring.nbells
-    mov eax,0
-    mov esi,[source]
-    mov edi,[dest]
-    mov edx,[transposer]
-unknownloop:
-    mov ch,[edi]
-    inc edi
-    mov al,-1
-findloop:   inc al
-    cmp ch,[esi+eax]
-    jne findloop
-    mov [edx],al
-    inc edx
-    dec cl
-    jnz unknownloop
- }
+    // clang-format off
+     __asm
+     {
+          mov ecx,[this]
+          mov ecx,[ecx]Ring.nbells
+          mov eax,0
+          mov esi,[source]
+          mov edi,[dest]
+          mov edx,[transposer]
+     unknownloop:
+          mov ch,[edi]
+          inc edi
+          mov al,-1
+     findloop:   inc al
+          cmp ch,[esi+eax]
+          jne findloop
+          mov [edx],al
+          inc edx
+          dec cl
+          jnz unknownloop
+     }
+    // clang-format on
 }
 
-void Ring::inversetrans(char *source,char *transposer,char *dest)
+void Ring::inversetrans(char* source, char* transposer, char* dest)
 {
- __asm
- {
-    mov ecx,[this]
-    mov ecx,[ecx]Ring.nbells
-    mov esi,[source]
-    mov eax,0
-    mov edi,[dest]
-    mov edx,[transposer]
-inverseloop:
-    mov ch,[edi]
-    inc edi
-    mov al,[edx]
-    inc edx
-    mov [esi+eax],ch
-    dec cl
-    jnz inverseloop
- }
+    // clang-format off
+    __asm
+    {
+         mov ecx,[this]
+         mov ecx,[ecx]Ring.nbells
+         mov esi,[source]
+         mov eax,0
+         mov edi,[dest]
+         mov edx,[transposer]
+    inverseloop:
+         mov ch,[edi]
+         inc edi
+         mov al,[edx]
+         inc edx
+         mov [esi+eax],ch
+         dec cl
+         jnz inverseloop
+    }
+    // clang-format on
 }
 
 int factorial[MAXNBELLS];
 
 void Composer::calcfactorials()
 {
- int i;
+    int i;
 
- factorial[0] = factorial[1] = 0;
- factorial[2] = 1;
- for (i=3; i<nbells; i++)
-  factorial[i] = factorial[i-1]*(i-1);
+    factorial[0] = factorial[1] = 0;
+    factorial[2] = 1;
+    for (i = 3; i < nbells; i++)
+        factorial[i] = factorial[i - 1] * (i - 1);
 }
 
 //    This routine calculates a Lead Head Offset (LHO) into a proving array
@@ -117,24 +123,24 @@ void Composer::calcfactorials()
 //         Gives     -        0    0    4    0   48    0 1440 = 1492
 
 // !! row[0] must be treble (0)
-int Composer::calcLHfactnum(char *row)
+int Composer::calcLHfactnum(char* row)
 {
- char trans[MAXNBELLS];
- int LHnum = 0;
- int multiplier;
- int i,j;
+    char trans[MAXNBELLS];
+    int LHnum = 0;
+    int multiplier;
+    int i, j;
 
- unknowntrans(row,trans,binrounds); // Transpose row into bell positions
- for (i=1; i<nbells; i++)
-  trans[i] = nbells-trans[i]-1; // Invert positions
- for (i=nbells-1; i>1; i--)
- {
-  multiplier = trans[i];
-  for (j=nbells-1; j>i; j--)
-   if (trans[i]>trans[j])       // in higher position in row
-    if (--multiplier==0)
-     break;         // don't continue with multiplier if zero
-  LHnum+= factorial[i]*multiplier;
- }
- return(LHnum);
+    unknowntrans(row, trans, binrounds); // Transpose row into bell positions
+    for (i = 1; i < nbells; i++)
+        trans[i] = nbells - trans[i] - 1; // Invert positions
+    for (i = nbells - 1; i > 1; i--)
+    {
+        multiplier = trans[i];
+        for (j = nbells - 1; j > i; j--)
+            if (trans[i] > trans[j]) // in higher position in row
+                if (--multiplier == 0)
+                    break; // don't continue with multiplier if zero
+        LHnum += factorial[i] * multiplier;
+    }
+    return (LHnum);
 }

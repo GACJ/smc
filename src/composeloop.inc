@@ -545,7 +545,7 @@ inccomp:    add edi,size Composition    // Increment comp ptr
   for (i=0; i<ncompnodes-1+midnodeapex; i++)
   {
    comp[ncompnodes+i+1].node = comp[ncompnodes+i].node->nextnode[comp[ncompnodes+i].call];
-   if (comp[ncompnodes+i+1].node==NULL)
+   if (comp[ncompnodes+i+1].node==nullptr)
     break;
   }
   ncompnodes = ncompnodes*2-1+midnodeapex;
