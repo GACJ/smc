@@ -1,0 +1,70 @@
+56s and 65s back and front
+1 0 xxxx5678 xxxx6578 5678xxxx 6578xxxx
+crus back and front
+1 0 xxxx5678 xxxx6578 xxxx4678 xxxx6478 xxxx4578 xxxx5478 5678xxxx 6578xxxx 4678xxxx 6478xxxx 4578xxxx 5478xxxx
+crus
+1 0 xxxx5678 xxxx6578 xxxx4678 xxxx6478 xxxx4578 xxxx5478
+crus front
+1 0 5678xxxx 6578xxxx 4678xxxx 6478xxxx 4578xxxx 5478xxxx
+5678s
+1 0 xxxx5678
+5678s front
+1 0 5678xxxx
+6578s
+1 0 xxxx6578
+6578s front
+1 0 6578xxxx
+8765s
+1 0 xxxx8765
+8765s front
+1 0 8765xxxx
+7568s
+1 0 xxxx7568
+7568s front
+1 0 7568xxxx
+7658s
+1 0 xxxx7658
+7658s front
+1 0 7658xxxx
+2468s
+1 0 xxxx2468
+3468s
+1 0 xxxx3468
+3578s
+1 0 xxxx3578
+3478s
+1 0 xxxx3478
+4 bell runs
+1 0 xxxx1234 xxxx2345 xxxx3456 xxxx4567 xxxx5678 xxxx4321 xxxx5432 xxxx6543 xxxx7654 xxxx8765
+4 bell runs front
+1 0 1234xxxx 2345xxxx 3456xxxx 4567xxxx 5678xxxx 4321xxxx 5432xxxx 6543xxxx 7654xxxx 8765xxxx
+23456s
+1 0 xxx23456
+3456s
+1 0 xxxx3456
+6543s
+1 0 xxxx6543
+2345s
+1 0 xxxx2345
+5432s
+1 0 xxxx5432
+5 bell runs
+1 0 xxx12345 xxx23456 xxx34567 xxx45678 xxx54321 xxx65432 xxx76543 xxx87654
+5 bell runs front
+1 0 12345xxx 23456xxx 34567xxx 45678xxx 65432xxx 76543xxx 87654xxx
+6 bell runs
+1 0 xx123456 xx234567 xx345678 xx654321 xx765432 xx876543
+6 bell runs front
+1 0 123456xx 234567xx 345678xx 654321xx 765432xx 876543xx 
+7 bell runs (b&f)
+1 0 81234567 76543218 18765432 23456781
+Queens
+1 0 13572468
+Tittums
+1 0 15263748
+Whittingtons
+1 0 12753468
+Backrounds
+1 0 87654321
+87s at back
+-1 -5000 1xxxxx87b
