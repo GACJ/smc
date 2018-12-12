@@ -649,7 +649,11 @@ protected:
     void defaultcallingpositions(int call);
     int addcalltype(Call calltype);
     int readcall(int call);
+
+public:
     void showstats();
+
+protected:
     void printelapsed(char* buf, int nearestsecond = TRUE);
     void finaloutput();
     void analysecomp();
