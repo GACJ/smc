@@ -1,9 +1,11 @@
+#ifdef __TESTBED__
+
 #include "smc.h"
 
-short cmpflh[6];
-short cmpmus8 = 0;
-Node testnode;
-char extranodespace[6 * 4];
+static short cmpflh[6];
+static short cmpmus8 = 0;
+static Node testnode;
+static char extranodespace[6 * 4];
 
 int testbed(int test)
 {
@@ -77,3 +79,5 @@ int testbed(int test)
     }
     return (ncycles);
 }
+
+#endif // __TESTBED__

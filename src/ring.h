@@ -139,9 +139,9 @@ public:
     void starttouch();
     void startlead();
     void change();
-    void transpose(char* source, char* transposer, char* dest);
-    void inversetrans(char* source, char* transposer, char* dest);
-    void unknowntrans(char* source, char* transposer, char* dest);
+    void transpose(const char* source, const char* transposer, char* dest);
+    void inversetrans(char* source, const char* transposer, const char* dest);
+    void unknowntrans(const char* source, char* transposer, char* dest);
     inline int samerow(char* row1, char* row2)
     {
         for (int i = 0; i < nbells; i++)
