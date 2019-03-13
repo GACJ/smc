@@ -292,9 +292,151 @@ lbl_nextcall2:
 
     STOPTIMEBT;
 
-// TODO, line 257
+    // TODO, line 257
+#ifdef CHECKOFTEN
+    // Check if more than SHOWSTATSFREQ million nodes since last showstats()
+    if (MMXCOUNTER)
+    {
+        edx = (int)mm0;
+    }
+    else
+    {
+        edx = ebx->nodecount;
+    }
+    if (edx >= SHOWSTATSFREQ * 1000000)
+    {
+        goto droptostats;
+    }
+#endif
+
 regen:
-composeloop:;
+#if 0
+    // Test for allowed call before doing regen save
+    // Doesn't appear to make much difference
+    if (esi.nextnode[ecx]== 0)
+    {
+        goto lbl_nextcall2;
+    }
+#endif
+    if (REGENERATION)
+    {
+        // The regen pointer is set to point back to the start of the composition
+        // i.e. edi - this->comp
+        // This lead's regenoffset is also added. For the case where course-end
+        // synchronisation is necessary (not all calling positions allowed) the regenoffset
+        // for this lead points sufficiently far into the plain lead buffer (beyond the
+        // START of the composition) to copy in plains up to the course end.
+        ebx.lastregen = edi;
+        ebx.regenptr += (ebx.comp - edi) + esi->regenoffset[ecx];
+    }
+    if (MMXFRAGOPT)
+    {
+#ifdef STOREPATT
+        mm2 = edi->pattern;
+#endif
+    }
+
+composeloop:
+    STARTTIMEC;
+    esi = esi->nextnode[ecx];
+    edi->call = ecx; // Add call to composition
+    if (esi == nullptr)
+    {
+        goto lbl_nextcall;
+    }
+    if (MMXFRAGOPT)
+    {
+        mm7 = ecx;
+    }
+    if (MMXCOUNTER)
+    {
+        // paddd mm0,mm1
+    }
+    else
+    {
+        ebx.stats.nodecount++;
+    }
+    if (!FALSEBITS)
+    {
+#ifdef UNVISITABLE
+        if (esi->unvisitable != 0) // Node unvisitable?
+#else
+        if (esi->included != 0) // Already had that node?
+#endif
+        {
+            goto lbl_nextcall;
+        }
+    }
+    ebp -= esi->nrows;
+    if (ebp < 0)
+    {
+        goto lbl_sublennextcall; // Composition too long?
+    }
+
+    if (CALLCOUNT)
+    {
+        eax = ebx.ncallsleft - 1;
+        if (eax < 0)
+            goto lbl_sublennextcall;
+        edx = ecx + esi->callcountposindex;
+        ebx.ncallsleft[ecx] = eax;
+        eax = ebx.ncallsleftperpos[edx] - 1;
+        if (eax < 0)
+        {
+            ebx.ncallsleft++;
+            goto lbl_sublennextcall;
+        }
+        ebx.ncallsleftperpos[edx] = eax;
+    }
+
+#ifndef CLEANPROOF
+    STARTTIMEF;
+    if (FALSEBITS)
+    {
+        ecx = esi->nfalsenodes;
+        eax = *esi->falsebits[ecx].tableptr & esi->falsebits[ecx].tablemask;
+        if (eax != 0)
+            goto lbl_loadcallnextcall;
+        ecx--;
+        while (ecx != 0)
+        {
+            eax = *esi->falsebits[ecx].tableptr & esi->falsebits[ecx].tablemask;
+            if (eax != 0)
+                goto lbl_loadcallnextcall;
+            ecx--;
+        }
+    }
+    else
+    {
+        edx = esi->falsenodes[0];
+        if (edx != 0)
+        {
+#ifdef EXPANDFALSELOOP
+            ecx = 1;
+            if (esi->falsenodes[0]->included != 0)
+            {
+                goto lbl_loadcallnextcall;
+            }
+#else
+            ecx = 0;
+#endif
+            while (ecx != edx)
+            {
+                eax = esi->falsenodes[ecx];
+                ecx++;
+#ifdef UNVISITABLE
+                esi->falsenodes[ecx]->unvisitable++;
+#else
+                if (esi->falsenodes[ecx]->included != 0)
+                    goto lbl_loadcallnextcall;
+#endif
+            }
+        }
+    }
+#endif
+
+leadok:
+    STOPTIMEF;
 }
 
 void test(Composer& c)
