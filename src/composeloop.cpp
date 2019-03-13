@@ -437,6 +437,205 @@ composeloop:
 
 leadok:
     STOPTIMEF;
+    if (MMXFRAGOPT)
+    {
+        // psllq   mm2, 2
+        // por mm2, mm7
+        // mov edx, [esi]Node.fragmap
+        // movd    eax, mm2
+        // cmp edx, 0
+        // je  notfrag
+        // and eax, [ebx]Composer.fraglib.mask
+        // mov edx, [edx + eax * 4]
+        // cmp edx, 0
+        // je  notfrag
+        // // Check call pattern against fragment list
+        // mov ecx, [edx]
+        // add edx, 4 // size int
+        // pattloop:   dec ecx
+        // js  notfrag
+        // movq    mm6, mm2
+        // movq    mm7, [edx]
+        // pand    mm6, [edx + 8]
+        // pcmpeqd mm6, mm7
+        // add edx, size CompressedFrag
+        // packssdw    mm6, mm6
+        // movd    eax, mm6
+        // cmp eax, 0
+        // je  pattloop
+        // inc[ebx]Composer.stats.prunecount
+        // jmp lbl_loadcallnextcall
+        // notfrag
+    }
+    if (PALINDROMIC)
+    {
+        eax = edi->palinode;
+        ecx = edi->call;
+        if (esi == edi->palinode)
+            goto reachednodeheadapex;
+        auto eax2 = edi->palinode->prevnode[ecx];
+        if (eax2 == nullptr)
+            goto lbl_sublennextcall;
+        (edi + 1)->palinode = eax2;
+        if (esi == eax2)
+            goto reachedmidnodeapex;
+    }
+    // Sub len was here
+    if (PALINDROMIC)
+    {
+        auto eax2 = edi->palinode;
+        if (FALSEBITS)
+        {
+            *eax2->falsebits[0].tableptr |= eax2->falsebits[0].tablemask;
+        }
+        else
+        {
+            eax2->included = 1; // Mark palindromic node included
+        }
+    }
+    edi++; // Increment comp ptr
+    if (FALSEBITS)
+    {
+        edx = *esi->falsebits[0].tableptr |= esi->falsebits[0].tablemask;
+    }
+    else
+    {
+#ifdef UNVISITABLE
+        esi->unvisitable = 1; // Mark node included, unvisitable
+#else
+        esi->included = 1;      // Mark node included
+#endif
+    }
+    if (REGENERATION)
+    {
+        eax = ebx.regenptr;
+    }
+    edi->node = esi; // Add lead to composition
+    if (MMXFRAGOPT)
+    {
+#ifdef STOREPATT
+        edi->pattern = mm2;
+#endif
+    }
+    if (REGENERATION)
+    {
+        ecx = edi + eax;
+    }
+    else
+    {
+#ifdef REVERSECALLS
+        ecx = ebx.ncalltypes;
+#else
+        ecx = 0;
+#endif
+    }
+    STOPTIMEC;
+    if (esi->comesround == 0) // Has come round?
+        goto composeloop;
+
+    if (PALINDROMIC)
+    {
+        // Backtrack on normal rounds - unlinked palindromic 2-part of double length!
+        goto backtrackfromrounds;
+    reachedmidnodeapex:
+        // Need to add on half the palindromic node's length
+        eax = esi->nrows >> 1;
+        ebx.midnodeapex = 1;
+        eax += ebx.maxpalilength;
+        goto inccomp;
+    reachednodeheadapex:
+        ebx.midnodeapex = 0;
+        eax = ebx.maxpalilength;
+    inccomp:
+        edi++; // Increment comp ptr
+        if (FALSEBITS)
+        {
+            *esi->falsebits[0].tableptr |= esi->falsebits[0].tablemask;
+        }
+        else
+        {
+            esi->included = 1; // Mark node included
+        }
+        edi->node = esi; // Add lead to composition
+    }
+    else
+    {
+        eax = ebx.maxpalilength;
+    }
+    eax -= ebp;
+    if (PALINDROMIC)
+    {
+        esi->nrows -= ebp;
+        eax *= 2;
+    }
+    if (eax < ebx.minlengthnow)
+        goto backtrackfromrounds;
+    ebx.complength = eax;
+    ebx.lengthcountdown = ebp;
+    if (MMXCOUNTER)
+    {
+        ebx.stats.nodecount = mm0;
+    }
+    compptr = edi;
+    if (MMXCOUNTER)
+    {
+        // emms
+    }
+
+    ncompnodes = compptr - comp;
+
+    if (REGENERATION)
+    {
+        // Check composition hasn't got 'tail end regeneration'. This occurs when a small
+        // amount (< part size and >=course length) of the initial call sequence is
+        // regenerated at the end of the composition. If this final call sequence is
+        // rotated to the start, it matches an earlier duplicate composition. E.g.
+        //  H W W WH* H
+        // can be produced when a backtrack at * causes the initial H course to be
+        // regenerated, producing rounds. This composition is identical to the already-
+        // produced
+        //  H H W W WH
+        // so can safely be rejected.
+        // We can detect this condition when the last backtrack position DOESN'T split
+        // the composition up into an integral number of parts. So, find # parts first.
+        lastregen++;
+        if (coursestructured)
+        {
+            // Move on to next course end
+            while (lastregen < compptr)
+            {
+                if (lastregen->node->nparts) // Nparts==0 -> not a course end
+                    break;
+                lastregen++;
+            }
+        }
+        nodesperpart = lastregen - comp;
+        // Course end reached - can drop through to non course-structured case
+        // Calculate number of parts
+        nparts = ncompnodes / nodesperpart;
+        // Tail-end regeneration detected if the last backtrack doesn't produce integral parts
+        if (nparts * nodesperpart != ncompnodes)
+            continue;
+    }
+    if (PALINDROMIC)
+    {
+        // Expand palindromic composition
+        for (int i = 0; i < ncompnodes; i++)
+            comp[ncompnodes - 1 + i + midnodeapex].call = comp[ncompnodes - 1 - i].call;
+        for (int i = 0; i < ncompnodes - 1 + midnodeapex; i++)
+        {
+            comp[ncompnodes + i + 1].node = comp[ncompnodes + i].node->nextnode[comp[ncompnodes + i].call];
+            if (comp[ncompnodes + i + 1].node == nullptr)
+                break;
+        }
+        ncompnodes = ncompnodes * 2 - 1 + midnodeapex;
+        if (i + ncompnodes < ncompnodes)
+            continue;
+    }
+    stats.ncompsfound++;
+#if 1
+    analysecomp();
+#endif
 }
 
 void test(Composer& c)
