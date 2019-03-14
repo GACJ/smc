@@ -29,6 +29,11 @@
 // !!! No longer works
 //#define SWAPCALLORDER
 
+// How many million nodes between each showstats() call
+#define SHOWSTATSFREQ 2
+
+//#define ONECOMP
+
 const int MAXSTACKDEPTH = 5000; // In recursefindnodes()
 const int ALIGNMENT = 8;        // !! Must be a power of two
 const int TRUTHTABLEWORDSIZE = 32;

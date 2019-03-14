@@ -1,6 +1,8 @@
 // Include file used to create various versions of the composing loop
 // Copyright Mark B Davies 1998-2000
 
+#ifndef __ASM_IMPL__
+
 #include "smc.h"
 
 // How many million nodes between each showstats() call
@@ -642,3 +644,5 @@ void test(Composer& c)
 {
     composeloop<true, true, true, true, true, true, true>(c);
 }
+
+#endif
