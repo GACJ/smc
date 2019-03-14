@@ -86,7 +86,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;__ASM_IMPL__;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <DisableSpecificWarnings>4102;4200;4731;4799</DisableSpecificWarnings>
     </ClCompile>
     <Link>
@@ -133,7 +133,7 @@
   <ItemGroup>
     <ClCompile Include="buildtable.cpp" />
     <ClCompile Include="compose.cpp" />
-    <ClCompile Include="composeloop.cpp" />
+    <ClCompile Include="composeloop.hpp" />
     <ClCompile Include="compose_asm.cpp" />
     <ClCompile Include="compose_c.cpp" />
     <ClCompile Include="filer.cpp" />

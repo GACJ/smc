@@ -377,7 +377,7 @@ composeloop:
 
     if (CALLCOUNT)
     {
-        eax = ebx.ncallsleft - 1;
+        eax = ebx.ncallsleft[ecx] - 1;
         if (eax < 0)
             goto lbl_sublennextcall;
         edx = ecx + esi->callcountposindex;
@@ -385,7 +385,7 @@ composeloop:
         eax = ebx.ncallsleftperpos[edx] - 1;
         if (eax < 0)
         {
-            ebx.ncallsleft++;
+            ebx.ncallsleft[ecx]++;
             goto lbl_sublennextcall;
         }
         ebx.ncallsleftperpos[edx] = eax;

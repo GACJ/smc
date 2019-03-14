@@ -3,6 +3,8 @@
 // SMC32 32-bit conversion
 // Copyright Mark B Davies 1998-2000
 
+#pragma once
+
 #include "bulkhash.h"
 #include "filer.h"
 #include "fragment.h"
