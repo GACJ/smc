@@ -12,7 +12,15 @@
 #include <stdio.h>
 #include <time.h>
 
-#define VERSION "SMC32 v0.965.2-msvc"
+#if defined (_MSC_VER)
+#define COMPILER "msvc"
+#elif defined (__GNUC__)
+#define COMPILER "gcc"
+#else
+#error "Unknown compiler"
+#endif
+
+#define VERSION "SMC32 v0.965.2-" COMPILER
 #define COPYRIGHT "(c) 1998-2003 Mark B Davies & Graham A C John"
 #define INEXT "smc"
 #define MUSEXT "mus"

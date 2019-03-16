@@ -5,7 +5,6 @@
 
 #include "smc.h"
 #include <ctype.h>
-#include <excpt.h>
 #include <limits.h>
 #include <stdlib.h>
 #include <string.h>
@@ -13,6 +12,7 @@
 #if defined(__GNUC__) && (defined(__x86_64__) || defined(__i386__))
 #include <cpuid.h>
 #elif defined(_MSC_VER) && (_MSC_VER >= 1500) && (defined(_M_X64) || defined(_M_IX86)) // VS2008
+#include <excpt.h>
 #include <intrin.h>
 #include <nmmintrin.h>
 #endif
@@ -26,7 +26,7 @@ int badusage()
     return (1);
 }
 
-int __cdecl main(int argc, char** argv)
+int main(int argc, char** argv)
 {
     ExtMethod method;
     char* ext;

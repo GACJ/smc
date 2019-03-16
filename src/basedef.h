@@ -37,7 +37,12 @@ inline char* stpcpy(char* dest, const char* src)
     return strchr(dest, 0);
 }
 
+#if defined(_MSC_VER)
 #define strcmpi _strcmpi
 #define strncmpi _strnicmp
+#else
+#define strcmpi strcasecmp
+#define strncmpi strncasecmp
+#endif
 
 #endif // INCBASEDEF

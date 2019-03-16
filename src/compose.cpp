@@ -7,6 +7,7 @@
 #include <ctype.h>
 #include <limits.h>
 #include <math.h>
+#include <stdint.h>
 #include <stdlib.h>
 
 // How many clock ticks between checkpoints (given no other comp output)

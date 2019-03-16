@@ -4,6 +4,7 @@
 // Copyright Mark B Davies 1998-2000
 
 #include "smc.h"
+#include <stdint.h>
 #include <stdlib.h>
 #include <time.h>
 

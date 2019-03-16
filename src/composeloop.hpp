@@ -3,6 +3,7 @@
 
 #ifndef __ASM_IMPL__
 
+#include <stdint.h>
 #include "smc.h"
 
 // Both the following optimisations appear to make cycle performance in the inner
@@ -37,7 +38,7 @@ struct composeloop
     {
         Composition *compptr, *edi;
         Node* esi;
-        int eax, ecx, ebp;
+        int eax, ecx, ebp, edx1;
         // long long mm0, mm1, mm2, mm7;
 
         auto& ebx = composer;
@@ -90,7 +91,7 @@ struct composeloop
         esi = edi->node;
     backtrackfromrounds:
         // Check if more than SHOWSTATSFREQ million nodes since last showstats()
-        auto edx1 = ebx.stats.nodecount;
+        edx1 = ebx.stats.nodecount;
         if (edx1 < SHOWSTATSFREQ * 1000000)
         {
             goto backtrack;
@@ -171,6 +172,7 @@ struct composeloop
         }
 
         STARTTIMEF;
+        {
         auto edx2 = esi->nfalsenodes;
         if (edx2 != 0)
         {
@@ -186,6 +188,7 @@ struct composeloop
                 if (eax2->included != 0)
                     goto lbl_loadcallnextcall;
             }
+        }
         }
 
     leadok:
