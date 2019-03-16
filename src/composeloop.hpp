@@ -100,8 +100,8 @@ struct composeloop
         ebx.complength = eax;
         ebx.lengthcountdown = ebp;
         ebx.stats.nodecount = edx1;
-        // compptr = edi;
-        composer.ncompnodes = compptr - composer.comp;
+        compptr = edi;
+        composer.ncompnodes = (int)(compptr - composer.comp);
         composer.showstats();
         goto reenter;
 
@@ -212,7 +212,7 @@ struct composeloop
         ebx.complength = eax;
         ebx.lengthcountdown = ebp;
         compptr = edi;
-        ebx.ncompnodes = compptr - ebx.comp;
+        ebx.ncompnodes = (int)(compptr - ebx.comp);
 
         if (REGENERATION)
         {
@@ -239,7 +239,7 @@ struct composeloop
                     ebx.lastregen++;
                 }
             }
-            ebx.nodesperpart = ebx.lastregen - ebx.comp;
+            ebx.nodesperpart = (int)(ebx.lastregen - ebx.comp);
             // Course end reached - can drop through to non course-structured case
             // Calculate number of parts
             ebx.nparts = ebx.ncompnodes / ebx.nodesperpart;
