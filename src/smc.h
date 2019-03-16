@@ -663,7 +663,9 @@ public:
 protected:
     void printelapsed(char* buf, int nearestsecond = TRUE);
     void finaloutput();
+public:
     void analysecomp();
+protected:
     void countparts();
     void countcalls();
     int evalcomp();
