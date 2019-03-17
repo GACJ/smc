@@ -118,6 +118,8 @@ struct composeloop
 
     lbl_nextcall:
         esi = edi->node;
+        if (MULTIPART && ebp < ebx.maxpartlength)
+            goto backtrack;
 
         ecx++;
         if (ecx <= ebx.ncalltypes)
@@ -132,6 +134,8 @@ struct composeloop
         ecx = edi->call;
         ebp += esi->nrows; // Reduce composition length
         esi = edi->node;   // Load previous lead
+        if (MULTIPART && ebp < ebx.maxpartlength)
+            goto backtrack;
 
     lbl_nextcall2:
         ecx++;
