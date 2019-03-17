@@ -8,7 +8,7 @@ void File::changeextension(char* ext)
 {
     char* p;
 
-    p = strchr(name, '.');
+    p = strrchr(name, '.');
     if (p == nullptr)
     {
         p = name + strlen(name);
@@ -22,7 +22,7 @@ void File::changeexttype(char* ext)
 {
     char* p;
 
-    p = strchr(name, '.');
+    p = strrchr(name, '.');
     if (p == nullptr)
     {
         p = name + strlen(name);
@@ -41,7 +41,7 @@ int File::sameexttype(char* ext)
 {
     char* p;
 
-    p = strchr(name, '.');
+    p = strrchr(name, '.');
     if (p == nullptr)
         return ext == nullptr || ext[0] == 0;
     return strncmpi(p + 1, ext, 2) == 0;
