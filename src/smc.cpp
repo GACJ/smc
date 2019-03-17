@@ -26,7 +26,11 @@ int badusage()
     return (1);
 }
 
+#if defined(_MSC_VER)
+int __cdecl main(int argc, char** argv)
+#else
 int main(int argc, char** argv)
+#endif
 {
     ExtMethod method;
     char* ext;

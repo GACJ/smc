@@ -5,7 +5,8 @@ jobs:
     vmImage: 'VS2017-Win2016'
   steps:
   - script: |
-      msbuild smc32.sln /p:configuration=Release /p:platform=Win32
+      call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\Common7\Tools\VsDevCmd.bat"
+      msbuild smc32.sln /p:Configuration=Release /p:Platform=x86 /p:PlatformToolset=v140 /p:WindowsTargetPlatformVersion=8.1
     displayName: 'Build'
   - script: |
       test\test.bat

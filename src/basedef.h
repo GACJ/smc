@@ -31,18 +31,22 @@ inline int filesize(const char* path)
     return size;
 }
 
+#if defined(_MSC_VER)
+
+#define strcmpi _strcmpi
+#define strncmpi _strnicmp
+
 inline char* stpcpy(char* dest, const char* src)
 {
     strcpy(dest, src);
     return strchr(dest, 0);
 }
 
-#if defined(_MSC_VER)
-#define strcmpi _strcmpi
-#define strncmpi _strnicmp
 #else
+
 #define strcmpi strcasecmp
 #define strncmpi strncasecmp
+
 #endif
 
 #endif // INCBASEDEF

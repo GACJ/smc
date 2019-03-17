@@ -5,7 +5,7 @@ FINALRESULT=0
 SMC32=../bin/smc32
 
 # Clean output files
-rm data/*.sf1 data/*.cf1
+rm -f data/*.sf1 data/*.cf1
 
 # Test case 1:
 echo '---------------------------------------------------------------'
