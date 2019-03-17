@@ -37,7 +37,7 @@ public:
     char* getname() { return name; }
     char* getextension()
     {
-        char* p = strchr(name, '.');
+        char* p = strrchr(name, '.');
         if (p == nullptr)
             return "";
         else
