@@ -1,0 +1,26 @@
+jobs:
+- job: windows
+  displayName: Windows
+  pool:
+    vmImage: 'VS2017-Win2016'
+  steps:
+  - script: |
+      msbuild smc32.sln /p:configuration=Release /p:platform=Win32
+    displayName: 'Build'
+  - script: |
+      test\test.bat
+    displayName: 'Test'
+
+- job: ubuntu
+  displayName: Ubuntu 16.04
+  pool:
+    vmImage: 'Ubuntu-16.04'
+  steps:
+  - script: |
+      mkdir bin && cd bin
+      cmake .. -DCMAKE_BUILD_TYPE=Release
+      make
+    displayName: 'Build'
+  - script: |
+      ./test/test.sh
+    displayName: 'Test'
