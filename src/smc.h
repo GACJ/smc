@@ -3,6 +3,8 @@
 // SMC32 32-bit conversion
 // Copyright Mark B Davies 1998-2000
 
+#pragma once
+
 #include "bulkhash.h"
 #include "filer.h"
 #include "fragment.h"
@@ -10,7 +12,15 @@
 #include <stdio.h>
 #include <time.h>
 
-#define VERSION "SMC32 v0.965.2-msvc"
+#if defined (_MSC_VER)
+#define COMPILER "msvc"
+#elif defined (__GNUC__)
+#define COMPILER "gcc"
+#else
+#error "Unknown compiler"
+#endif
+
+#define VERSION "SMC32 v0.965.2-" COMPILER
 #define COPYRIGHT "(c) 1998-2003 Mark B Davies & Graham A C John"
 #define INEXT "smc"
 #define MUSEXT "mus"
@@ -28,6 +38,11 @@
 // SWAPCALLORDER => lastcalltype=PLAIN & vice versa
 // !!! No longer works
 //#define SWAPCALLORDER
+
+// How many million nodes between each showstats() call
+#define SHOWSTATSFREQ 2
+
+//#define ONECOMP
 
 const int MAXSTACKDEPTH = 5000; // In recursefindnodes()
 const int ALIGNMENT = 8;        // !! Must be a power of two
@@ -649,10 +664,16 @@ protected:
     void defaultcallingpositions(int call);
     int addcalltype(Call calltype);
     int readcall(int call);
+
+public:
     void showstats();
+
+protected:
     void printelapsed(char* buf, int nearestsecond = TRUE);
     void finaloutput();
+public:
     void analysecomp();
+protected:
     void countparts();
     void countcalls();
     int evalcomp();

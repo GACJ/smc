@@ -87,6 +87,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions Condition="'$(Platform)'=='Win32'">__ASM_IMPL__;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <DisableSpecificWarnings>4102;4200;4731;4799</DisableSpecificWarnings>
     </ClCompile>
     <Link>
@@ -96,7 +97,6 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -134,6 +134,9 @@
   <ItemGroup>
     <ClCompile Include="buildtable.cpp" />
     <ClCompile Include="compose.cpp" />
+    <ClCompile Include="composeloop.hpp" />
+    <ClCompile Include="compose_asm.cpp" />
+    <ClCompile Include="compose_c.cpp" />
     <ClCompile Include="filer.cpp" />
     <ClCompile Include="library.cpp" />
     <ClCompile Include="method.cpp" />

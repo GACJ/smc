@@ -48,6 +48,15 @@
     <ClCompile Include="transpose.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="compose_asm.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="compose_c.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="composeloop.hpp">
+      <Filter>Header Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="basedef.h">
