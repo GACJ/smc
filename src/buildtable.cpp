@@ -47,7 +47,7 @@ int Composer::findtablesize()
 {
     printf(" Counting number of non-excluded nodes...");
     // Initialise node hash table
-    if (!nodehasher.init(1 << 16, 4, sizeof(HashedNode)))
+    if (!nodehasher.init(1 << 16, sizeof(HashedNode*), sizeof(HashedNode)))
     {
         printf("\nERROR: failed to alloc node hashtable\n");
         return (FALSE);
@@ -434,7 +434,7 @@ int Composer::gennodetable()
         maxnodealloc *= sizeof(FalseBits);
     }
     else
-        maxnodealloc = 4 * maxnodefalse;
+        maxnodealloc = sizeof(Node*) * maxnodefalse;
 
     // Now we know the maximum number of false nodes per node, we can allocate
     // Node structures of minimum size (important for cache usage in composing loop)
