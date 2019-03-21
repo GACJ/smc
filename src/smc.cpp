@@ -33,7 +33,6 @@ int main(int argc, char** argv)
 #endif
 {
     ExtMethod method;
-    char* ext;
     Composer ring(&method);
     int n;
 
@@ -43,15 +42,17 @@ int main(int argc, char** argv)
         return badusage();
     ring.redomusic = FALSE;
     ring.outfile.newfile(argv[1]);
-    ext = ring.outfile.getextension();
+    auto ext = ring.outfile.getextension();
     // Starting a new search?
     if (strcmpi(ext, INEXT) == 0)
+    {
         if (argc != 2)
             return badusage();
         else if (!ring.newsearch())
             return (10);
         else
             return (0);
+    }
 
     // Restarting a previous .sf0 file?
     if (strncmpi(ext, OUTEXT, 2) != 0)

@@ -3,8 +3,8 @@
 
 #ifndef __ASM_IMPL__
 
-#include <stdint.h>
 #include "smc.h"
+#include <stdint.h>
 
 // Both the following optimisations appear to make cycle performance in the inner
 // loop on the Cyrix chip WORSE. However, overall performance is still improved!!
@@ -177,22 +177,22 @@ struct composeloop
 
         STARTTIMEF;
         {
-        auto edx2 = esi->nfalsenodes;
-        if (edx2 != 0)
-        {
-            ecx = 1;
-            if (esi->falsenodes[0]->included != 0)
+            auto edx2 = esi->nfalsenodes;
+            if (edx2 != 0)
             {
-                goto lbl_loadcallnextcall;
-            }
-            while (ecx != edx2)
-            {
-                auto eax2 = esi->falsenodes[ecx];
-                ecx++;
-                if (eax2->included != 0)
+                ecx = 1;
+                if (esi->falsenodes[0]->included != 0)
+                {
                     goto lbl_loadcallnextcall;
+                }
+                while (ecx != edx2)
+                {
+                    auto eax2 = esi->falsenodes[ecx];
+                    ecx++;
+                    if (eax2->included != 0)
+                        goto lbl_loadcallnextcall;
+                }
             }
-        }
         }
 
     leadok:

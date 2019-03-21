@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-void File::changeextension(char* ext)
+void File::changeextension(const char* ext)
 {
     char* p;
 
@@ -18,7 +18,7 @@ void File::changeextension(char* ext)
 }
 
 // Changes first two characters of extension, leaves number
-void File::changeexttype(char* ext)
+void File::changeexttype(const char* ext)
 {
     char* p;
 
@@ -37,21 +37,24 @@ void File::changeexttype(char* ext)
 }
 
 // Checks first two characters only
-int File::sameexttype(char* ext)
+int File::sameexttype(const char* ext)
 {
-    char* p;
-
-    p = strrchr(name, '.');
+    auto p = strrchr(name, '.');
     if (p == nullptr)
-        return ext == nullptr || ext[0] == 0;
+        return ext == nullptr || ext[0] == '\0';
     return strncmpi(p + 1, ext, 2) == 0;
 }
 
-int File::incextension(char* ext)
+int File::incextension(const char* text)
 {
     close();
-    changeextension(ext);
-    ext = getextension();
+    changeextension(text);
+    auto ext = getextension();
+    if (strlen(ext) < 3)
+    {
+        printf("ERROR: extension was not 3 or more characters (%s)\n", ext);
+        return FALSE;
+    }
     do
     {
         ext[2]++;
@@ -80,7 +83,7 @@ int File::resetpos()
 }
 
 // Prints error message and returns FALSE if write failed
-int LineFile::writeline(char* line)
+int LineFile::writeline(const char* line)
 {
     if (!open())
     {
@@ -96,7 +99,7 @@ int LineFile::writeline(char* line)
 }
 
 // Prints error message and returns FALSE if write failed
-int LineFile::multiwrite(char* buf)
+int LineFile::multiwrite(const char* buf)
 {
     if (!open())
     {

@@ -37,7 +37,7 @@ int ExtMethod::buildtables(Composer& ring)
     // Calculate an estimate of the average search depth, in nodes
 
     time = clock() - time;
-    printf(" Table building took %d.%03d seconds\n", time / CLOCKS_PER_SEC, time % CLOCKS_PER_SEC);
+    printf(" Table building took %d.%03d seconds\n", (int)(time / CLOCKS_PER_SEC), (int)(time % CLOCKS_PER_SEC));
     return (TRUE);
 }
 
@@ -149,6 +149,7 @@ int Composer::recursefindnodes(int stacklevel)
                 while (changen < m->leadlen)
                 {
                     if (isfinishrow(row))
+                    {
                         if (changen > 0 && exclude.nointernalrounds)
                         {
                             excluded = TRUE;
@@ -165,6 +166,7 @@ int Composer::recursefindnodes(int stacklevel)
                             rounds = TRUE;
                             break;
                         }
+                    }
                     if (changen == 0 && isLHexcluded())
                     {
                         excluded = TRUE;
@@ -183,10 +185,12 @@ int Composer::recursefindnodes(int stacklevel)
                     change();
                 }
                 if (excluded)
+                {
                     if (lead == nodeleads - 1)
                         continue;
                     else
                         goto deadend;
+                }
                 // If node had no exclusions, add to table
                 // If calling position allowed, recurse from next nodehead
                 if (rounds || (lead == nodeleads - 1 && exclude.allowedcalls[call][findcallingbell()]))
@@ -240,10 +244,12 @@ int Composer::isLHexcluded()
         {
             callingbellpos = findcallingbell(courseend.matches[i].row);
             if (callingbellpos < 0 || row[callingbellpos] == callingbell)
+            {
                 if (isrowmatch(courseend.matches[i]))
                     break;
                 else
                     failedmatches++;
+            }
         }
         if (i == courseend.nrows && failedmatches)
             return (TRUE);
@@ -442,7 +448,7 @@ int Composer::gennodetable()
     safedelete(nodealloc);
     nodesize = sizeof(Node) + maxnodealloc;
     // Pad to 8-byte multiple
-    nodesize = nodesize + ALIGNMENT - 1 & ~(ALIGNMENT - 1);
+    nodesize = (nodesize + ALIGNMENT - 1) & ~(ALIGNMENT - 1);
     printf(" (node size %d) ...", nodesize);
     nodealloc = new char[nodesize * nodesincluded + ALIGNMENT];
     if (nodealloc == 0)
@@ -451,7 +457,7 @@ int Composer::gennodetable()
         return (FALSE);
     }
     // Align on 8-byte boundary
-    nodes = (char*)((uintptr_t)nodealloc + ALIGNMENT - 1 & ~(ALIGNMENT - 1));
+    nodes = (char*)(((uintptr_t)nodealloc + ALIGNMENT - 1) & ~(ALIGNMENT - 1));
     // Fill each Node structure - also find starting node
     startnode = nullptr;
     for (i = 0; i < nodesincluded; i++)
@@ -591,7 +597,7 @@ void Composer::countnodemusic(int n)
     }
 }
 
-int Composer::musthaveblockerror(Block* b, char* err)
+int Composer::musthaveblockerror(Block* b, const char* err)
 {
     char tempbuf[MAXNBELLS + 1];
     writerow(b->entrylh, tempbuf);

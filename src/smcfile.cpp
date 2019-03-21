@@ -8,36 +8,36 @@
 
 int isMMXsupported();
 
-char* const DELIMITERS = " ,\t";
-char* const MATCHWILD = "x?-.";
+constexpr auto DELIMITERS = " ,\t";
+constexpr auto MATCHWILD = "x?-.";
 
-char* const TOKEN_ROUNDS = "round";
-char* const TOKEN_LEADHEAD = "leadhead";
-char* const TOKEN_INTERNAL = "internal";
-char* const TOKEN_CALLFROM = "callfrom";
-char* const TOKEN_STARTFROM = "startfrom";
-char* const TOKEN_ENDIN = "endin";
-char* const TOKEN_PLAIN = "plain";
-char* const TOKEN_BOB = "bob";
-char* const TOKEN_SINGLE = "single";
-char* const TOKEN_EXTREME = "extreme";
-char* const TOKEN_PN = "pn";
-char* const TOKEN_PARTS = "part";
-char* const TOKEN_MAKELIB = "makelib";
-char* const TOKEN_USELIB = "uselib";
-char* const TOKEN_MUSICMIN = "min";
-char* const TOKEN_MUSTHAVE = "musthave";
-char* const TOKEN_SHOULDHAVE = "shouldhave";
+constexpr auto TOKEN_ROUNDS = "round";
+constexpr auto TOKEN_LEADHEAD = "leadhead";
+constexpr auto TOKEN_INTERNAL = "internal";
+constexpr auto TOKEN_CALLFROM = "callfrom";
+constexpr auto TOKEN_STARTFROM = "startfrom";
+constexpr auto TOKEN_ENDIN = "endin";
+constexpr auto TOKEN_PLAIN = "plain";
+constexpr auto TOKEN_BOB = "bob";
+constexpr auto TOKEN_SINGLE = "single";
+constexpr auto TOKEN_EXTREME = "extreme";
+constexpr auto TOKEN_PN = "pn";
+constexpr auto TOKEN_PARTS = "part";
+constexpr auto TOKEN_MAKELIB = "makelib";
+constexpr auto TOKEN_USELIB = "uselib";
+constexpr auto TOKEN_MUSICMIN = "min";
+constexpr auto TOKEN_MUSTHAVE = "musthave";
+constexpr auto TOKEN_SHOULDHAVE = "shouldhave";
 // Flags
-char* const TOKEN_ALLROTS = "allrots";
-char* const TOKEN_LONGESTYET = "longestyet";
-char* const TOKEN_BESTYET = "bestyet";
-char* const TOKEN_PALINDROMIC = "palindromic";
+constexpr auto TOKEN_ALLROTS = "allrots";
+constexpr auto TOKEN_LONGESTYET = "longestyet";
+constexpr auto TOKEN_BESTYET = "bestyet";
+constexpr auto TOKEN_PALINDROMIC = "palindromic";
 // "Undocumented" flags
-char* const TOKEN_NOMMX = "nommx";
-char* const TOKEN_NONODES = "nonodes";
-char* const TOKEN_NOREGEN = "noregen";
-char* const TOKEN_BITTRUTH = "bittruth";
+constexpr auto TOKEN_NOMMX = "nommx";
+constexpr auto TOKEN_NONODES = "nonodes";
+constexpr auto TOKEN_NOREGEN = "noregen";
+constexpr auto TOKEN_BITTRUTH = "bittruth";
 
 const char NOCALLINGBELL = '-';             // Sets coursestructured to FALSE
 const char LIMITCALLCHAR = '<';             // Followed by max # calls allowed
@@ -112,10 +112,12 @@ void Composer::finaloutput()
     else
         sprintf(outfile.buffer, "%llu Compositions found, ", stats.ncompsfound);
     if (rotationalsort)
+    {
         if (((int*)&stats.nrotsfound)[1])
             sprintf(outfile.buffer + strlen(outfile.buffer), "%lld million rotations, ", stats.nrotsfound / 1000000);
         else
             sprintf(outfile.buffer + strlen(outfile.buffer), "%lld rotations, ", stats.nrotsfound);
+    }
     sprintf(outfile.buffer + strlen(outfile.buffer), "%d output", stats.ncompsoutput);
     printf("%s\n", outfile.buffer);
     outfile.writeline();
@@ -168,7 +170,7 @@ void Composer::printelapsed(char* buf, int nearestsecond)
         sprintf(buf, "%d:%02d:%02d.%03lld", hours, minutes, seconds, stats.elapsed % CLOCKS_PER_SEC);
 }
 
-char* calltokens[NDIFFCALLS] = { TOKEN_PLAIN, TOKEN_BOB, TOKEN_SINGLE, TOKEN_EXTREME };
+const char* calltokens[NDIFFCALLS] = { TOKEN_PLAIN, TOKEN_BOB, TOKEN_SINGLE, TOKEN_EXTREME };
 
 // For required format see readinputfile() below
 int Composer::writefileheader(LineFile& f)
@@ -580,7 +582,7 @@ int Composer::writeheaderessential(LineFile& f)
     return (TRUE);
 }
 
-char* Block::blocktype()
+const char* Block::blocktype()
 {
     if (essential)
         return TOKEN_MUSTHAVE;
@@ -998,7 +1000,7 @@ int Composer::readinputfile(LineFile& f)
 }
 
 // Reads leadhead row from input *p, checking for right number of bells, good characters etc
-int Composer::readlh(char* p, char* buf, char* errprefix)
+int Composer::readlh(char* p, char* buf, const char* errprefix)
 {
     int i;
     char* b;
@@ -1008,7 +1010,7 @@ int Composer::readlh(char* p, char* buf, char* errprefix)
         printf("%s:\nno row given\n", errprefix);
         return (FALSE);
     }
-    if (strlen(p) != nbells)
+    if ((int)strlen(p) != nbells)
     {
         printf("%s:\nincorrect number of bells in row %s\n", errprefix, p);
         return (FALSE);

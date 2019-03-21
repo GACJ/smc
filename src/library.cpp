@@ -304,6 +304,7 @@ int CompHasher::addcomp(Composer* ring)
     if (!ring->storecomposition(newcomp))
         return (FALSE);
     if (!add(&newcomp, newcomp.hashvalue))
+    {
         if (geterror() == BULKLISTFULL)
         {
             storedcomp = (CompStore*)getitem(newcomp.hashvalue, clock() % getlistsize(newcomp.hashvalue));
@@ -315,6 +316,7 @@ int CompHasher::addcomp(Composer* ring)
             printf("ERROR: failed to add composition to hash table\n");
             return (FALSE);
         }
+    }
     newcomp.calling = nullptr; // Calling has been transferred - dereference in newcomp
     newcomp.allocsize = 0;
     return (TRUE);
@@ -390,10 +392,12 @@ void FragmentLibrary::normalise()
                         frag = (Fragment*)fragmap[b][i].bulklist->getitem(j);
                         dupfrag = findduplicate(frag, b);
                         if (dupfrag) // We have a duplicate-duplicate match
+                        {
                             if (searchorder(frag->primary, dupfrag->primary, frag->length))
                                 dupfrag->replaceprimary(frag->primary);
                             else
                                 frag->replaceprimary(dupfrag->primary);
+                        }
                         dupfrag = findprimary(frag, b);
                         if (dupfrag) // We have a primary-duplicate match
                             frag->replaceprimary(dupfrag->primary);

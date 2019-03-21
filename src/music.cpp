@@ -151,7 +151,7 @@ int Composer::musicsort(int maxncomps)
                 if (!compsorter.addcomp(topcomp))
                     return (FALSE);
                 if (topcomp.nmusthaveblocks > specialcomps[nmusicdefs].nmusthaveblocks
-                    || topcomp.nmusthaveblocks == specialcomps[nmusicdefs].nmusthaveblocks && score > specialcomps[i].score)
+                    || (topcomp.nmusthaveblocks == specialcomps[nmusicdefs].nmusthaveblocks && score > specialcomps[i].score))
                 {
                     specialcomps[nmusicdefs].rot = comprot;
                     specialcomps[nmusicdefs].score = score;
@@ -162,7 +162,7 @@ int Composer::musicsort(int maxncomps)
                         return (FALSE);
                 }
                 for (i = 0; i < nmusicdefs; i++)
-                    if (musicdefs[i].weighting > 0 && (music.score[i] > specialcomps[i].music.score[i] || music.score[i] == specialcomps[i].music.score[i] && score > specialcomps[i].score))
+                    if (musicdefs[i].weighting > 0 && (music.score[i] > specialcomps[i].music.score[i] || (music.score[i] == specialcomps[i].music.score[i] && score > specialcomps[i].score)))
                     {
                         specialcomps[i].rot = comprot;
                         specialcomps[i].score = score;
@@ -346,22 +346,28 @@ int CompMusicStore::isTV(CompMusicStore& storedcomp)
     // Compositions are musically identical.
     // Return -1 if storedcomp has more parts, +1 if this has more parts
     if (storedcomp.nparts != nparts)
+    {
         if (storedcomp.nparts > nparts)
             return (-1);
         else
             return (1);
+    }
     // Return -1 if storedcomp is shorter, +1 if this is shorter
     if (storedcomp.length != length)
+    {
         if (storedcomp.length < length)
             return (-1);
         else
             return (1);
+    }
     // Return -1 if storedcomp has fewer calls, +1 if this has fewer calls
     if (storedcomp.ncalls != ncalls)
+    {
         if (storedcomp.ncalls < ncalls)
             return (-1);
         else
             return (1);
+    }
     // Return -1 if storedcomp has more bobs (i.e. fewer singles and extremes)
     if (storedcomp.callcount[1] > callcount[1])
         return (-1);
@@ -384,6 +390,7 @@ int CompSorter::addcomp(CompMusicStore& newcomp)
         {
             whichTV = list[i]->isTV(newcomp); // Is new composition a TV?
             if (whichTV)
+            {
                 if (whichTV > 0) // Yes, and old composition is better
                 {
                     list[i]->nTVs++;
@@ -395,6 +402,7 @@ int CompSorter::addcomp(CompMusicStore& newcomp)
                     newcomp.nTVs = 1 + replace->nTVs;
                     goto copy;
                 }
+            }
         }
         else
 #endif
@@ -558,10 +566,12 @@ int Composer::displaycomp(int compn, CompMusicStore* thiscomp, LineFile& f)
     }
     // If compn<=0, is a special comp maximising musicdefs[-compn]
     if (compn <= 0)
+    {
         if (-compn >= nmusicdefs)
             sprintf(f.buffer + strlen(f.buffer), " (Max must/shouldhave blocks)");
         else
             sprintf(f.buffer + strlen(f.buffer), " (Max %s)", musicdefs[-compn].name);
+    }
     if (!f.writeline())
         return (FALSE);
     // Print out column headings
@@ -583,11 +593,15 @@ int Composer::displaycomp(int compn, CompMusicStore* thiscomp, LineFile& f)
         buf += sprintf(buf, "  ");
     *buf++ = ' ';
     if (startinrounds)
+    {
         for (j = firstworkingbell; j <= lastworkingbell; j++)
             *buf++ = rounds[j];
+    }
     else
+    {
         for (j = firstworkingbell; j <= lastworkingbell; j++)
             *buf++ = rounds[startrow[j]];
+    }
     *buf++ = ' ';
     *buf = 0;
     if (!printcourseendsfirst)
@@ -643,7 +657,9 @@ int Composer::displaycomp(int compn, CompMusicStore* thiscomp, LineFile& f)
                         *buf++ = ' ';
                     }
                     else
+                    {
                         buf += sprintf(buf, "  ");
+                    }
                     if (realcourseend)
                     {
                         *buf++ = ' ';
@@ -900,6 +916,7 @@ int Composer::isrowmatch(MusicRow& m)
     // The backstroke won't match unless the immediately preceeding h/stroke set the flag
     // !!! Relies on even lead length
     if (m.type == MUSICWRAP)
+    {
         if (changen & 1) // Clear the flag before every handstroke
             m.handstrokewrapmatch = FALSE;
         else
@@ -911,6 +928,7 @@ int Composer::isrowmatch(MusicRow& m)
                     return (FALSE);
             return (TRUE); // Yes! Both strokes of wrap match
         }
+    }
     // Normal row type matches at any position in lead
     for (i = 0; i < nbells; i++)
         if (m.row[i] >= 0 && row[i] != m.row[i])

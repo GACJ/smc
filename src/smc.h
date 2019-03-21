@@ -12,9 +12,9 @@
 #include <stdio.h>
 #include <time.h>
 
-#if defined (_MSC_VER)
+#if defined(_MSC_VER)
 #define COMPILER "msvc"
-#elif defined (__GNUC__)
+#elif defined(__GNUC__)
 #define COMPILER "gcc"
 #else
 #error "Unknown compiler"
@@ -60,10 +60,10 @@ const int MAXNPARTS = 3 * 4 * 5 * 7; // Maximum number of parts for 20 bells!!
 const int COMPSPERBULKLIST = 1000; // Comps per BulkList
 const int COMPSPERBULKHASH = 16;   // Comps per BulkHash
 
-char* const TOKEN_MUSIC = "MUSIC";
-char* const TOKEN_START = "SMC32";
-char* const TOKEN_END = "SMC32";
-char* const TOKEN_FRAGMENTLIB = "FRAGMENTS";
+constexpr auto TOKEN_MUSIC = "MUSIC";
+constexpr auto TOKEN_START = "SMC32";
+constexpr auto TOKEN_END = "SMC32";
+constexpr auto TOKEN_FRAGMENTLIB = "FRAGMENTS";
 
 class Node;
 class NodeExtra;
@@ -170,7 +170,7 @@ public:
 
 public:
     Block() { essential = FALSE; }
-    char* blocktype();
+    const char* blocktype();
 };
 
 // One call in the composition - type of call and node pointer
@@ -671,8 +671,10 @@ public:
 protected:
     void printelapsed(char* buf, int nearestsecond = TRUE);
     void finaloutput();
+
 public:
     void analysecomp();
+
 protected:
     void countparts();
     void countcalls();
@@ -687,7 +689,7 @@ protected:
     void gennodex(int n);
     void countnodemusic(int n);
     int preparemusthaveblocks();
-    int musthaveblockerror(Block* b, char* err);
+    int musthaveblockerror(Block* b, const char* err);
     HashedNode* findnodefromLH();
     int readblockcalling(Block* block);
     void calcfalsenodes(int n);
@@ -722,24 +724,24 @@ protected:
         return (-1);
     }
     inline int findcallingbell() { return findcallingbell(row); }
-    inline void printrow(char* row)
+    inline void printrow(const char* row)
     {
         for (int i = 0; i < nbells; i++)
-            printf("%c", rounds[row[i]]);
+            printf("%c", rounds[(unsigned char)row[i]]);
         printf("\n");
     }
 
-    inline void writerow(char* row, char* buf)
+    inline void writerow(const char* row, char* buf)
     {
         int i;
         for (i = 0; i < nbells; i++)
         {
-            buf[i] = rounds[row[i]];
+            buf[i] = rounds[(unsigned char)row[i]];
         }
         buf[i] = 0;
     }
 
-    int readlh(char* p, char* buf, char* errprefix);
+    int readlh(char* p, char* buf, const char* errprefix);
     int calcLHfactnum(char* row);
     void calcfactorials();
     void findcalltranspositions();

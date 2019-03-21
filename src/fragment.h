@@ -94,7 +94,7 @@ int Fragment::isdup(Pattern* testpatt)
         }
         else
         {
-            patt = testpatt[i] & (1 << l) - 1;
+            patt = testpatt[i] & ((1 << l) - 1);
             if (patt != duplicate[i])
                 return (FALSE);
             return (TRUE);

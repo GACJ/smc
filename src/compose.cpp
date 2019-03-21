@@ -43,7 +43,7 @@ int Composer::newcomp()
         printf("ERROR: failed to alloc composition array!\n");
         return (FALSE);
     }
-    comp = (Composition*)((uintptr_t)compalloc + ALIGNMENT - 1 & ~(ALIGNMENT - 1));
+    comp = (Composition*)(((uintptr_t)compalloc + ALIGNMENT - 1) & ~(ALIGNMENT - 1));
     // The first courselen entries in comp[] are reserved for copying by the regeneration
     // (rotational sort) code, in the case where not all calling positions are allowed
     for (i = 0; i <= courselen; i++)
@@ -1035,10 +1035,12 @@ void Composer::compose()
         }
 #endif
     if (ncompnodes == 0)
+    {
         if (makefraglib)
             printf("Finding fragments...\n");
         else
             printf("Composing...\n");
+    }
     printf("Best     ");
     if (makefraglib)
         printf("Frags     ");

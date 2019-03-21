@@ -20,7 +20,7 @@ protected:
     long mark;
 
 public:
-    File(char* filename)
+    File(const char* filename)
     {
         strcpy(name, filename);
         handle = nullptr;
@@ -37,22 +37,22 @@ public:
     char* getname() { return name; }
     char* getextension()
     {
-        char* p = strrchr(name, '.');
+        auto p = strrchr(name, '.');
         if (p == nullptr)
-            return "";
+            return strchr(name, '\0');
         else
             return p + 1;
     }
-    void changeextension(char* ext);
-    void changeexttype(char* ext); // Changes 1st 2 chars, leaves number
-    int sameexttype(char* ext);    // Checks 1st 2 chars only
-    int incextension(char* ext);
-    void newfile(char* filename)
+    void changeextension(const char* ext);
+    void changeexttype(const char* ext); // Changes 1st 2 chars, leaves number
+    int sameexttype(const char* ext);    // Checks 1st 2 chars only
+    int incextension(const char* ext);
+    void newfile(const char* filename)
     {
         close();
         strcpy(name, filename);
     }
-    void setmode(char* rwmode)
+    void setmode(const char* rwmode)
     {
         strncpy(mode, rwmode, 3);
         mode[4] = 0;
@@ -81,13 +81,13 @@ public:
     char buffer[MAXLINEBUF];
 
 public:
-    LineFile(char* filename)
+    LineFile(const char* filename)
         : File(filename)
     {
     }
     int readline();
-    int writeline(char* line);
+    int writeline(const char* line);
     int writeline() { return writeline(buffer); }
-    int multiwrite(char* buf); // Assumes newlines already present
+    int multiwrite(const char* buf); // Assumes newlines already present
 };
 #endif // INCFILER

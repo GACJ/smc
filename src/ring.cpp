@@ -11,7 +11,7 @@
 Method* mlibrary;
 
 char rounds[] = "1234567890ETABCDFGHJ";
-char* numbers[] = { "Singles", "Minimus", "Doubles", "Minor", "Triples", "Major", "Caters", "Royal", "Cinques", "Maximus", "Sextuples", "Fourteen", "Septuples", "Sixteen", "Octuples", "Eighteen", "Nonuples", "Twenty" };
+const char* numbers[] = { "Singles", "Minimus", "Doubles", "Minor", "Triples", "Major", "Caters", "Royal", "Cinques", "Maximus", "Sextuples", "Fourteen", "Septuples", "Sixteen", "Octuples", "Eighteen", "Nonuples", "Twenty" };
 char callstrings[] = "-SXU";
 char fourthsbob[] = "14";
 char fourthssingle[] = "1234";
@@ -20,7 +20,7 @@ char sixthssingle[] = "1678"; // number of bells!
 
 char* nextpn(char* pn);
 int pnlen(char* pn);
-char* buildclass(char* p, char* classname, int abbreviated);
+char* buildclass(char* p, const char* classname, int abbreviated);
 
 int Method::newmethod(char* newname, char* newpn)
 {
@@ -198,8 +198,8 @@ void Method::setcompletename(char* buf, int abbreviated)
     static char little[] = "Little";
     static char bob[] = "Bob";
     static char place[] = "Place";
-    static char* treblebob[] = { "Treble Bob", "Delight", "Surprise" };
-    static char* other[] = { "Treble Place", "Alliance", "Hybrid" };
+    static const char* treblebob[] = { "Treble Bob", "Delight", "Surprise" };
+    static const char* other[] = { "Treble Place", "Alliance", "Hybrid" };
     char* p;
 
     p = buf;
@@ -239,7 +239,7 @@ void Method::setcompletename(char* buf, int abbreviated)
     strcpy(p, numbers[nbells - MINNBELLS]);
 }
 
-char* buildclass(char* p, char* classname, int abbreviated)
+char* buildclass(char* p, const char* classname, int abbreviated)
 {
     if (abbreviated)
     {
@@ -273,10 +273,12 @@ void Method::showleadcode(char* buf)
 int Method::fourthsplacebobs()
 {
     if (leadheadcode & PBLEADCODE)
+    {
         if ((leadheadcode & 0x0F) + 'a' <= 'f' || (leadheadcode & 0x0F) + 'a' == 'm')
             return (TRUE);
         else
             return (FALSE);
+    }
     return (TRUE);
 }
 
