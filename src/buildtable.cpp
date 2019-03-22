@@ -88,7 +88,7 @@ int Composer::findtablesize()
     return (TRUE);
 }
 
-int matchhashednode(HashedNode* hnode, int hashvalue, Composer* ring)
+int matchhashednode(HashedNode* hnode, int, Composer* ring)
 {
     return ring->samerow(ring->row, hnode->nodehead);
 }

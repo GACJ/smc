@@ -55,7 +55,7 @@ public:
     void setmode(const char* rwmode)
     {
         strncpy(mode, rwmode, 3);
-        mode[4] = 0;
+        mode[sizeof(mode) - 1] = 0;
     }
     int open()
     {

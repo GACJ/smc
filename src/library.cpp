@@ -159,7 +159,7 @@ int Composer::extractfragment(CompStore* storedcomp)
     Node* node = comp[0].node;
     Fragment frag;
     int start, finish;
-    int i, rot, endplacebell, primary;
+    int i, rot, endplacebell{}, primary;
 
     // First find the beginning of the fragment - ie where callings FIRST differ
     i = 0;

@@ -59,7 +59,7 @@ class Method
 
 public:
     char* name;
-    int nbells;
+    int nbells{};
     int leadlen;
     char leadhead[MAXNBELLS];
 

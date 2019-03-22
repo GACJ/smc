@@ -22,11 +22,11 @@ struct CompressedFrag
 class Fragment
 {
 public:
-    char length;               // In nodes, or bits*2
-    char startplacebell;       // Only needed for input/output conversion
-                               // Fragments are held last node first, and packed one node in 2 bits
-    Pattern duplicate[NPATTS]; // 16 nodes / int
-    Pattern primary[NPATTS];
+    char length{};               // In nodes, or bits*2
+    char startplacebell{};       // Only needed for input/output conversion
+                                 // Fragments are held last node first, and packed one node in 2 bits
+    Pattern duplicate[NPATTS]{}; // 16 nodes / int
+    Pattern primary[NPATTS]{};
 
 public:
     void clear()

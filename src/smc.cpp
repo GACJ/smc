@@ -323,7 +323,7 @@ int Composer::setup()
     calcfactorials();
     for (i = 0; i < MAXNBELLS; i++)
         binrounds[i] = i;
-    for (i = 0; i <= NDIFFCALLS; i++)
+    for (i = 0; i < NDIFFCALLS; i++)
         internalcallnums[i] = -1;
     for (i = 0; i <= ncalltypes; i++)
         internalcallnums[calltypes[i]] = i;
