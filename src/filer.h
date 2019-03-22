@@ -73,6 +73,25 @@ public:
     }
     void markpos() { mark = ftell(handle); }
     int resetpos();
+    bool isabsolute() const
+    {
+#if _WIN32
+        if (name[0] == '\\' || name[0] == '/')
+        {
+            return true;
+        }
+        if (name[1] == ':')
+        {
+            if (name[2] == '\\' || name[2] == '/')
+            {
+                return true;
+            }
+        }
+        return false;
+#else
+        return name[0] == '/';
+#endif
+    }
 };
 
 class LineFile : public File
@@ -90,4 +109,8 @@ public:
     int writeline() { return writeline(buffer); }
     int multiwrite(const char* buf); // Assumes newlines already present
 };
+
+void get_directory(char* dst, size_t dstLen, const char* filename);
+char* concat_path(char* dst, size_t dstLen, const char* p);
+
 #endif // INCFILER

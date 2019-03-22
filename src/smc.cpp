@@ -103,6 +103,16 @@ int Composer::newsearch()
             printf("ERROR: bad music-include filename %s\n", musicinclude);
             return (FALSE);
         }
+
+        // If relative path, prepend directory of music include
+        if (!musicfile.isabsolute())
+        {
+            char newPath[4096]{};
+            get_directory(newPath, sizeof(newPath), outfile.getname());
+            concat_path(newPath, sizeof(newPath), musicinclude);
+            musicfile.newfile(newPath);
+        }
+
         if (!readmusicfile(musicfile))
             return (FALSE);
         musicfile.close();

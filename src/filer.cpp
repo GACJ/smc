@@ -1,6 +1,7 @@
 // SMC32 File-handling routines Copyright Mark B Davies 1998
 
 #include "filer.h"
+#include <algorithm>
 #include <stdlib.h>
 #include <string.h>
 
@@ -146,4 +147,50 @@ int LineFile::readline()
     if (c == EOF && nothingread)
         return (FALSE);
     return (TRUE);
+}
+
+void get_directory(char* dst, size_t dstLen, const char* filename)
+{
+    if (dstLen != 0)
+    {
+        auto slash = strrchr(filename, '/');
+#ifdef _WIN32
+        auto l = strrchr(filename, '\\');
+        if (l != nullptr && l > slash)
+        {
+            slash = l;
+        }
+#endif
+        if (slash != nullptr)
+        {
+            auto len = std::min<size_t>(dstLen - 1, slash - filename);
+            memcpy(dst, filename, len);
+            dst[len] = '\0';
+        }
+        else
+        {
+            dst[0] = '\0';
+        }
+    }
+}
+
+char* concat_path(char* dst, size_t dstLen, const char* p)
+{
+    auto len = strnlen(dst, dstLen);
+    if (len > 0)
+    {
+#ifdef _WIN32
+        if (dst[len - 1] != '\\' || dst[len - 1] != '/')
+        {
+            strncat(dst, "\\", dstLen - strlen(dst) - 1);
+        }
+#else
+        if (dst[len - 1] != '/')
+        {
+            strncat(dst, "/", dstLen - strlen(dst) - 1);
+        }
+#endif
+    }
+    strncat(dst, p, dstLen - strlen(dst) - 1);
+    return dst;
 }
