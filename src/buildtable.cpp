@@ -623,6 +623,11 @@ int Composer::preparemusthaveblocks()
     for (i = 0; i < musthaveblocks->listsize(); i++)
     {
         b = (Block*)musthaveblocks->getitem(i);
+        if (b == nullptr)
+        {
+            printf("ERROR: null returned from musthaveblocks::getitem\n");
+            exit(-1);
+        }
         // First find nodes corresponding to entry and exit leadheads
         copyrow(b->entrylh, row);
         hnode = findnodefromLH();

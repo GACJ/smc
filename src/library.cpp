@@ -2,6 +2,7 @@
 
 #include "smc.h"
 #include <limits.h>
+#include <stdlib.h>
 
 extern char callchars[];
 
@@ -308,6 +309,11 @@ int CompHasher::addcomp(Composer* ring)
         if (geterror() == BULKLISTFULL)
         {
             storedcomp = (CompStore*)getitem(newcomp.hashvalue, clock() % getlistsize(newcomp.hashvalue));
+            if (storedcomp == nullptr)
+            {
+                printf("INTERNAL ERROR: failed to retrieve composition from hash table!\n");
+                return (FALSE);
+            }
             safedelete(storedcomp->calling);
             *storedcomp = newcomp;
         }
@@ -358,12 +364,19 @@ int FragmentLibrary::add(Fragment& newfrag, int endplacebell)
     }
     // Check the list doesn't already include this fragment
     else
+    {
         for (i = 0; i < fraglist->listsize(); i++)
         {
             oldfrag = (Fragment*)fraglist->getitem(i);
+            if (oldfrag == nullptr)
+            {
+                printf("ERROR: null returned from fraglist::getitem\n");
+                return -1;
+            }
             if (newfrag.sameduplicate(oldfrag) && newfrag.sameprimary(oldfrag))
                 return (0);
         }
+    }
     // Add the new fragment to the list
     if (!fraglist->add(&newfrag))
     {
@@ -380,17 +393,23 @@ int FragmentLibrary::add(Fragment& newfrag, int endplacebell)
 // root for every duplicate
 void FragmentLibrary::normalise()
 {
-    Fragment *frag, *dupfrag;
-    int b, i, j;
-
-    for (b = 0; b < MAXNBELLS; b++)
-        if (fragmap[b])
-            for (i = 0; i < mapsize; i++)
+    for (int b = 0; b < MAXNBELLS; b++)
+    {
+        if (fragmap[b] != nullptr)
+        {
+            for (int i = 0; i < mapsize; i++)
+            {
                 if (fragmap[b][i].bulklist)
-                    for (j = 0; j < fragmap[b][i].bulklist->listsize(); j++)
+                {
+                    for (int j = 0; j < fragmap[b][i].bulklist->listsize(); j++)
                     {
-                        frag = (Fragment*)fragmap[b][i].bulklist->getitem(j);
-                        dupfrag = findduplicate(frag, b);
+                        auto frag = (Fragment*)fragmap[b][i].bulklist->getitem(j);
+                        if (frag == nullptr)
+                        {
+                            printf("ERROR: null returned from fragmap::getitem\n");
+                            exit(-1);
+                        }
+                        auto dupfrag = findduplicate(frag, b);
                         if (dupfrag) // We have a duplicate-duplicate match
                         {
                             if (searchorder(frag->primary, dupfrag->primary, frag->length))
@@ -402,61 +421,83 @@ void FragmentLibrary::normalise()
                         if (dupfrag) // We have a primary-duplicate match
                             frag->replaceprimary(dupfrag->primary);
                     }
+                }
+            }
+        }
+    }
 }
 
 // Converts library into compressed format, deletes BulkLists
 int FragmentLibrary::compress()
 {
-    CompressedFrag* compressedlist;
-    int* compressedalloc;
-    Fragment* frag;
     int noccupied = 0;
     int largest = 0;
     int total = 0;
     int nremoved = 0;
-    int ndistinct, listsize;
-    int b, i, j, k, l;
 
-    for (b = 0; b < MAXNBELLS; b++)
-        if (fragmap[b])
-            for (i = 0; i < mapsize; i++)
+    for (int b = 0; b < MAXNBELLS; b++)
+    {
+        if (fragmap[b] != nullptr)
+        {
+            for (int i = 0; i < mapsize; i++)
+            {
                 if (fragmap[b][i].bulklist)
                 {
-                    ndistinct = 0;
-                    listsize = fragmap[b][i].bulklist->listsize();
-                    for (j = 0; j < listsize; j++)
+                    int ndistinct = 0;
+                    int listsize = fragmap[b][i].bulklist->listsize();
+                    for (int j = 0; j < listsize; j++)
                     {
-                        frag = (Fragment*)fragmap[b][i].bulklist->getitem(j);
-                        for (k = 0; k < listsize; k++)
+                        auto frag = (Fragment*)fragmap[b][i].bulklist->getitem(j);
+                        if (frag == nullptr)
+                        {
+                            printf("ERROR: null returned from fragmap::getitem\n");
+                            return (FALSE);
+                        }
+                        for (int k = 0; k < listsize; k++)
+                        {
                             if (k != j)
-                                if (((Fragment*)fragmap[b][i].bulklist->getitem(k))->isdup(frag->duplicate))
+                            {
+                                auto frag2 = (Fragment*)fragmap[b][i].bulklist->getitem(k);
+                                if (frag2 == nullptr)
+                                {
+                                    printf("ERROR: null returned from fragmap::getitem\n");
+                                    return (FALSE);
+                                }
+                                if (frag2->isdup(frag->duplicate))
                                 {
                                     frag->length = 0;
                                     nremoved++;
                                     ndistinct--;
                                     break;
                                 }
+                            }
+                        }
                         ndistinct++;
                     }
-                    compressedalloc = new int[1 + ndistinct * NPATTS * 2];
+                    auto compressedalloc = new int[1 + ndistinct * NPATTS * 2];
                     if (compressedalloc == nullptr)
                     {
                         printf("ERROR: failed to alloc compressed frag library\n");
                         return (FALSE);
                     }
                     *compressedalloc = ndistinct;
-                    compressedlist = (CompressedFrag*)(compressedalloc + 1);
+                    auto compressedlist = (CompressedFrag*)(compressedalloc + 1);
                     noccupied++;
                     total += listsize;
                     if (listsize > largest)
                         largest = listsize;
-                    for (j = 0; j < listsize; j++)
+                    for (int j = 0; j < listsize; j++)
                     {
-                        frag = (Fragment*)fragmap[b][i].bulklist->getitem(j);
+                        auto frag = (Fragment*)fragmap[b][i].bulklist->getitem(j);
+                        if (frag == nullptr)
+                        {
+                            printf("ERROR: null returned from fragmap::getitem\n");
+                            return (FALSE);
+                        }
                         if (frag->length)
                         {
-                            l = frag->length * 2;
-                            for (k = 0; k < NPATTS; k++)
+                            int l = frag->length * 2;
+                            for (int k = 0; k < NPATTS; k++)
                             {
                                 compressedlist->duplicate[k] = frag->duplicate[k];
                                 if (l >= 32)
@@ -471,6 +512,9 @@ int FragmentLibrary::compress()
                     delete fragmap[b][i].bulklist;
                     fragmap[b][i].fraglist = compressedalloc;
                 }
+            }
+        }
+    }
     printf("Library compression: %d frags removed, %d/%d entries, max %d, av %.2f\n", nremoved, noccupied, mapsize, largest, float(total) / noccupied);
     return (TRUE);
 }
@@ -605,6 +649,11 @@ Fragment* FragmentLibrary::findduplicate(Fragment* frag, int endplacebell)
     for (i = 0; i < fraglist->listsize(); i++)
     {
         testfrag = (Fragment*)fraglist->getitem(i);
+        if (testfrag == nullptr)
+        {
+            printf("ERROR: null returned from fraglist::getitem\n");
+            exit(-1);
+        }
         if (frag->sameduplicate(testfrag))
             return (testfrag);
     }

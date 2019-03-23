@@ -115,6 +115,11 @@ int Composer::musicsort(int maxncomps)
         for (int i = 0; i < musthaveblocks->listsize(); i++)
         {
             block = (Block*)musthaveblocks->getitem(i);
+            if (block == nullptr)
+            {
+                printf("ERROR: null returned from musthaveblocks::getitem\n");
+                return (FALSE);
+            }
             if (block->entrynode->node->included)
                 topcomp.nmusthaveblocks++;
         }
@@ -797,6 +802,11 @@ int Composer::displaycomp(int compn, CompMusicStore* thiscomp, LineFile& f)
         for (i = 0; i < musthaveblocks->listsize(); i++)
         {
             Block* b = (Block*)musthaveblocks->getitem(i);
+            if (b == nullptr)
+            {
+                printf("ERROR: null returned from musthaveblocks::getitem\n");
+                return (FALSE);
+            }
             if (b->essential && b->entrynode->node->included)
             {
                 sprintf(f.buffer + strlen(f.buffer), " %d", b->blocknumber);
@@ -811,6 +821,11 @@ int Composer::displaycomp(int compn, CompMusicStore* thiscomp, LineFile& f)
         for (i = 0; i < musthaveblocks->listsize(); i++)
         {
             Block* b = (Block*)musthaveblocks->getitem(i);
+            if (b == nullptr)
+            {
+                printf("ERROR: null returned from musthaveblocks::getitem\n");
+                return (FALSE);
+            }
             if (!b->essential && b->entrynode->node->included)
             {
                 sprintf(f.buffer + strlen(f.buffer), " %d", b->blocknumber);

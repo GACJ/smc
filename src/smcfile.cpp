@@ -223,6 +223,11 @@ int Composer::writefileheader(LineFile& f)
         for (i = 0; i < musthaveblocks->listsize(); i++)
         {
             Block* b = (Block*)musthaveblocks->getitem(i);
+            if (b == nullptr)
+            {
+                printf("ERROR: null returned from musthaveblocks::getitem\n");
+                return (FALSE);
+            }
             if (b->essential)
                 sprintf(f.buffer, "%s ", TOKEN_MUSTHAVE);
             else
