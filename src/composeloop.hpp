@@ -5,6 +5,7 @@
 
 #include "smc.h"
 #include <stdint.h>
+#include <time.h>
 
 // Both the following optimisations appear to make cycle performance in the inner
 // loop on the Cyrix chip WORSE. However, overall performance is still improved!!
@@ -14,8 +15,7 @@
 // EXPANDFALSELOOP save (?) cycles on a Pentium
 #define EXPANDFALSELOOP
 
-// How many million nodes between each showstats() call
-#define SHOWSTATSFREQ 2
+#define SHOWSTATSFREQC ((clock_t)(CLOCKS_PER_SEC / 5))
 
 #define STARTTIMEBT
 #define STOPTIMEBT
@@ -40,6 +40,7 @@ struct composeloop
         Node* esi;
         int eax, ecx, ebp, edx1;
         // long long mm0, mm1, mm2, mm7;
+        auto lastClock = clock();
 
         auto& ebx = composer;
 
@@ -96,6 +97,14 @@ struct composeloop
         {
             goto backtrack;
         }
+
+        // Make sure we don't refresh too frequently if PC is very fast
+        if (clock() - lastClock < SHOWSTATSFREQC)
+        {
+            goto backtrack;
+        }
+        lastClock = clock();
+
         // Drop out to showstats()
         eax = ebx.maxpalilength - ebp;
         ebx.complength = eax;

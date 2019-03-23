@@ -144,6 +144,7 @@ void Composer::showstats()
     else
         noutput = stats.ncompsoutput;
     printf("\r%-9d%-10d%-10d%-9.2f%-9.0f%-12s%.3f", stats.bestscore, noutput, int(stats.nodesgenerated / 1000000), nodespeed, evalspeed, timebuf, 100.0 * calcpercentcomplete());
+    fflush(stdout);
 }
 
 // Probably still very inaccurate for rotation sort - based on percent^(1/e)
