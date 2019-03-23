@@ -20,7 +20,6 @@ int Composer::musicsort(int maxncomps)
     char titleline[MAXLINEBUF];
     int rotationalsortsave;
     int ncomps, noutput;
-    int i;
 
     outfile.setmode("r");
     if (!readinputfile(outfile))
@@ -78,7 +77,7 @@ int Composer::musicsort(int maxncomps)
         printf("ERROR: failed to allocate 'special' composition storage\n");
         return (FALSE);
     }
-    for (i = 0; i < nmusicdefs + 1; i++)
+    for (int i = 0; i < nmusicdefs + 1; i++)
     {
         specialcomps[i].score = -1;
         specialcomps[i].nmusthaveblocks = 0;
@@ -151,7 +150,7 @@ int Composer::musicsort(int maxncomps)
                 if (!compsorter.addcomp(topcomp))
                     return (FALSE);
                 if (topcomp.nmusthaveblocks > specialcomps[nmusicdefs].nmusthaveblocks
-                    || (topcomp.nmusthaveblocks == specialcomps[nmusicdefs].nmusthaveblocks && score > specialcomps[i].score))
+                    || (topcomp.nmusthaveblocks == specialcomps[nmusicdefs].nmusthaveblocks && score > specialcomps[nmusicdefs].score))
                 {
                     specialcomps[nmusicdefs].rot = comprot;
                     specialcomps[nmusicdefs].score = score;
@@ -161,7 +160,8 @@ int Composer::musicsort(int maxncomps)
                     if (!storecomp2(specialcomps[nmusicdefs]))
                         return (FALSE);
                 }
-                for (i = 0; i < nmusicdefs; i++)
+                for (int i = 0; i < nmusicdefs; i++)
+                {
                     if (musicdefs[i].weighting > 0 && (music.score[i] > specialcomps[i].music.score[i] || (music.score[i] == specialcomps[i].music.score[i] && score > specialcomps[i].score)))
                     {
                         specialcomps[i].rot = comprot;
@@ -172,6 +172,7 @@ int Composer::musicsort(int maxncomps)
                         if (!storecomp2(specialcomps[i]))
                             return (FALSE);
                     }
+                }
             }
             if (!rotationalsort)
                 break;
@@ -220,7 +221,7 @@ int Composer::musicsort(int maxncomps)
     outfile.markpos();
     outfile.close();
     outfile.setmode("r+");
-    for (i = 0; i < compsorter.ncompslisted(); i++)
+    for (int i = 0; i < compsorter.ncompslisted(); i++)
     {
         compptr = compsorter.get(i);
         loadcomposition(*compptr);
@@ -229,7 +230,7 @@ int Composer::musicsort(int maxncomps)
     flushcompbuffer(FALSE);
 #else
     noutput = 0;
-    for (i = 0; i < compsorter.ncompslisted(); i++)
+    for (int i = 0; i < compsorter.ncompslisted(); i++)
     {
         displaycomp(i + 1, compsorter.get(i), outfile);
         noutput++;
@@ -247,12 +248,14 @@ int Composer::musicsort(int maxncomps)
             displaycomp(-nmusicdefs, &specialcomps[nmusicdefs], outfile);
             noutput++;
         }
-        for (i = 0; i < nmusicdefs; i++)
+        for (int i = 0; i < nmusicdefs; i++)
+        {
             if (musicdefs[i].weighting > 0 && specialcomps[i].score > 0 && specialcomps[i].music.score[i] > 0)
             {
                 displaycomp(-i, &specialcomps[i], outfile);
                 noutput++;
             }
+        }
     }
 #endif
     outfile.close();
@@ -264,14 +267,12 @@ int Composer::musicsort(int maxncomps)
 // Copies one MusicCount into another. Scores are copied, not unlinked
 int MusicCount::set(MusicCount& m)
 {
-    int i;
-
     if (!ensurespace(m.nmusicdefs))
     {
         printf("ERROR: failed to allocate music storage\n");
         return (FALSE);
     }
-    for (i = 0; i < m.nmusicdefs; i++)
+    for (int i = 0; i < m.nmusicdefs; i++)
         score[i] = m.score[i];
     return (TRUE);
 }
@@ -304,12 +305,10 @@ int MusicDef::ensurespace(int n)
 // Ensure space and copy in composition
 int CompStore::copyincomp(int nodesperpart, Composition* composition)
 {
-    int i;
-
     this->nodesperpart = nodesperpart;
     if (!ensurespace(nodesperpart))
         return (FALSE);
-    for (i = 0; i < nodesperpart; i++)
+    for (int i = 0; i < nodesperpart; i++)
         calling[i] = composition[i].call;
     return (TRUE);
 }

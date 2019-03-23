@@ -25,7 +25,6 @@ constexpr auto TOKEN_PN = "pn";
 constexpr auto TOKEN_PARTS = "part";
 constexpr auto TOKEN_MAKELIB = "makelib";
 constexpr auto TOKEN_USELIB = "uselib";
-constexpr auto TOKEN_MUSICMIN = "min";
 constexpr auto TOKEN_MUSTHAVE = "musthave";
 constexpr auto TOKEN_SHOULDHAVE = "shouldhave";
 // Flags

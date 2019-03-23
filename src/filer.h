@@ -75,7 +75,7 @@ public:
     int resetpos();
     bool isabsolute() const
     {
-#if _WIN32
+#ifdef _WIN32
         if (name[0] == '\\' || name[0] == '/')
         {
             return true;
