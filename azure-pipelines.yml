@@ -1,15 +1,21 @@
 jobs:
 - job: windows
   displayName: Windows
+  strategy:
+    matrix:
+      x86:
+        Platform: 'x86'
+      x64:
+        Platform: 'x64'
   pool:
     vmImage: 'VS2017-Win2016'
   steps:
   - script: |
       call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\Common7\Tools\VsDevCmd.bat"
-      msbuild smc32.sln /p:Configuration=Release /p:Platform=x86 /p:PlatformToolset=v140 /p:WindowsTargetPlatformVersion=8.1
+      msbuild smc32.sln /p:Configuration=Release /p:PlatformToolset=v140 /p:WindowsTargetPlatformVersion=8.1
     displayName: 'Build'
   - script: |
-      test\test.bat
+      test\test.bat %Platform%
     displayName: 'Test'
 
 - job: ubuntu

@@ -3,7 +3,7 @@
 pushd %~dp0
 
 set PLATFORM=Win32
-if "%1" == "64" (
+if "%1" == "x64" (
     set PLATFORM=x64
 )
 echo Running for %PLATFORM%
