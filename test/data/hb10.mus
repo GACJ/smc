@@ -1,0 +1,34 @@
+3-4 coursing 
+1000 0 134xxxxxxxc 143xxxxxxxc
+3-4 in 3-4 position 
+100 0 1x34xxxxxxc 1x43xxxxxxc
+3-4 in 4-5 position 
+-1 0 1xx34xxxxxc 1xx43xxxxxc
+3-4 in 5-6 position 
+-1 0 1xxx34xxxxc 1xxx43xxxxc
+5-6 coursing 
+1000 0 156xxxxxxxc 165xxxxxxxc
+5-6 in 3-4 position 
+1 0 1x56xxxxxxc 1x65xxxxxxc
+5-6 in 4-5 position 
+1 0 1xx56xxxxxc 1xx65xxxxxc
+5-6 in 5-6 position 
+1000 0 1xxx56xxxxc 1xxx65xxxxc
+56 & 65s
+10 0 xxxx567890 xxxx657890
+23456s 
+1000 0 xxxxx23456
+65432s
+1000 0 xxxxx65432
+76543s
+1000 0 xxxxx76543
+12345s
+1000 0 xxxxx12345
+3456s
+100 0 xxxxxx3456
+6543s
+100 0 xxxxxx6543
+2345s
+1 0 xxxxxx2345
+5432s
+1 0 xxxxxx5432

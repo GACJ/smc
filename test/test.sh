@@ -12,8 +12,24 @@ echo '---------------------------------------------------------------'
 echo 'TEST CASE 1'
 echo '---------------------------------------------------------------'
 $SMC32 data/ca01.smc
-$SMC32 data/ca01.sf1 data/music8.mus
-diff <(tail -n +4 data/ca01.cf1) <(tail -n +4 data/ca01.cf1.expected) &>/dev/null
+$SMC32 --deterministic-output data/ca01.sf1 data/music8.mus
+diff data/ca01.cf1 data/ca01.cf1.expected
+DIFF_RESULT=$?
+echo '---------------------------------------------------------------'
+if [ $DIFF_RESULT -ne 0 ]; then
+    echo -e '\e[31mFAILED\e[0m'
+    FINALRESULT=1
+else
+    echo -e '\e[32mPASSED\e[0m'
+fi
+echo '---------------------------------------------------------------'
+
+# Test case 2:
+echo '---------------------------------------------------------------'
+echo 'TEST CASE 2'
+echo '---------------------------------------------------------------'
+$SMC32 --deterministic-output data/ca10a.smc
+diff data/ca10a.sf1 data/ca10a.sf1.expected
 DIFF_RESULT=$?
 echo '---------------------------------------------------------------'
 if [ $DIFF_RESULT -ne 0 ]; then

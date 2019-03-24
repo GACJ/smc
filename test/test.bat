@@ -19,8 +19,23 @@ echo ---------------------------------------------------------------
 echo TEST CASE 1
 echo ---------------------------------------------------------------
 %SMC32% data\ca01.smc
-%SMC32% data\ca01.sf1 data\music8.mus
+%SMC32% --deterministic-output data\ca01.sf1 data\music8.mus
 fc data\ca01.cf1 data\ca01.cf1.expected
+echo ---------------------------------------------------------------
+if errorlevel 1 (
+    echo [31mFAILED[0m
+    set FINALRESULT=1
+) else (
+    echo [32mPASSED[0m
+)
+echo ---------------------------------------------------------------
+
+REM Test case 2:
+echo ---------------------------------------------------------------
+echo TEST CASE 2
+echo ---------------------------------------------------------------
+%SMC32% --deterministic-output data\ca10a.smc
+fc data\ca10a.sf1 data\ca10a.sf1.expected
 echo ---------------------------------------------------------------
 if errorlevel 1 (
     echo [31mFAILED[0m
