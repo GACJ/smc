@@ -217,6 +217,10 @@ struct composeloop
         {
             ecx = ((Composition*)((intptr_t)edi + (intptr_t)eax))->call;
         }
+        else
+        {
+            ecx = 0;
+        }
         STOPTIMEC;
         if (esi->comesround == 0) // Has come round?
             goto composeloop;
