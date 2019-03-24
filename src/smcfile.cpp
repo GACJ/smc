@@ -99,10 +99,13 @@ void Composer::finaloutput()
     if (outfile.open())
         outfile.resetpos();
     outfile.writeline("");
-    sprintf(outfile.buffer, "%s search complete on ", TOKEN_END);
-    systime = time(nullptr);
-    strcat(outfile.buffer, asctime(localtime(&systime)));
-    outfile.multiwrite(outfile.buffer); // asctime adds \n for us
+    if (!deterministicoutput)
+    {
+        sprintf(outfile.buffer, "%s search complete on ", TOKEN_END);
+        systime = time(nullptr);
+        strcat(outfile.buffer, asctime(localtime(&systime)));
+        outfile.multiwrite(outfile.buffer); // asctime adds \n for us
+    }
     sprintf(outfile.buffer, "%d.%03d million nodes generated", int(stats.nodesgenerated / 1000000), (int)(stats.nodesgenerated % 1000000) / 1000);
     printf("%s\n", outfile.buffer);
     outfile.writeline();
@@ -123,11 +126,14 @@ void Composer::finaloutput()
     sprintf(outfile.buffer, "Best score %d, longest length %d", stats.bestscore, stats.longestlength);
     printf("%s\n", outfile.buffer);
     outfile.writeline();
-    sprintf(outfile.buffer, "Time taken: ");
-    // Print elapsed time to thousandth of a second accuracy
-    printelapsed(outfile.buffer + strlen(outfile.buffer), FALSE);
-    printf("%s\n", outfile.buffer);
-    outfile.writeline();
+    if (!deterministicoutput)
+    {
+        sprintf(outfile.buffer, "Time taken: ");
+        // Print elapsed time to thousandth of a second accuracy
+        printelapsed(outfile.buffer + strlen(outfile.buffer), FALSE);
+        printf("%s\n", outfile.buffer);
+        outfile.writeline();
+    }
     // Print library stats
     if (usefraglib)
     {
@@ -180,15 +186,18 @@ int Composer::writefileheader(LineFile& f)
     if (!f.incextension(OUTEXT))
         return (FALSE);
     f.setmode("w");
-    sprintf(f.buffer, "/ %s (c) 1998 Mark B. Davies & Graham A.C. John", VERSION);
-    if (!f.writeline())
-        return (FALSE);
-    if (!f.writeline("/ This is a machine-generated composition output file - do not alter"))
-        return (FALSE);
-    if (!f.writeline("/ Scroll down to the 'SMC32 search started' line to see the compositions"))
-        return (FALSE);
-    if (!f.writeline("/ If there is no 'search complete' at the end, the search may be restarted"))
-        return (FALSE);
+    if (!deterministicoutput)
+    {
+        sprintf(f.buffer, "/ %s (c) 1998 Mark B. Davies & Graham A.C. John", VERSION);
+        if (!f.writeline())
+            return (FALSE);
+        if (!f.writeline("/ This is a machine-generated composition output file - do not alter"))
+            return (FALSE);
+        if (!f.writeline("/ Scroll down to the 'SMC32 search started' line to see the compositions"))
+            return (FALSE);
+        if (!f.writeline("/ If there is no 'search complete' at the end, the search may be restarted"))
+            return (FALSE);
+    }
     // Write out method, lengths, min score, calling positions, calling bell
     if (!writeheaderessential(f))
         return (FALSE);
@@ -286,14 +295,17 @@ int Composer::writefileheader(LineFile& f)
         if (!f.writeline())
             return (FALSE);
     }
-    // Write start time
     if (!f.writeline(""))
         return (FALSE);
-    sprintf(f.buffer, "%s search started on ", TOKEN_START);
-    systime = time(nullptr);
-    strcat(f.buffer, asctime(localtime(&systime)));
-    if (!outfile.multiwrite(outfile.buffer)) // asctime adds \n for us
-        return (FALSE);
+    if (!deterministicoutput)
+    {
+        // Write start time
+        sprintf(f.buffer, "%s search started on ", TOKEN_START);
+        systime = time(nullptr);
+        strcat(f.buffer, asctime(localtime(&systime)));
+        if (!outfile.multiwrite(outfile.buffer)) // asctime adds \n for us
+            return (FALSE);
+    }
     f.markpos();
     f.close();
     f.setmode("r+");

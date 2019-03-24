@@ -216,11 +216,14 @@ int Composer::musicsort(int maxncomps)
         printf("\nERROR: failed to create %s\n", outfile.getname());
         return (FALSE);
     }
-    sprintf(outfile.buffer, "/ %s (c) 1998 Mark B. Davies & Graham A.C. John", VERSION);
-    if (!outfile.writeline())
-        return (FALSE);
-    if (!outfile.writeline(titleline))
-        return (FALSE);
+    if (!deterministicoutput)
+    {
+        sprintf(outfile.buffer, "/ %s (c) 1998 Mark B. Davies & Graham A.C. John", VERSION);
+        if (!outfile.writeline())
+            return (FALSE);
+        if (!outfile.writeline(titleline))
+            return (FALSE);
+    }
 #ifdef UNIQUEOUT
     resetcompbuffer();
     outfile.markpos();

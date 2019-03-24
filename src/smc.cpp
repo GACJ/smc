@@ -8,6 +8,7 @@
 #include <limits.h>
 #include <stdlib.h>
 #include <string.h>
+#include <vector>
 
 #if defined(__GNUC__) && (defined(__x86_64__) || defined(__i386__))
 #include <cpuid.h>
@@ -19,11 +20,40 @@
 
 int badusage()
 {
-    printf("Usage:\n");
-    printf(" Composing:  SMC32 <method-file>.%s\n", INEXT);
-    printf(" Restarting: SMC32 <output-file>.%s\n", OUTEXT);
-    printf(" Analysing:  SMC32 <output-file>.%s <music-file>.%s [maxn]\n", OUTEXT, MUSEXT);
+    auto text = "Usage:\n"
+                " Composing:  SMC32 <method-file>." INEXT "\n"
+                " Restarting: SMC32 <output-file>." OUTEXT "\n"
+                " Analysing:  SMC32 <output-file>." OUTEXT " <music-file>." MUSEXT " [maxn]\n"
+                "\n"
+                "Options:\n"
+                " --deterministic-output        Suppresses version and time information from output.\n";
+    puts(text);
     return (1);
+}
+
+std::vector<const char*> parse_argv(Composer& composer, int argc, const char* const* argv)
+{
+    std::vector<const char*> args;
+    for (int i = 1; i < argc; i++)
+    {
+        if (argv[i][0] == '-')
+        {
+            if (strcmp(argv[i], "--deterministic-output") == 0)
+            {
+                composer.deterministicoutput = true;
+            }
+            else
+            {
+                fprintf(stderr, "Unknown option: %s\n", argv[i]);
+                exit(1);
+            }
+        }
+        else
+        {
+            args.push_back(argv[i]);
+        }
+    }
+    return args;
 }
 
 #if defined(_MSC_VER)
@@ -34,19 +64,20 @@ int main(int argc, char** argv)
 {
     ExtMethod method;
     Composer ring(&method);
-    int n;
+
+    auto args = parse_argv(ring, argc, argv);
 
     printf("\n%s: raw composing power\n", VERSION);
     printf("%s\n", COPYRIGHT);
-    if (argc < 2)
+    if (args.size() < 1)
         return badusage();
     ring.redomusic = FALSE;
-    ring.outfile.newfile(argv[1]);
+    ring.outfile.newfile(args[0]);
     auto ext = ring.outfile.getextension();
     // Starting a new search?
     if (strcmpi(ext, INEXT) == 0)
     {
-        if (argc != 2)
+        if (args.size() != 1)
             return badusage();
         else if (!ring.newsearch())
             return (10);
@@ -59,12 +90,12 @@ int main(int argc, char** argv)
         return badusage();
     if (!isdigit(ext[2]))
         return badusage();
-    if (argc > 2)
+    if (args.size() > 1)
     {
-        if (argc > 4)
+        if (args.size() > 3)
             return badusage();
         ring.printcourseendsfirst = TRUE;
-        if (strcmpi(argv[2], "redo") == 0)
+        if (strcmpi(args[1], "redo") == 0)
         {
             ring.redomusic = TRUE;
             printf("Re-using original music defs\n");
@@ -72,14 +103,13 @@ int main(int argc, char** argv)
         else
         {
             ring.redomusic = FALSE;
-            ring.musicfile.newfile(argv[2]);
+            ring.musicfile.newfile(args[1]);
             if (strcmpi(ring.musicfile.getextension(), MUSEXT))
                 return badusage();
         }
-        if (argc == 4)
-            n = atoi(argv[3]);
-        else
-            n = 10;
+        int n = 10;
+        if (args.size() == 3)
+            n = atoi(args[2]);
         if (!ring.musicsort(n))
             return (12);
     }

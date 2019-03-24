@@ -578,6 +578,7 @@ public:
     char* compbufptr;
     char compbuffer[COMPBUFFERSIZE];
     clock_t lastcheckpoint;
+    bool deterministicoutput{};
 
     // Composition storage and fragment libraries
     char makefraglib; // Set if want to create fragment library
