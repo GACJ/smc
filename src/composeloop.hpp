@@ -121,6 +121,13 @@ struct composeloop
 
     lbl_loadcallnextcall:
         ecx = edi->call;
+        if (CALLCOUNT)
+        {
+            edx1 = ecx;
+            ebx.ncallsleft[ecx]++;
+            edx1 += esi->callcountposindex;
+            ((int*)ebx.ncallsleftperpos)[edx1]++;
+        }
 
     lbl_sublennextcall:
         ebp += esi->nrows;
@@ -136,13 +143,27 @@ struct composeloop
 
     backtrack:
         STARTTIMEBT;
-        esi->included = 0; // Reset included flag
-        edi--;             // All compositions found?
+        if (FALSEBITS)
+        {
+            esi->falsebits[0].do_xor();
+        }
+        else
+        {
+            esi->included = 0; // Reset included flag
+        }
+        edi--; // All compositions found?
         if (edi < ebx.comp)
             goto asmdone;
         ecx = edi->call;
         ebp += esi->nrows; // Reduce composition length
-        esi = edi->node;   // Load previous lead
+        if (CALLCOUNT)
+        {
+            edx1 = ecx;
+            ebx.ncallsleft[ecx]++;
+            edx1 += esi->callcountposindex;
+            ((int*)ebx.ncallsleftperpos)[edx1]++;
+        }
+        esi = edi->node; // Load previous lead
         if (MULTIPART && ebp < ebx.maxpartlength)
             goto backtrack;
 
@@ -150,6 +171,22 @@ struct composeloop
         ecx++;
         if (ecx > ebx.ncalltypes)
             goto backtrack;
+        if (MULTIPART && CALLCOUNT)
+        {
+            // Before re-entering the composing loop, check maximum number of calls per part not exceeded.
+            // Note that this test requires the next-node pointer, so we MUST test for allowed call first!
+            // (Normally done in composing loop)
+            if (esi->nextnode[ecx] == 0)
+                goto lbl_nextcall2;
+
+            eax = ebx.ncallsleft[ecx];
+            if (eax < ebx.npartcalls[ecx])
+                goto lbl_nextcall2;
+            edx1 = ecx + esi->nextnode[ecx]->callcountposindex;
+            eax = ((int*)ebx.ncallsleftperpos)[edx1];
+            if (eax < ((int*)ebx.npartcallsperpos)[edx1])
+                goto lbl_nextcall2;
+        }
         STOPTIMEBT;
 
     regen:
@@ -174,17 +211,51 @@ struct composeloop
             goto lbl_nextcall;
         }
         ebx.stats.nodecount++;
-        if (esi->included != 0) // Already had that node?
+
+        if (!FALSEBITS)
         {
-            goto lbl_nextcall;
+            if (esi->included != 0) // Already had that node?
+            {
+                goto lbl_nextcall;
+            }
         }
+
         ebp -= esi->nrows;
         if (ebp < 0)
         {
             goto lbl_sublennextcall; // Composition too long?
         }
 
+        if (CALLCOUNT)
+        {
+            eax = ebx.ncallsleft[ecx] - 1;
+            if (eax < 0)
+                goto lbl_sublennextcall;
+            edx1 = ecx + esi->callcountposindex;
+            ebx.ncallsleft[ecx] = eax;
+            eax = ((int*)ebx.ncallsleftperpos)[edx1] - 1;
+            if (eax < 0)
+            {
+                ebx.ncallsleft[ecx]++;
+                goto lbl_sublennextcall;
+            }
+            ((int*)ebx.ncallsleftperpos)[edx1] = eax;
+        }
+
         STARTTIMEF;
+        if (FALSEBITS)
+        {
+            ecx = esi->nfalsenodes;
+            do
+            {
+                // Check false nodes for next lead
+                eax = esi->falsebits[ecx].get_and();
+                if (eax != 0)
+                    goto lbl_loadcallnextcall;
+                ecx--;
+            } while (ecx != 0);
+        }
+        else
         {
             auto edx2 = esi->nfalsenodes;
             if (edx2 != 0)
@@ -206,8 +277,15 @@ struct composeloop
 
     leadok:
         STOPTIMEF;
-        edi++;             // Increment comp ptr
-        esi->included = 1; // Mark node included
+        edi++; // Increment comp ptr
+        if (FALSEBITS)
+        {
+            esi->falsebits[0].do_or();
+        }
+        else
+        {
+            esi->included = 1; // Mark node included
+        }
         if (REGENERATION)
         {
             eax = ebx.regenptr;

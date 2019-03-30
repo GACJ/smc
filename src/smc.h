@@ -280,6 +280,21 @@ struct FalseBits
 {
     unsigned int* tableptr;
     unsigned int tablemask;
+
+    int get_and()
+    {
+        return *tableptr & tablemask;
+    }
+
+    void do_or()
+    {
+        *tableptr |= tablemask;
+    }
+
+    void do_xor()
+    {
+        *tableptr ^= tablemask;
+    }
 };
 
 // Data for a node which is not directly used by the composing loop

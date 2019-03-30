@@ -45,5 +45,20 @@ if errorlevel 1 (
 )
 echo ---------------------------------------------------------------
 
+REM Test case 3:
+echo ---------------------------------------------------------------
+echo TEST CASE 3
+echo ---------------------------------------------------------------
+%SMC32% --deterministic-output data\ca08jf.smc
+fc data\ca08jf.sf1 data\ca08jf.sf1.expected
+echo ---------------------------------------------------------------
+if errorlevel 1 (
+    echo [31mFAILED[0m
+    set FINALRESULT=1
+) else (
+    echo [32mPASSED[0m
+)
+echo ---------------------------------------------------------------
+
 popd
 exit /b %FINALRESULT%
