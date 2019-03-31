@@ -1,0 +1,697 @@
+<html>
+
+<head>
+<meta http-equiv="Content-Type"
+content="text/html; charset=iso-8859-1">
+<title>SMC32 Advanced Features</title>
+</head>
+
+<body bgcolor="#FFFFFF">
+
+<h1 align="left">SMC32: Advanced Features</h1>
+
+<blockquote>
+    <p>The sections below describe some of SMC32's more
+    sophisticated abilities. These are split into two parts:</p>
+    <p><a href="#Searching">Advanced searches</a> - commands for
+    the input file</p>
+    <p><a href="#Music">Advanced music</a> definitions - for
+    music or input files</p>
+</blockquote>
+
+<h2 align="left"><a name="Searching">Searching</a></h2>
+
+<blockquote>
+    <p>Normally, SMC32 will perform a tenors-together bobs-only
+    search, called from the tenor. This section describes how to
+    use the <code>.smc</code> input file to:</p>
+	<ul>
+    <li>change the <a href="#callingbells">calling
+    bell and course ends</a></li>
+	<li>specify new <a href="#Calls">calls and calling positions</a></li>
+	<li><a href="#callcounting">limit the number of calls</a> used</li>
+	<li>search for <a href="#cominground">snap finishes</a></li>
+	<li>use <a href="#NonRounds">starts or finishes other than rounds</a></li>
+	<li>carry out <a href="#musthave">linkage searches</a> with "must-have" blocks</li>
+	<li>carry out <a href="#splittenors">split-tenors searches</a></li>
+	<li>search for <a href="#palindromic">palindromic compositions</a></li>
+	<li>turn on the <a href="#bittruth">bitwise truthtable</a> for falseness checking.</li>
+	</ul>
+    <p>For an introduction to using SMC32, and the format of the
+    input file, see <a href="index.html#How to Use SMC32">How To
+    Use SMC32</a>.</p>
+</blockquote>
+
+<h4><a name="callingbells">Calling Bells and Course Ends</a></h4>
+
+<blockquote>
+    <p>Normally, calls are made relative to the tenor. If you
+    want to produce compositions with a different calling bell,
+    use something like this:</p>
+    <dl>
+        <dd><code>Callfrom 2 1234xxxxxx</code></dd>
+    </dl>
+    <p>Here the second becomes the calling bell, so SMC32 will
+    produce compositions where (for example, in Royal) a Wrong
+    will be called when the second is in 9th's place. As well as
+    the calling bell, you can tell SMC32 which other bells are
+    fixed at the course end. In the example above, bells 2, 3 and
+    4 are the fixed bells, and so must all come home whenever the
+    second does. It may not be necessary to specify this if your
+    calls do not affect 3 and 4.</p>
+    <p>You can have more than one type of course end. This can be
+    useful for generating compositions with different back bell
+    positions. Here's an example:</p>
+    <dl>
+        <dd><code>Callfrom 7 1xxxxx7890 1xxxxx7089</code></dd>
+    </dl>
+    <p>This will allow Tittums course ends as well as the normal,
+    backstroke-home type. You must make sure calls exist which
+    will enable SMC32 to get from one type of course end to
+    another. <span style="color:#FF0000">WARNING:</span> The Tittums
+    example we have here is quite dangerous, because it is easy
+    to get into it (with say a sixth's place calling position for
+    the 7th) but difficult to return <em>directly</em> to
+    backstroke courses. SMC32 will waste vast amounts of search
+    time if it cannot 'get out' of a particular course-end
+    position. It is often necessary to give a third, linking
+    position to overcome this:</p>
+    <dl>
+        <dd><code>Callfrom 7 1xxxxx7890 1xxxxx7089
+            1xxxxx7908</code></dd>
+    </dl>
+    <p>You can limit the number of times the linking course
+    appears by adding it as an undesirable music definition.</p>
+    <p>One other common use of the Callfrom instruction, is to
+    allow fewer fixed bells than usual, or ask for more. Again on
+    ten bells, this line has the tenor as calling bell, but also
+    keeps the 6th fixed:</p>
+    <dl>
+        <dd><code>Callfrom 0 1xxxx67890</code></dd>
+    </dl>
+    <p>Sometimes composers allow the 7th to enter the work with
+    calls (in Royal) when the tenor is in 7th's place. This is
+    often used to generate 357642 coursing orders and the
+    corresponding x234567 rollups. You could get SMC32 to produce
+    similar compositions by giving a high score to these rollups,
+    and allowing the 7th to enter the work:</p>
+    <dl>
+        <dd><code>Callfrom 0 1xxxxxx890</code></dd>
+    </dl>
+    <p>However, if you <u>only</u> want the 357642 coursing order,
+    it would be much more efficient to specify exactly that
+    course end:</p>
+    <dl>
+        <dd><code>Callfrom 0 1xxxxx7890 1674523890</code></dd>
+    </dl>
+    <p>Then SMC32 will then not look at any other non-home
+    courses for the 7th.</p>
+    <p>These ideas are just some of the possibilities which you
+    can explore with the Callfrom instruction. It is well worth
+    experimenting, but you must think carefully about the calling
+    positions you need. Remember also that the more types of
+    course structure you allow, the more search possibilities
+    there will be, and the slower the search will run.</p>
+    <p><span style="color:#FF0000">IMPORTANT WARNING:</span> some types
+    of course end won't work correctly with the rotational search
+    algorithm. You may have to use the &quot;<a
+    href="index.html#Flags">noregen</a>&quot; flag to disable the
+    rotational search manually. See the <a
+    href="smc32tech.html#Unresolved Issues">Unresolved Issues</a>
+    section.</p>
+</blockquote>
+
+<h4><a name="splittenors">Split Tenors Searches</a></h4>
+
+<blockquote>
+    <p>If you want the tenors to be split
+    within a course, you can specify calls such as I, V or 4 (see
+    the <a href="#Calls">Calls</a> section below). SMC32 will automatically find
+    course structures which use these calls, but bring the tenors
+    back together at every course end. Of course, if (in an f-group
+    method) you only allow I but not V, SMC32 will revert to a
+    pure tenors-together search, because calls at I alone cannot
+    bring the tenors back together.</p>
+    <p>To allow general tenors-split
+    searches, where the tenors do not have to come back together,
+    use the <code>Callfrom</code> line
+    (<a href="#callingbells">see above</a>). The
+    calls and calling positions you specify (see <a href="#Calls">Calls</a>
+    below) will still apply, so normally you want to give every
+    possible calling position. Here's an example for Major:</p>
+    <dl>
+        <dd><code>Callfrom 8 1xxxxxx8</code></dd>
+        <dd><code>Bob 2I 3B 44 5V 6M 7W 8H</code></dd>
+    </dl>
+    <p><span style="color:#FF0000">WARNING:</span> this
+    type of search will be vastly slower than tenors-together
+    searches, and is only suitable for short lengths on ten bells
+    or less.</p>
+    <p>This example is still restrictive
+    when making multi-part searches, in that the calling bell
+    must be home at the end of each part. Even for one-part
+    searches, it means that no rotations will be considered where
+    the tenor is not the calling bell. You can release this
+    restriction by making <em>non course-structured</em>
+    searches, which have no special calling bell and in which all
+    calls are allowed:</p>
+    <dl>
+        <dd><code>Callfrom -</code></dd>
+    </dl>
+    <p>In this case, all types of part end
+    are allowed, and all possible calling positions will be
+    enabled (it overrides any Bob, Single or Plain instruction
+    given). This search will be <em>even slower</em>, and for peals you 
+	may need to limit it to 7 parts.</p>
+</blockquote>
+
+<h3><a name="Calls">Calls</a></h3>
+
+<blockquote>
+    <p>You can override the default calls
+    and calling positions by specifying your own. Add a line in
+    the input file (after the 'minimum score' number but before
+    any 'music' line) starting with <code>bob</code>, <code>single</code>
+	or <code>extreme</code>. This is optionally followed by 
+	<code>pn</code> and the place notation of the call (at the
+    leadend). This is followed by calling positions, which should
+    be in the form Xname, where 'X' is the position of the tenor
+    AFTER the call (2...9, 0, E, T) and 'name' is the name you
+    would like to give this position (e.g. H for Home). There
+    should be no spaces between the bell place and the name. Here's
+    some examples:</p>
+</blockquote>
+
+<blockquote>
+    <dl>
+        <dd><code>Bob 2I 3B 5V 6M 7W 8R</code></dd>
+        <dd><code>Single 0M EW TH</code></dd>
+        <dd><code>Extreme pn1456 8Home</code></dd>
+        <dd><code>Single</code></dd>
+    </dl>
+</blockquote>
+
+<blockquote>
+    <p>Note that SMC32 won't find
+    compositions with singles or extremes unless you specify them
+    on a line in the input file. The last example - just 
+	<code>Single</code> on its
+    own - will give you singles with tenors-together calling
+    positions. If you want to use extremes (and the 'big bob'
+    common in Royal and Max is one good reason that you might),
+    you should <u>always</u> specify a call pn, because the
+    default is the same as a single!</p>
+</blockquote>
+
+<blockquote>
+    <p><span style="color:#FF0000">WARNING</span>.
+	On higher numbers, it is best if you can to
+    stick to tenors-together calls. Especially on Maximus and
+    above, if too many tenors-split leads can be reached with
+    your chosen calls, SMC32's table space can overflow. This
+    should result in an error message and the program exiting,
+    but it is possible that SMC32 will crash!!!! Uh oh! BUG ALERT!!</p>
+</blockquote>
+
+<h4><a name="callcounting">Call Counting</a></h4>
+
+<blockquote>
+    <p>It can be useful to limit the number
+    of calls that the composing engine is allowed to use in any
+    one composition. For instance, in Cambridge Major, you might
+    want to restrict the number of short courses by placing a
+    limit on Befores; or you might want to limit the total number
+    of Singles used. To do this, use a &quot;less than&quot;
+    symbol (&lt;) after the calling position you want to restrict,
+    followed immediately by the maximum number of calls to be
+    allowed there. For example, the following line limits the
+    number of Befores in each composition to four:</p>
+</blockquote>
+
+<blockquote>
+    <dl>
+        <dd><code>Bob 3B&lt;4 6M 7W 8H</code></dd>
+    </dl>
+    <p>Note that, although the &quot;less
+    than&quot; symbol is used, any number of calls up to <em>and
+    including</em> that specified will be
+    allowed. You can also place an overall limit on calls,
+    regardless of position - the next example restricts
+    compositions to those containing ten singles or less, and in
+    addition, only two of them can be Homes:</p>
+    <dl>
+        <dd><code>Single &lt;10 0M EW TH&lt;2</code></dd>
+    </dl>
+</blockquote>
+
+<blockquote>
+    <p>Sometimes carefully-chosen call
+    limits can dramatically improve composition speed, for
+    example by ensuring SMC32 doesn't waste time considering
+    compositions with too many short or long courses, which could
+    not make the required length.</p>
+    <p>Want to set a minimum number of calls?
+    The best way of doing this is to limit the number of plain
+    leads in the corresponding position - see the <a
+    href="#disallowingplains">section below</a>.</p>
+</blockquote>
+
+<h4><a name="disallowingplains">Disallowing Plains</a></h4>
+
+<blockquote>
+    <p>Plain leads can be restricted in a similar way to other
+    calls. You can prevent plain leads at certain positions, or
+    place a maximum limit on the number of plain leads allowed in
+    each position of the calling bell. The syntax is similar to
+    that for other calls (see above) but you musn't give calling
+    position names. Here's an example:</p>
+    <dl>
+        <dd><code>Plain 2&lt;0 6&lt;0 7&lt;0</code></dd>
+    </dl>
+    <p>Here no plains are allowed in leads where the tenor would
+    becomes 2nd, 6th, or 7th's place bells. For Cambridge Major,
+    the effect of this would be to produce touches containing
+    only short courses. Note that any positions unspecified (here
+    3rd, 4th, 5th and 8th's place) remain unlimited.</p>
+    <p>It's often useful to specify limits on plain leads in
+    conjunction with bobs or singles at the same position. For
+    instance, the following gives a very efficient way to search
+    for 5000 change peals of London No.3 consisting of ten short
+    courses:</p>
+    <dl>
+        <dd><code>Plain 2&lt;5</code></dd>
+        <dd><code>Bob 2I&lt;10 55 8M 9W 0H</code></dd>
+        <dt>&nbsp;</dt>
+        <dt>If the limit had only been placed on the bob In, then
+            compositions with 13 full courses and one short
+            course would also have been possible. However, do
+            take care with this and similar techniques - note for
+            instance that if you had mistakenly set a limit of 4
+            Plains, no compositions of peal length would be
+            possible.</dt>
+    </dl>
+    <p><span style="color:#FF0000">WARNING</span>: Call counts on plain
+    leads that are internal to a node are currently ignored. See <a
+    href="smc32tech.html#Unresolved Issues">Unresolved Issues</a>
+    for more information.</p>
+</blockquote>
+
+<h4><a name="cominground">Coming Round</a></h4>
+
+<blockquote>
+    <p>It's very important to understand
+    that SMC32 will normally only find compositions coming round
+    in the 'usual' place, i.e. at the leadhead. The reason for
+    this is simply speed - SMC32 can run a much faster algorithm
+    if it is allowed to ignore backstroke snap finishes and the
+    like. This algorithm is known as a <em>rotationally sorted
+    tree search</em>, and also has the major benefit of finding
+    only one unique rotation of each composition.</p>
+    <p>To take an example: for Cambridge
+    Major, bobs only, there are 99 possible peal compositions,
+    but only five of these are not rotations of each other. SMC32,
+    in its default mode of operation, will find just those five.
+    You need not worry that the rotations have been missed - the
+    program will automatically rotate each touch found, and
+    output the 'best' one. (See also <code>allrots</code> in the
+    <a href="index.html#Flags">Flags</a> section).</p>
+    <p>If you DO want to find snap finishes,
+    you must use the following line:</p>
+    <dl>
+        <dd><code>Rounds internal</code></dd>
+    </dl>
+    <p>This will force SMC32 to find ONLY
+    compositions coming round at internal changes (i.e. not the
+    leadhead at all). It can be quite useful to run this in
+    addition to an ordinary search, in order to find all possible
+    touches. Remember you are likely to need singles to reach
+    rounds at a backstroke snap, and tenors-split calling
+    positions are normally needed for handstroke finishes. SMC32
+    will complain if there is no way of bringing a touch round!
+    Also notice that a multipart search is NOT possible, and SMC32
+    will again complain if you try and do one.</p>
+    <p>If you really must find all
+    compositions in one search, you can use</p>
+    <dl>
+        <dd><code>Rounds internal leadhead</code></dd>
+    </dl>
+    <p>And SMC32 will attempt to find
+    everything. There are several drawbacks with this: the search
+    will be much, much slower; each rotation will be output as a
+    separate composition; and multipart searches cannot be made.</p>
+</blockquote>
+
+<h4><a name="NonRounds">Starts and Finishes other than Rounds</a></h4>
+<blockquote>
+	<p>
+	Since version 0.94, SMC32 can perform searches for blocks that do not start or
+	end in rounds. This can be very useful for augmenting hand-produced compositions.
+	To start a search from a row other than rounds, use a line such as:</p>
+    <dl>
+        <dd><code>startfrom 13425678</code></dd>
+    </dl>
+	<p>You must give a row with the treble at lead, and with the right number 
+	of bells!</p>
+	<p>You can determine the finishing row of a search in a similar way:</p>
+    <dl>
+        <dd><code>endin 17856342</code></dd>
+    </dl>
+	<p>Note that the "<code>Rounds</code>" directive can still be used to specify
+	 whether the search can finish at the <code>endin</code> row at leadhead, leadend, or 
+	 internally to the lead.</p>
+	<p>Please note that, if you have different <code>startfrom</code> and
+	<code>endin</code> rows, the rotationally sorted search will be turned off,
+	so the search may be slower than you expect.</p>
+</blockquote>
+
+<h4><a name="musthave">Linkage Searches</a></h4>
+<blockquote>
+	<p>
+	Since version 0.96, SMC32 can perform linkage searches: that is, you can
+	specify one or more blocks which should be present in the composition, and
+	the software will try and link them together. This, together with the ability
+	to do <a href="#NonRounds">Non-Rounds</a> starts and finishes, turns SMC32
+	into a uniquely flexible composing tool.</p>
+	<p>
+	To specify blocks for a linkage search, use either the <code>musthave</code>
+	or the <code>shouldhave</code> directive. Both have the same syntax, for example:
+	</p>
+    <dl>
+        <dd><code>shouldhave 1432657890 1642759208 H H MW W</code></dd>
+    </dl>
+	<p>
+	In this example we are specifying a block which starts at the <em>entry</em>
+	leadhead <code>1432657890</code>, and by the calling "H, H, MW, W" reaches 
+	the <em>exit</em> leadhead of <code>1642759208</code>. Effectively we are saying
+	that, if coursing order 63425 is reached, we want the composition then
+	to proceed Home (64235), Home (62345), Middle (62453), Wrong (24653), and 
+	Wrong again to exit at CO 46253.</p>
+	<p>
+	Spacing is not important when entering the calling, but SMC32 will complain 
+	if the exit leadhead cannot be reached. Note that you can specify an exit 
+	leadhead up to a course after the final call, and the block will include the
+	requisite number of plain leads; similarly for the entry leadhead.</p>
+	<p>
+	You can specify as many <code>musthave</code> or <code>shouldhave</code>
+	blocks as you like. During composition, whenever the search reaches the
+	entry point of either type of block, SMC32 will immediately include the block
+	in the composition, if possible. Furthermore, no calls will be allowed that
+	jump into the middle of the block. (This means that no compositions will be 
+	produced that have the block split into sections: if you want to allow for this, 		
+	you must split your block up manually into two or more <code>musthave</code> or
+	<code>shouldhave</code> lines.)</p>
+	<p>
+	<code>Musthave</code> blocks work as described above, but are even more
+	strict than <code>shouldhave</code>; SMC32 will not allow into the composition 
+	any leads which are false against a <code>musthave</code> block. This means that
+	<code>musthave</code> blocks are always clean-proof against the rest of the
+	composition and hence available for use by the search (although compositions which
+	<em>don't</em> contain all specified <code>musthave</code> blocks can still be
+	found.)</p>
+	<p>
+	Because of the benefits in pruning false leads, <code>musthave</code> blocks
+	are likely to give much quicker searches than those using <code>shouldhave</code>.
+	However, for certain applications, for instance when a musical block is available
+	in two mutually-false forms, <code>shouldhave</code> blocks are more appropriate.</p>
+	<p>
+	Please note that, when using linkage searches, the rotationally sorted search 
+	will be disabled, and so multipart searches are NOT possible.</p>
+</blockquote>
+
+<h4><a name="bittruth">Bitwise Truth Tables</a></h4>
+
+<blockquote>
+    <p>
+	New for SMC32 v0.95 is a new way of proof-checking compositions during
+	the search. The "Bitwise Truthtable Algorithm" uses a table with one bit per
+	node, which is checked off when a node is included in the composition.
+	Unlike conventional truthtables, the numbering of false nodes is also optimised
+	so that, for a given node, several of its false nodes can be checked off
+	simultaneously using a combined 32-bit mask to index the truthtable.</p>
+	<p>
+	The bitwise truthtable is most useful when the method is very false.
+	With false methods, a lot of inner-loop time is spent checking false nodes;
+	the bitwise approach can collapse multiple checks into a single operation,
+	but carries an overhead, so is slower for methods with few false nodes.
+	The break-even point seems around the 10 false-node-per-node mark; for instance
+	the "Full Monty" search (Cambridge Major, tenors together, bobs and singles)
+	completes around 20% faster with bitwise truth tables turned on. Methods with
+	more falseness will do even better.
+	</p>
+    <p>
+	To use bitwise truth tables, add the <code>Bittruth</code> flag to the
+	<a href="index.html#Flags">Flags</a> line in your input file. Note that
+	extra table-build steps are required to optimise the false-node numbering
+	for the bitwise truth table, and these can take many minutes to run, depending
+	on the number of nodes in the search.</p>
+</blockquote>
+
+<h4><a name="palindromic">Palindromic Searches</a></h4>
+
+<blockquote>
+    <p>Palindromic compositions are
+    compositions which can be called in reverse order. More
+    information about palindromes and why you should want to find
+    them is contained in <a
+    href="smc32tech.html#Under the Hood">Under
+    The Hood</a>. Here we will
+    restrict ourselves to the practicalities.</p>
+    <p>The <code>Palindromic</code> flag should be added to the <a
+    href="index.html#Flags">Flags</a> line in your input file, to tell SMC32 to
+    generate palindromic touches only. Note that any <code>Rounds</code> or 
+	<code>Parts</code> lines will be disabled.</p>
+</blockquote>
+
+<h2 align="left"><a name="Music">Music</a></h2>
+
+<blockquote>
+    <p>The following sections describe how to specify:</p>
+	<ul>
+	<li><a href="#undesirablechanges">undesirable changes</a></li>
+	<li><a href="#excludedchanges">excluded changes</a></li>
+	<li><a href="#musicsuffixes">
+		handstroke/backstrokes, leadheads and coursing orders</a></li>
+	<li><a href="#plusorminus">positive and negative rows</a></li>
+    <li><a href="#handbellpositions">handbell positions</a></li>
+	<li><a href="#wrapmusic">wrap music</a>.</li>
+	</ul>
+    <p>For an introduction to SMC32's musical abilities, see <a
+    href="index.html#Music Definitions">Music Definitions</a>.</p>
+</blockquote>
+
+<h3><a name="undesirablechanges">Undesirable Changes</a></h3>
+
+<blockquote>
+    <p>One of the example files supplied
+    with SMC32 is the music file <code>major.mus</code>. 
+	Let's take a look at it now.</p>
+    <p>You will see it contains a lot of
+    definitions, including rollups and little-bell music off the
+    front. They all have minimums of 0, so it's not essential for
+    a composition to have a certain number of any of them. Two
+    individual changes - Queens and Tittums - are singled out for
+    special merit. We also show how to define combination rollups:
+    notice that a 56 rollup will score 250 points <u>plus</u> the
+    20 points for being a CRU.</p>
+    <p>The most interesting bit is the last
+    line: <code>undesirables</code>. Here we have defined changes with 82 or 83
+    at the back, and given them a negative score, of -3. This
+    means that every time an 82 or 83 is encountered in a touch,
+    it will actually <u>reduce</u> the overall score. The
+    relatively small -3 score might help to distinguish between
+    two compositions that have identical desirable music.</p>
+    <p>How does the minimum number of
+    changes work for negatively-scoring changes? Here we have
+    specified a minimum of -10000, which means a touch will be
+    rejected if <u>more</u> than 10000 82s or 83s are present -
+    which obviously isn't going to happen. But a value of, say, -2
+    would allow only two such changes.</p>
+</blockquote>
+
+<h3><a name="excludedchanges">Excluded Changes</a></h3>
+
+<blockquote>
+    <p>By making the minimum number of
+    changes of an undesirable change 0, we can tell SMC32 not to
+    allow any of them at all. This creates a set of <em>excluded</em>
+    changes, which can be treated in a special way by SMC32. If
+    you are NOT doing a rotational search (that is, you are
+    looking for snap finishes only) then the program can delete
+    any leads containing these changes during the table building
+    phase - it will then never even look at them during the
+    composing process. Since the search space is reduced,
+    composing speed often increases too!</p>
+    <p>Sadly, this optimisation is not
+    posisble in the 'normal' search algorithm. This is because
+    SMC32 is effectively finding every rotation of a given touch
+    in one go - and an excluded change could be present in one
+    rotation but not another. So in this case the program checks
+    for exclusions as the compositions are produced.</p>
+</blockquote>
+
+<h3><a
+name="musicsuffixes">Handstrokes, Backstrokes, Leadheads and Coursing Orders</a></h3>
+
+<blockquote>
+    <p>Sometimes you may want to count music only at backstroke,
+    or only at hand. By appending a row with a 'b' or an 'h' you
+    can specify which stroke. For example, the following line
+    excludes 65s at backstroke:</p>
+    <dl>
+        <dd><code>65s at backstroke</code></dd>
+        <dd><code>-1 0 xxxx65b</code></dd>
+    </dl>
+    <p>If you want to pick out certain leadheads, add 'l' (lower-case
+    L) to the row:</p>
+    <dl>
+        <dd><code>6th at home</code></dd>
+        <dd><code>1 12 1xxxx678l</code></dd>
+    </dl>
+    <p>This example ensures any composition found will have all
+    course ends with the 6th home (but not necessarily all 1xxxx678
+    rollups!).</p>
+    <p>This leadhead counting system can be extended, to
+    automatically count all leads with a certain coursing order.
+    If you add 'c' instead of 'l' to a row, you will count every
+    matching leadhead, but also <em>every leadhead that can be
+    reached from this by plain leads</em>. Look at this example:</p>
+    <dl>
+        <dd><code>56 unaffected</code></dd>
+        <dd><code>100 0 1xxx5678c</code></dd>
+    </dl>
+    <p>Here any leadhead 1xxx5678 will match; but so will 1x5x7x86,
+    157x8x6x, and so on. Essentially, you are asking for all
+    leads with coursing order 5xxx6. The 'c' tag will also work
+    for non-Plain Bob leadhead methods - it uses the method's own
+    leadhead transposition.</p>
+</blockquote>
+
+<h3><a name="plusorminus">Positive and Negative rows</a></h3>
+
+<blockquote>
+    <p>For many centuries, composers have made use of a property
+    called <em>the nature of the rows</em>. Every row that can be
+    written down falls into one of two categories, depending on
+    whether an even or an odd number of swaps of pairs of bells
+    is needed to get back to rounds. For example, the row 543216
+    is an <em>even</em>, or <em>positive</em> change, because an
+    even number of swaps is required (you can do it with 2 swaps
+    - 5,1 and 4,2). Conversely, 83425167 is <em>odd</em> or <em>negative</em>
+    - if you try swapping pairs of bells until rounds occurs, you
+    will always use an odd number of swaps (here the quickest way
+    uses 5 swaps).</p>
+    <p>SMC32 can score positive and negative changes. Add a '+'
+    character to a row if you want to match only positive rows;
+    or a '-' character for negative rows. This <em>sign</em>
+    character can also be appended to handstroke, backstroke or
+    leadhead characters. Here's an example:</p>
+    <dl>
+        <dd><code>Disallow negative course-ends</code></dd>
+        <dd><code>-1 0 1xxxxx78l-</code></dd>
+    </dl>
+    <p>In this case, we are preventing negative course-ends from
+    appearing in our compositions (note the use of the '<code>l</code>' 
+	character to match leadheads -
+    we don't want to exclude negative rollups at the snap). This
+    can be useful, for instance to force an even number of
+    singles in each course - because, on even numbers of bells,
+    all leadheads are positive until a single is called.</p>
+</blockquote>
+
+<h3><a name="handbellpositions">Handbell positions</a></h3>
+
+<blockquote>
+    <p>Handbell ringers often prefer compositions with the 3-4
+    and 5-6 pairs coursing. You can count handbell positions with
+    the 'c' course tag described above. For example, on 10 bells:</p>
+    <dl>
+        <dd><code>5-6 coursing</code></dd>
+        <dd><code>6 0 1xxxxxxx56c 1xxxxxxx65c</code></dd>
+    </dl>
+    <p>The row <code>1xxxxxxx56c</code>
+    matches not only the leadhead with 5 and 6 in ninth's and
+    tenth's place, but also every lead in the plain course from
+    this row. If you also swap the 5 and 6 over, you will
+    therefore get every possible coursing lead for these two
+    bells.</p>
+    <p>Other handbell positions are just as easy - here's the 5-6
+    position for Royal:</p>
+    <dl>
+        <dd><code>3-4 in 5-6</code></dd>
+        <dd><code>6 0 1xxx34xxxxc 1xxx43xxxxc</code></dd>
+    </dl>
+    <p>Naturally you could have given any lead in the 5-6 course.
+    This music definition is exactly the same:</p>
+    <dl>
+        <dd><code>3-4 in 5-6</code></dd>
+        <dd><code>6 0 13xxxxxxx4c 14xxxxxxx3c</code></dd>
+    </dl>
+    <p>You may complain that this system doesn't give the &quot;proper&quot;
+    positions. For example, the 5-6 course in Plain Bob Royal
+    includes both the opposites and the 4-5 position, depending
+    on where the treble comes between the bells. However, on more
+    complex methods it is usual to count the entire course from a
+    given pair, because the &quot;hunting&quot; positions don't
+    necessarily follow the simple Plain Bob rules within the lead.
+    </p>
+    <p>If you really want to count the Plain Bob type positions,
+    the best thing to do is define each lead separately, with the
+    'l' tag:</p>
+    <dl>
+        <dd><code>3-4 in opposites</code></dd>
+        <dd><code>6 0 1xx34xxxl 1xx43xxxl 1x3xx4xxl
+            1x4xx3xxl 13xxxx4xl 14xxxx3xl</code></dd>
+    </dl>
+    <p>This example is just for Major. Positions other than
+    Opposites will involve twice as many possible leads!</p>
+</blockquote>
+
+<h3><a name="wrapmusic">Wrap Music</a></h3>
+
+<blockquote>
+    <p>We'll wrap up (ahem!) this discussion on music with a look
+    at the exciting field of <em>wrap</em> music. A wrap is a
+    musical row that is split over a handstroke and a backstroke.
+    For example, every method with Plain Bob leadheads contains
+    the following wrap of reverse rounds:</p>
+    <dl>
+        <dd><code>1<strong>8765432 </strong>handstroke</code></dd>
+        <dd><code><strong>1</strong>8674523
+            backstroke</code></dd>
+    </dl>
+    <p>Another good one is the Whittingtons near-miss in the
+    first lead of Double Norwich CBM. Listen out for it next time
+    you ring the method - it sounds lovely:</p>
+    <dl>
+        <dd><code>648<strong>21753 </strong>handstroke</code></dd>
+        <dd><code><strong>468</strong>12735
+            backstroke</code></dd>
+    </dl>
+    <p>Wraps are only effective if they cross a handstroke-backstroke
+    change, because otherwise the handstroke gap interrupts them.
+    If you're interested in wrap music, SMC32 can count them for
+    you. As an example, we'll take <em>rounds wraps</em> -
+    possibly the most dramatic of all, where rounds occurs across
+    a change.</p>
+    <dl>
+        <dd><code>Wraps of Rounds</code></dd>
+        <dd><code>10000 0 x1234567/8xxxxxxx xx123456/78xxxxxx
+            ...</code></dd>
+    </dl>
+    <p>There are another five possible rows we couldn't fit on
+    the line here, but hopefully you get the picture and could
+    complete the definition (the ... aren't really allowed!). Two
+    rows must be specified for each wrap, with a / character
+    between them (and no spaces). The first row will match only
+    handstrokes, and the second will match only an immediately
+    consecutive backstroke.</p>
+    <p>It's often hard to work out how many wraps are possible in
+    a given method, so be careful with any music minimums you
+    specify. On the one hand, there are probably more wraps than
+    you might think - there are 16 possible true occurrences of
+    wrapped rounds on Eight! - but any given method won't be able
+    to achieve anywhere near this number, especially if the
+    tenors are kept together. So, experiment and see.</p>
+</blockquote>
+</body>
+</html>

@@ -1,0 +1,440 @@
+<html>
+
+<head>
+<meta http-equiv="Content-Type"
+content="text/html; charset=iso-8859-1">
+<title>SMC32 Technical</title>
+</head>
+
+<body bgcolor="#FFFFFF">
+
+<h2 align="left">SMC32 - <a name="Under the Hood">Under the Hood</a></h2>
+
+<blockquote>
+    <p>Here we explain a bit about how SMC32
+    works. You don't need to know any of this to use SMC32 to
+    produce compositions successfully, but a bit of understanding
+    can help you to get better, or quicker, results.</p>
+</blockquote>
+
+<h3><a name="Nodes">Nodes</a></h3>
+
+<blockquote>
+    <p>SMC32 doesn't use place notation, or
+    calculate changes, when it is composing. It doesn't even look
+    at leadends or leadheads. Instead, it travels from node to
+    node down the mysterious composition tree! A node is really
+    just an address in memory, and represents the step from one
+    calling position to the next. For example, in London Major,
+    there is a node starting at rounds and ending at the Middle -
+    one lead long. There are obviously many other nodes which
+    cover the same distance, such as that from 13246578 to
+    14538276 (the handstroke before the Middle). But, unless you
+    specify split tenors course-ends, there <u>won't</u> be a
+    node from 12345687, because that course end can't possibly
+    exist in a tenors-together composition. SMC32 only looks at
+    nodes that can be reached with the given parameters.</p>
+    <p>Continuing with the London example,
+    there is another type of node which runs from the Middle to
+    the Before. This covers two leads, so allows SMC32 to skip
+    ahead even faster - remember, it goes directly from one node
+    address to the next, without calculating the intervening
+    changes, because the steps between nodes are pre-calculated.
+    In tenors-together Major, there are five nodes per course. In
+    Royal, just three.</p>
+    <p>How is falseness checked when all the
+    changes are missed out? This is the table-building code's
+    main (and slowest!) job. For each node that can possibly be
+    reached, the table-builder finds any and all other nodes that
+    contain changes duplicated with it. Then, when SMC32 is
+    composing, it can convince itself that a given node is true
+    against the rest of the composition, by:</p>
+    <ol>
+        <li>Checking the node itself hasn't
+            been used before;</li>
+        <li>Checking that none of its false
+            nodes have been used before.</li>
+    </ol>
+    <p>Each of these steps entails a single
+    test of a flag in the appropriate node, so is very quick. On
+    a Pentium MMX, SMC32 can check a node and move on to the next
+    in as little as 20 machine cycles (around 25 nanoseconds on a
+    800MHz machine!), depending on the degree of falseness. The
+    number of millions of nodes that SMC32 has calculated and
+    checked is displayed on the screen whilst composing is in
+    process - it is the <code>MNodes</code> figure. A big search can 
+	cover <em>millions</em> of millions of nodes.</p>
+</blockquote>
+
+<h3><a name="Rotational Sorting">Rotational Sorting</a></h3>
+
+<blockquote>
+    <p>So, what is this mysterious 'rotationally
+    sorted tree search'? Is it too good to be true?</p>
+    <p>To answer those questions, we'll
+    first look at how a standard tree search works. Imagine we
+    are finding touches of Plain Bob Minor. SMC32 always tries
+    plain nodes first, so the first touch found will be the plain
+    course:</p>
+    <dl>
+        <dd><code>PPPPP</code></dd>
+    </dl>
+    <p>To find further compositions, SMC32 <em>backtracks</em>,
+    and changes the last plain to a bob - effectively, it is
+    choosing a different branch of the search tree. The composing
+    engine then proceeds with more plains, until the touch runs
+    false:</p>
+    <dl>
+        <dd><code>PPPP-PPPP<span style="color:#FF0000">P</span></code></dd>
+    </dl>
+    <p>Another backtrack, and another,
+    before rounds comes up again, with the familiar three Homes:</p>
+    <dl>
+        <dd><code>PPPP-PPPP-PPPP<span style="color:#FF0000">P</span></code></dd>
+        <dd><code>PPPP-PPPP-PPPP-</code></dd>
+    </dl>
+    <p>The 'rotational' search works much
+    faster, because instead of setting new nodes to be plain, it
+    copies the calling from the beginning of the touch. We start
+    in the same way:</p>
+    <dl>
+        <dd><code>PPPPP</code></dd>
+    </dl>
+    <p>But after a backtrack operation (to <code>PPPP-</code>),
+    subsequent calls are copied, from the first plain. Now we
+    find the three Homes immediately:</p>
+    <dl>
+        <dd><code>PPPP-PPPP-PPPP-</code></dd>
+    </dl>
+    <p>It's easy to see how this technique
+    can find multi-part compositions rapidly - indeed, SMC32's
+    multi-part search depends upon it; it can't find multiparts
+    if forced to use the 'standard' tree search.</p>
+    <p>But, doesn't this system miss
+    compositions out? By the time SMC32 has backtracked to the
+    very first call, and changed that to a bob, there will only
+    be one possible touch left (assuming singles aren't allowed):</p>
+    <dl>
+        <dd><code>---</code></dd>
+    </dl>
+    <p>We can't have anything starting <code>-P</code> because SMC32
+    has only got a bob to copy! Does this mean touches starting 
+	<code>-P</code> have been
+    missed? Well, not if you consider their rotations. Take 
+	<code>-PP-PP</code>: we
+    certainly can't produce that, but it's easy to show that the
+    rotation <code>PP-PP-</code> has already been found. In fact, given any
+    round-block touch, SMC32 will always find the 'lowest'
+    rotation - that is, the one with that begins with the most
+    plain leads. This is how the program 'sorts' the rotations..</p>
+    <p>Of course, in Surprise, there are
+    many compositions beginning <code>-P</code> which come round at a backstroke snap, and
+    hence have no rotations. These ARE missed by the rotational
+    search, which explains why SMC32 can only use it to find
+    round blocks (with rounds at the leadhead).</p>
+    <p>Given that caveat, the rotational
+    search is guaranteed not to miss anything. It's harder to
+    prove the converse, that rotations of compositions are only
+    found once. In fact, this is not true with the
+    straightforward copying system described: certain types of
+    touch <u>will</u> be duplicated. However, SMC32 applies a
+    further refinement to the algorithm, to guarantee just one
+    unique production of every touch. This is very useful, since
+    you can then determine exactly how many unique compositions
+    exist.</p>
+    <p>A final tweak helps SMC32 cope with
+    course-structured compositions - ones where not all calling
+    positions are allowed. The call copying must only be used on
+    whole courses, otherwise the calling position rules might be
+    violated. So, after a backtrack, SMC32 inserts plain nodes
+    until the course end, and then proceeds with the copying
+    trick.</p>
+</blockquote>
+
+<h3><a name="Table Building">Table Building</a></h3>
+
+<blockquote>
+    <p>SMC32 uses a multi-pass table
+    building strategy. Its goal is to create a table of <a
+    href="#Nodes">Nodes</a>. In the simplest case, each node represents
+    one lead. (For course-structured searches, a node may be a
+    number of leads between calling positions). The table-builder
+    first needs to determine which nodes are reachable with the
+    specified calls; it then links all the nodes together using
+    these calls. Next, the music present in each node's changes
+    is counted, and stored (obviously only if you have used a
+    music file). Finally, falseness tables for the nodes are
+    calculated.</p>
+    <p>These various stages are displayed
+    during the initial part of SMC32's run. You will find that
+    the falseness calculations normally take longest; the run
+    time is largely dependent on the number of reachable nodes,
+    so increases if you specify singles or tenors-split calls:
+    dramatically so on higher numbers.</p>
+    <p>The table builder's main concern is
+    that, initially, it has no idea what your method, calls, and
+    calling positions are capable of producing. For example, a
+    Maximus method with general tenors-split calls can generate
+    nearly 40 million possible leads. If SMC32 attempted to
+    reserve memory for all of these, you would rapidly run out of
+    space on your computer. So, are Maximus (and higher) searches
+    impossible? Fortunately, not if you restrict the composition
+    criteria, for example by specifying tenors-together calling
+    positions. This brings down the total to a much more
+    manageable 1320 leads, even with singles. Tenors-together
+    searches are entirely feasible up to SMC32's limit of 20
+    bells.</p>
+</blockquote>
+
+<h3><a name="Speed">Speed</a></h3>
+
+<blockquote>
+    <p>Composing programs such as SMC32
+    suffer from a huge user inconvenience: it's hard to tell how
+    long they are going to run for. Some searches complete in
+    milliseconds, while others may (quite literally) take longer
+    than the lifetime of the Universe. At what point do you give
+    up? How can you get results quicker?</p>
+    <p>SMC32 provides a 'percentage complete'
+    figure, displayed on the screen whilst composing. This is not
+    a completely accurate measure, because it is based on the
+    assumption that all branches of the search tree are equally
+    likely, which is not true at all. (There are certainly far
+    more touches <em>starting</em>
+    with a bob Home course, than there are <em>starting</em> with a 
+	plain course!) However, it is a useful guide to the practicality of
+    a given search. If, after leaving SMC32 running overnight,
+    the percentage figure has not changed at all, you can be
+    pretty certain it's a hopeless case! Even if some
+    compositions have been produced, they are unlikely to be
+    anywhere near the best available.</p>
+    <p>Generally, deep tree searches into
+    large node spaces will be intractable. For example, tenors-split
+    searches are much more time-consuming than tenors-together,
+    simply because there are so many more combinations to try.
+    The depth of search is also important. Looking for one-course
+    touches of Royal entails a mere eight possibilities; for two
+    courses, this rises to somewhere near 64 - 8 times 8. In
+    general, n courses would give a search space of 8 to the
+    power n, until we get near the 'falseness limit' of the
+    method.</p>
+    <p>Falseness is crucial to speed of
+    search. Checking more false nodes does slow SMC32 down; but
+    falseness also helpfully prunes the search tree. So, the more
+    false the method, the sooner the search will complete.
+    Compare Cambridge, which can be searched for all possible
+    touches in a matter of seconds, with Bristol, which it would
+    take billions of years to exhaust. Another way of looking at
+    this is that there are very few true touches of Cambridge (only
+    five distinct round-block peals), whereas Bristol has an
+    almost unlimited number.</p>
+    <p>In this respect, machine composers
+    provide a useful foil for the human variety. Computers are
+    better at false methods, humans at the clean-proof ones.</p>
+    <p>Now on to some specifics.</p>
+    <h4><a name="Multi-part Searches">Using Multi-part Searches</a></h4>
+    <p>Many one-part peal searches will be
+    impossible, especially if the method has little falseness, or
+    if singles or tenors-split calls are used. However, usually a
+    multi-part search will give results very quickly, and the
+    resulting compositions will certainly be easier to call!
+    Remember that a two-part search is <u>not</u> just two times
+    quicker than a one-part: the effect is exponential. If a one
+    part peal contains 100 calling positions, a two-part search
+    might be up to 2^50 times faster! Try using the following
+    line in your method file:</p>
+    <dl>
+        <dd><code>Parts 2 3 4 5 6</code></dd>
+    </dl>
+    <p>You might want to use higher part
+    numbers for split-tenors multi-parts. For reasonably clean
+    treble-dodging mx Major methods, or any Plain method, even
+    the two-part search may be too slow. Try:</p>
+    <dl>
+        <dd><code>Parts 3 4 5 6</code></dd>
+    </dl>
+    <h4><a name="Palindromic Searches">Palindromic Searches</a></h4>
+    <p>A palindromic composition is one in two halves: each half
+    is the reverse of the other. For example, in Kent, the
+    following touch is a palindrome:</p>
+    <dl>
+        <dd><code>hb mmb b bww bh</code></dd>
+    </dl>
+    <p>The half-way point (or <em>apex</em>) is the third Before;
+    and the calls at Middle are the reverse of those at Wrong.
+    This might be easier to see if we write out all the leads:</p>
+    <dl>
+        <dd><code>-PPP-PPP P--PP-PPP PPP-PPP
+            PPP-PP--P PPP-PPP-</code></dd>
+    </dl>
+    <p>Every regular (Plain Bob leadhead) method has the property
+    that Middles and Wrongs are reverses of each other - that is,
+    the number of leads from the start of the course to a Middle,
+    is the same as the number of leads back (from the end of the
+    course) to the Wrong. A bob Before will also always be in the
+    middle of a course; naturally Home is at the end!</p>
+    <p>Palindromic compositions happen, for one reason or another,
+    to be very common and very useful. For this reason, SMC32
+    provides [or will provide, in the next release!] a
+    palindromic composing engine. It is a bit like the
+    rotationally-sorted search, in that every palindrome found
+    can be rotated to give all its variations. However, unlike
+    the normal rotational search, not all touches are found -
+    only palindromic ones.</p>
+    <p>Given this, the palindromic search is an indispensable way
+    of getting faster results from a big search. The palindromic
+    touches found will often include the best of what is
+    available; and the search speed, for palindromic one-parts,
+    is comparable to a normal two-part search.</p>
+    <h4>Call Counting</h4>
+    <p>The more calling positions and types of call you have, the
+    more branches there are in the search tree, and the longer it
+    will take to complete the search. One way to restrict this is
+    to specify limits on the number of calls in each position -
+    for instance, by limiting the number of calls at I/V you can
+    prevent SMC32 considering lots of short courses. See the <a
+    href="smc32advanced.html#callcounting">Call Counting</a>
+    section for more information.</p>
+    <h4><a name="Evaluation and Output Performance">Evaluation and Output Performance</a></h4>
+    <p>As well as raw composing speed, there
+    are two other jobs SMC32 must do, which may sometimes impact
+    on overall search speed. These are composition evaluation and
+    output.</p>
+    <p>If you have specified very weak music
+    criteria (that is, low minimum scores), there may be huge
+    numbers of compositions output to disk. Although SMC32 does
+    buffer disk output, this will naturally slow the search
+    substantially (apart from the obvious disadvantage of you
+    having to wade through millions of touches in the output file!).
+    By specifying the music you are looking for more tightly, you
+    can speed composing by reducing disk output. Keep an eye on
+    the MNodes/second figure - if this drops much below 1.0, you
+    have a problem (or possibly a very slow PC). The 'Comps'
+    figure tells you how many touches are being written to the
+    output file. Even the analyser will take a reasonable time to
+    process 100 000 compositions, so try and keep total search
+    output below this.</p>
+    <p>Of course, if there are lots of
+    possible compositions in your search space, SMC32 will still
+    have to spend time checking them all, to find the ones which
+    pass the music tests. Remember it is checking all the
+    rotations of every composition produced, too! You can see how
+    many touches and rotations are being analysed by looking at
+    the 'comps/s' figure. This will vary from moment to moment,
+    but if it is consistently above the 50 000 comp/s level, it
+    is likely SMC32 is spending a lot of its time just evaluating
+    compositions, instead of finding them.</p>
+    <p>One way to reduce this work is to
+    narrow the composition length limits. For example, a search
+    for touches 0-5200 will take very much longer than one in the
+    range 5000-5100, simply because SMC32 can reject immediately
+    any composition that is too short or too long. Unfortunately,
+    for many methods (especially clean-proof ones) there are
+    billions upon billion of possible peal-length touches. If you
+    must find the best one, they've all got to be checked.</p>
+    <p>Another factor to be borne in mind is
+    the type of music definitions you have specified. Normally it
+    does not matter how many different types of music there are -
+    SMC32 combines all your definitions together when scoring
+    compositions. However, if you have specified any music
+    minimums, the evaluation routines must score and check them
+    individually. This will reduce composing speed substantially
+    if a lot of compositions are being produced.</p>
+    <p>The moral is, for high-speed
+    composition evaluation, use narrow length limits, and no
+    music-definition minimums; use the overall minimum score
+    instead.</p>
+</blockquote>
+
+<h3><a name="Unresolved Issues">Unresolved Issues</a></h3>
+
+<blockquote>
+    <p>There are some pitfalls caused by insufficiently capable
+    behaviour in SMC32. I am hoping to resolve these if I can
+    find (or someone can suggest) a suitable algorithmic solution.</p>
+    <h4>Course-ends incompatible with the
+    Rotationally-Sorted Search</h4>
+    <p>It is possible to specify &quot;asymmetric&quot; course
+    ends using the Callfrom instructions. An asymmetric set of
+    course ends is one in which rotations of compositions won't
+    obey the course-end restrictions; for example:</p>
+</blockquote>
+
+<blockquote>
+    <dl>
+        <dd><code>Callfrom 0 1xxxxx7890 1674523890</code></dd>
+    </dl>
+    <p>Here the rotational search cannot be used, because
+    rotations of a matching composition are likely to contain any
+    course end <code>1x7xxxx890</code>. Even
+    worse, the rotational search will miss some compositions that
+    do match the criteria. The only workaround at present is to
+    manually set the <a href="index.html#Flags">noregen</a> flag.
+    Note that there are still plenty of valid uses of the
+    Callfrom instruction which are symmetrical, and will work
+    with the rotational search; for example:</p>
+    <blockquote>
+        <p><code>Callfrom 7 1xxxxx7890 1xxxxx7089 1xxxxx7908</code></p>
+    </blockquote>
+</blockquote>
+
+<blockquote>
+    <h4>&quot;Frozen&quot; Display</h4>
+</blockquote>
+
+<blockquote>
+    <p>Ocassionally the statistics display of the composing
+    engine will freeze, often for very long periods of time. This
+    occurs when SMC32 has reached a part of the search tree from
+    which it is impossible to reach rounds - that is, all
+    possible ways of coming round are false against the initial
+    part of the composition. This affects the display, and more
+    importantly the regular checkpointing of progress to the <code>.sf0</code>
+	file, because for efficiency
+    reasons SMC32 only drops out to the statistics routine when a
+    composition is found that runs round.</p>
+    <p>The current workaround is to leave SMC32 running long
+    enough to escape from the &quot;frozen&quot; section,
+    remembering you cannot restart during this period. I could
+    improve this behaviour by forcing SMC32 to drop out of the
+    composing loop more often (not just on rounds), but this
+    would affect overall performance. What I am really looking
+    for is an efficient way of <em>detecting</em> when the search
+    has entered such a frozen area, and immediately backtracking
+    out of it. This would be very beneficial to overall search
+    speed, because no time would be wasted in areas of the search
+    tree which cannot reach rounds. Anyone got any ideas?</p>
+    <h4>&quot;Percentage Complete&quot; Inaccurate</h4>
+    <p>Currently a very approximate method is used to estimate
+    percentage complete in the rotationally-sorted search
+    algorithm. It is useful as a measure of progress but does not
+    represent time to completion very well.</p>
+</blockquote>
+
+<blockquote>
+    <h4>Call-Counted Plain Leads sometimes don't work</h4>
+</blockquote>
+
+<blockquote>
+    <p>SMC32 processes <a href="#Nodes">nodes</a>, not leads. For
+    example, in tenors-together Yorkshire Royal, one node can
+    comprise 4 leads - from the Home to the Middle, or the Wrong
+    to the Home. </p>
+    <p>Naturally, bobs and singles always begin and end nodes,
+    but not all plain leads do. Call counts on plain leads that
+    are internal to a node will unfortunately be ignored. Taking
+    the Yorkshire Royal example above, call counts on the second
+    plain lead of a course (where the tenor is 7th's place bell)
+    are ignored. A workaround is to put the count on the lead
+    which ends the node instead, in this case where the tenor is
+    Middle.</p>
+    <p>It would be possible for SMC32 to break up sections of
+    plain leads into smaller nodes if call counts have been
+    placed on internal leads. However, this would affect
+    composing speed, so a better solution would be automatic
+    migration of the call count to the lead at the end of the
+    node, perhaps with a warning message. I may implement this in
+    a future version.</p>
+</blockquote>
+</body>
+</html>

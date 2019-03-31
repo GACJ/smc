@@ -1,0 +1,348 @@
+<html>
+
+<head>
+<meta http-equiv="Content-Type"
+content="text/html; charset=iso-8859-1">
+<title>SMC32 Version List</title>
+<STYLE>
+H2 {margin-bottom: 0pt}
+</STYLE>
+</head>
+
+<body bgcolor="#ffffff">
+
+<h1 align="left">SMC32 <a name="Version List">Version List</a></h1>
+
+<h2>New in Version 0.965</h2>
+<span>Released: November 2005</span>
+<blockquote>
+	<ol>
+	<li>Fixed long-standing bug preventing analysis of compositions with non-default calling bell
+	    and calling positions. (Default calling position names were not being reset).</li>
+	<li>Better messages for analyser "invalid composition" errors.</li>
+	</ol>
+</blockquote>
+
+<h2>New in Version 0.963</h2>
+<span>Released: June 2004</span>
+<blockquote>
+	<ol>
+	<li>Various bugs to do with linkage searches have been resolved - mostly to do with
+		boundary cases such as MUSTHAVE/SHOULDHAVE blocks ending in rounds or containing
+		snap finishes.</li>
+	<li>Some analyser bugs found and fixed where composition length was calculated incorrectly,
+		and the composition file rejected.</li>
+	<li>Note that this version is still not exhaustively tested - I need someone to carry out
+		regression tests for me, as well as check out the new linkage-search functions fully.</li>
+	</ol>
+</blockquote>
+
+<h2>New in Version 0.962</h2>
+<span>Released: November 2003</span>
+<blockquote>
+	<ol>
+	<li>Music checking for negative rows DID NOT WORK! This has now been fixed,
+		so that negative rows are counted properly, in both music and exclusions.</li>
+	<li>Compositions entered by hand into .sf files were not checked for length.
+		The analyser will now protest if you give the wrong length for a touch.</li>
+	<li>Starting and finishing range for the percentage complete statistic has been
+		made slightly more accurate (also prevents "nan" output when using a musthave
+		block from rounds).</li>
+	<li>Previously all 6-bell searches were forced into "non-course-structured" mode,
+		i.e. any calls in any calling position allowed, regardless of your .smc file.
+		This has been corrected (actually in 0.961) so that restricted calling positions
+		can be specified exactly as for higher numbers.</li>
+	</ol>
+</blockquote>
+
+<h2>New in Version 0.96</h2>
+<span>Released: 22nd October 2003</span>
+<blockquote>
+	<ol>
+	<li>"Linkage" searches can now be made, with the new MUSTHAVE/SHOULDHAVE directives.
+	This allows the composer to specify blocks which must be included in the composition.
+	The search engine will then try and link the given blocks. See this
+	 <a href="smc32advanced.html#musthave">new section</a> for more
+    information.</li>
+	<li>A corresponding addition to analyser output to identify
+	which MUSTHAVE/SHOULDHAVE blocks have been included in each composition.</li>
+	</ol>
+</blockquote>
+
+<h2>New in Version 0.95</h2>
+<span>Released: 16th May 2003</span>
+<blockquote>
+	<ol>
+	<li>A new (optional) method of checking truth using a bitwise truthtable has been
+	implemented. It is particularly useful for very false searches.
+	See this <a href="smc32advanced.html#bittruth">new section</a> for more
+    information.</li>
+	<li>Maximum line length in .smc files has been increased from 1000 characters
+	to 10K. This allows for very long music and exclusion lines.</li>
+	<li>If a false composition is entered manually into a .sfx file, the analyser
+	now prints the node-heads which are false against each other.</li>
+	</ol>
+</blockquote>
+
+<h2>New in Version 0.94</h2>
+<span>Released: 23rd January 2003</span>
+<blockquote>
+	<ol>
+	<li>Starting and finishing rows other than rounds may now be specified.
+	See this <a href="smc32advanced.html#NonRounds">new section</a> for more
+    information.</li>
+	<li>There was a bug in the analyser composition output which occasionally caused
+	course ends to be omitted and the calling layout to be corrupted. This has
+	been fixed.</li>
+	<li>A minor change made to the inner composing loop to improve performance for
+	searches in false methods that often bump up against the length limits.</li>
+	</ol>
+</blockquote>
+
+<h2>New in Version 0.91</h2>
+<blockquote>
+	A crash bug has been fixed in the call-counted multipart search.
+  Previously this search would crash out immediately if it tried to backtrack
+  through a node in which&nbsp;a call type was not possible.
+</blockquote>
+
+<H2>New in Version 0.90</H2>
+<span>Released: 8th June 2000</span>
+<blockquote>
+    <p><span style="color:#ff0000"><em>Important Note</em></span>:
+    Changes have been made to the way split tenors searches and
+    searches with disallowed plain leads are specified. You may
+    have to amend older <code>.smc</code>
+    files that use these features. See below for more information.</p>
+    <ol>
+        <li>Analyser composition output now prints the
+    course-ends in the left column, and the calling in the right. This may be
+    selectable in a future version.
+        <li>Call counting - the composing engine can now limit
+            the number of calls used, and the number of calls in
+            each position. See this <A
+            href="smc32advanced.html#callcounting">new section</a> for more
+    information.
+        <li>"Plain" definition changed - now uses the
+            Call Counting syntax to disallow plain leads. Most
+            importantly, positions not specified are <em>allowed</em>
+            rather than prevented as before. See <A
+            href="smc32advanced.html#disallowingplains">this
+            section</a> for
+    more information.
+        <li>"Splittenors" flag removed. You can now
+            specify two types of split-tenors search - course-structured,
+            using e.g. "Callfrom 8 1xxxxxx8", and non
+            course-structured, using "Callfrom -". Only
+            the latter overrides your specified calling positions.
+            See <A href="smc32advanced.html#splittenors">this
+            section</a> for
+    more information.
+        <li>Bug fix: completely split-tenors searches, where all
+            calling positions are allowed as well as split-tenors
+            course ends, were incorrectly being processed as
+            "course-structured" searches, leading to <strong>incorrect
+            results!</strong> The analyser output
+    for non-course-structured compositions has also been improved.
+        <li>Bug fix: an initialisation error occasionally
+    caused the table builder to report 0 non-excluded nodes, and hence terminate
+    with "ERROR Rounds cannot be reached".
+        <li>Bug fix: the analyser incorrectly displayed a warning
+            message "Incorrect score 0 - should be <em>n</em>" when analysing human-generated compositions
+    with the author given instead of score.
+        <li>Bug fix: the default calls for non-mx 8th's place
+    Major methods did not include Home.
+        <li>Documentation improved - in particular, better
+            explanation of potentially dangerous "pitfalls"
+            caused by poor behaviour by SMC32 in certain
+            circumstances. See <A
+            href="smc32tech.html#Unresolved Issues">Unresolved
+            Issues</a>.</li>
+    </ol>
+</blockquote>
+
+<h2>New in Version 0.89</h2>
+<span>Released: 2nd December 1999</span>
+
+<blockquote>
+    <ol>
+        <li>"Splittenors" flag now honours any calling
+    positions specified. So, you can allow split-tenors course ends but still
+    restrict the calling positions for the calling bell. However, if no calling
+    positions are given explicitly for a call, the default with "splittenors"
+    will still be to allow all positions.
+        <li>With a multi-part search it was previously the case
+            that short compositions of fewer parts than the
+            minimum could be found. These are now no longer
+            output.</li>
+    </ol>
+</blockquote>
+
+<h2>New in Version 0.88</h2>
+<span>Released: 7th November 1998</span>
+
+<blockquote>
+    <ol>
+        <li>Prototype palindromic search: add the 'palindromic'
+    flag to your input file. At the moment, only searches from the Plain Home
+    apex - in particular, this is only applicable to 2nd's place methods.
+        <li>Improvements to Analyser. Rotations of each
+    composition are now treated separately (like the 'allrots' flag during
+    composing); this means you might find the same composition more than once in
+    the output file, in different rotations. Useful because the music in a
+    rotation can be substantially different.
+        <li>Improvements to Analyser composition output.
+            Bracketted course-ends now shown where possible.
+            "Special selection" compositions added to
+            the end of the output file - each of these is optimal
+            for just one musicdef.</li>
+    </ol>
+</blockquote>
+
+<h2>New in Version 0.83</h2>
+
+<blockquote>
+    <ol>
+        <li>Improvements to Analyser composition output. If a
+    calling position (such as Single Thirds) is reachable by a Single from a
+    different lead than a Bob (e.g. Before), a separate column for the Single is
+    printed, using the Single's own calling-position name.
+        <li>'+' and '-' characters can now be appended to row
+    matches in music files, to match only positive or negative rows.
+        <li>Further bug fixes and improvements to analyser's
+            composition column layout.</li>
+    </ol>
+</blockquote>
+
+<h2>New in Version 0.82</h2>
+<span>Released: 15th October 1998</span>
+
+<blockquote>
+    <ol>
+        <li>Bug fixes: "negative minimum" limits on undesirable
+    music now work properly; non-PB leadhead methods now take 4th's place calls
+    by default; multiparts of within one change of maximum length now found
+    properly.
+        <li>Wrap counting - see the <A href="index.html#Music">Music</a> section.
+        <li>Music definitions can now be specified directly in
+    the method file. Use "music" with no include filename, then list the music
+    definitions in the usual format below.
+        <li>If you do use a music include-file, the "minimum
+    number of changes" fields can be overridden in the method file. After the
+    "music &lt;music-file&gt;", add lines in the format
+    "&lt;minimum-number-of-changes&gt; &lt;music-def name&gt;". Any minimums you
+    specify in the method file replace those in the music file.
+        <li>Composition evaluation speed has been improved
+    dramatically, especially when no music minimums are used.
+        <li>The calling bell can be changed from the tenor, and
+    different course ends can be specified.
+        <li>The 'splittenors' flag has changed function. It now
+            automatically allows all calling positions and all
+            course ends.</li>
+    </ol>
+</blockquote>
+
+<h2>New in Version 0.80</h2>
+<span>Released: 30th September 1998</span>
+
+<blockquote>
+    <ol>
+        <li>Fast table build. A better
+            algorithm and improved memory structures have reduced
+            slow table build times substantially. For example,
+            London No.3 with singles and I/V builds in 2 seconds
+            as opposed to 15. SMC32 can also cope with larger
+            search spaces - e.g. tenors-split Royal - provided
+            you have enough RAM. As soon as real memory is
+            exhausted, and virtual memory needed, both building
+            and searching times will worsen dramatically due to
+            disk thrashing.
+        <li>Better music counting:
+            backstrokes/handstrokes, leadheads, handbell
+            positions. See the end of the Music section.
+        <li>Analysing 'human' compositions.
+            It is possible to use the analyser mode with non-SMC32
+            generated compositions - see the <A
+            href="index.html#Analysing non-SMC32 compositions">Analysis</a>
+			section. Basically you add the
+            composition to a suitable search file, with the 'score'
+            field replaced by the composer's surname.
+        <li>Linkage-pruned search, using
+            fragment library. Apparently working, but not
+            verified. No documentation yet.
+        <li>Bug fix in composition input (i.e. for restart and
+            analysis).</li>
+    </ol>
+</blockquote>
+
+<h2>New in Version 0.77</h2>
+<span>Released: 22nd September 1998</span>
+
+<blockquote>
+    <p>As far as I can remember, the
+    following improvements have been made since the last Beta.
+    Most are documented later in this user guide.</p>
+</blockquote>
+
+<blockquote>
+    <ol>
+        <li><span style="color:#ff0000">File handling has COMPLETELY
+            changed</span>! Method input files MUST have
+            extension <code>.smc</code>. Music
+            input files MUST have extension <code>.mus</code>. Search-result files
+            have extension <code>.sf0</code>,
+            where '0' is automatically incremented from 1 up to 9,
+            every time a new search is started.
+			<span style="color:#ff0000">You should rename files from the
+            earlier versions!</span>
+        <li>Music files are no longer specified on the command
+            line (except when performing 'off-line' analysis on
+            search files - see (3) below). Instead, a 'music &lt;music-file&gt;'
+            line is used in the <code>.smc</code> input file. This MUST be
+    the last active line in the file.
+        <li>There is a new analysis function. A new music file
+            can be applied to a (complete <em>or</em> incomplete)
+    search file, to generate a 'top ten' sorted list of best compositions, in
+    human-readable form.
+        <li>More statistics are displayed during composing,
+    including a comps/s rate which gives the number of compositions (including
+    rotations) produced and analysed per second. Time taken is now displayed in
+    hours, minutes, seconds; and % complete has been made slightly more
+    accurate.
+        <li>The search-file output format has changed slightly.
+    The number of parts in each composition is now listed, and only the calling
+    for the first part given.
+        <li>Several bugs have been fixed in: search restarting,
+    'rounds internal' searches, memory handling and use of extremes.
+        <li>Searches using tenors-split call combinations, such
+    as I/V, V/4 etc. have been speeded up substantially. If a 'useless'
+    tenors-split call is specified (such as I on its own) this is automatically
+    ignored, with no impact on composing performance.
+        <li>There is a prototype fragment-library generator. A
+            new (undocumented) 'makelib n' input line will cause
+            a <code>.lf0</code> fragment
+            library file to be generated (where the 0 will be
+            replaced with the same number as the search file). 'N'
+            is the number of compositions to hold in memory to
+            perform fragment comparisons on - this should be as
+            large as possible. The default is 10000. Too big a
+            number will exhaust 'real' memory, causing disk
+            thrashing and loss of performance. No music file is
+            needed for a fragment build search, but the minimum
+            composition length should be set to 0, and the
+            maximum length should probably not be set beyond six
+            courses for best results. Current maximum fragment
+            length is 32 nodes. <span style="color:#ff0000">N.B.</span>
+            During library building, compositions are not saved
+            to the search file!</li>
+    </ol>
+</blockquote>
+
+<hr>
+
+<blockquote>
+    <p>Click <A href="index.html#Contents">here</a> to go back to
+    the User Guide.</p>
+</blockquote>
+</body>
+</html>

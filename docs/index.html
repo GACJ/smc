@@ -1,0 +1,1027 @@
+<html>
+
+<head>
+<meta http-equiv="Content-Type"
+content="text/html; charset=iso-8859-1">
+<title>SMC32 User Guide</title>
+</head>
+
+<body bgcolor="#FFFFFF">
+
+<h1 align="center">SMC32 User Guide</h1>
+
+<p>Documentation v1.15, copyright 1998-2004 Mark B. Davies</p>
+
+<h2>Version and Distribution Information</h2>
+
+<blockquote>
+    <p>This Guide covers SMC32 Version 0.965.
+    This is a pre-release Beta test version and SHOULD NOT BE
+    REDISTRIBUTED.</p>
+</blockquote>
+
+<blockquote>
+    <p>SMC32 is copyright 1998-2005 Mark B.
+    Davies &amp; Graham A. C. John. All rights reserved.</p>
+    <p>See the <a
+    href="smc32versions.html#Version List">Version
+    List</a> for a list of changes to
+    the latest version (0.965) and previous versions.</p>
+</blockquote>
+
+<h2><a name="Contents">Contents</a></h2>
+
+<blockquote>
+    <dl>
+        <dd><a href="#SMC32: Raw Composing Power">About SMC32</a></dd>
+        <dd><a href="#Installation">Installation</a></dd>
+        <dd><a href="#How to Use SMC32">How
+            to use SMC32</a></dd>
+        <dd><a href="#Restarting">Pausing
+            and Restarting</a></dd>
+        <dd><a href="#Input File Format">The
+            Input File</a>:<dl>
+                <dd><a href="#Flags">Flags</a></dd>
+                <dd><a href="#Comments">Comments</a></dd>
+            </dl>
+        </dd>
+        <dd><a href="#Music">Music</a></dd>
+        <dd><a href="#Output: the search file">Search Results File</a></dd>
+        <dd><a href="#Composing Display">Composing
+            Display</a></dd>
+        <dd><a href="#Off-line Analysis">Off-line
+            Analysis</a>:<dl>
+                <dd><a href="#Composition Files">Composition Files</a></dd>
+                <dd><a href="#Trivial Variations">Trivial Variations</a></dd>
+                <dd><a href="#Special Selection">&quot;Special Selection&quot;</a></dd>
+                <dd><a href="#Analysing non-SMC32 compositions">non-SMC32 compositions</a></dd>
+            </dl>
+        </dd>
+        <dd><a href="#Frequently Asked Questions">FAQ</a></dd>
+    </dl>
+</blockquote>
+
+<blockquote>
+    <dl>
+        <dd><a href="smc32examples.html#Example Compositions">Example Compositions</a>
+<p>Advanced Use:</p>
+        </dd>
+    </dl>
+</blockquote>
+
+<blockquote>
+    <dl>
+        <dd><dl>
+                <dd><a href="smc32advanced.html#Searching">Advanced Search Features</a></dd>
+                <dd><a href="smc32advanced.html#Music">Advanced Music Types</a></dd>
+                <dd><a href="smc32tech.html#Under the Hood">How It Works</a></dd>
+                <dd><a href="smc32tech.html#Speed">Speed</a></dd>
+                <dt>&nbsp;</dt>
+            </dl>
+        </dd>
+    </dl>
+</blockquote>
+
+<h2><a name="SMC32: Raw Composing Power">SMC32:
+Raw Composing Power</a></h2>
+
+<blockquote>
+    <p>The program &quot;SMC32.EXE&quot; is
+    a general-purpose, high-speed composition-finding engine. It
+    should run on any PC-compatible which supports Win32.</p>
+    <p>The underlying composing engine is
+    based on Graham John's earlier 16-bit DOS program &quot;SMC&quot;,
+    or &quot;Single Method Composer&quot;. This has been re-written
+    for the 32-bit platform, and advantage taken of the flat 32-bit
+    memory model to make algorithmic and coding optimisations.</p>
+</blockquote>
+
+<h3>Capabilities</h3>
+
+<blockquote>
+	<p>SMC32 is capable of finding compositions of any length for any
+	treble-dominated method with calls at the leadend.
+	Note that principles and methods with
+    non-leadend calls (e.g. Grandsire, or half-lead calls) may be
+    supported in a future version, but spliced compositions
+    are unlikely ever to be supported. (If you're interested in spliced,
+	take a look at
+	<a href="http://bronze-age.com/elf">Elf</a> instead.)</p>
+
+    <p>With the later 0.9x versions, SMC32 has matured into a flexible
+	and powerful tool for the composer. As well as performing "brute-force"
+	searches for complete compositions, it can now search for smaller
+	blocks (using the non-rounds start and end row capability introduced in
+	build 0.94), and, most importantly (from build 0.96), perform "linkage"
+	searches, where fixed blocks are linked together into larger compositions.
+
+    <p>SMC32 can also re-analyse
+    compositions that have been previously produced - for
+    instance, to find 'best' compositions with differing musical
+    criteria. Compositions can be printed in a human-readable
+    form, with calling position columns and course ends. See <a
+    href="#Off-line Analysis">Off-line
+    Analysis</a>.</p>
+    <p>SMC32 can find compositions:</p>
+    <ol>
+        <li>In parts;</li>
+        <li>With any leadend calls, and with
+            up to three types of call (bob, single, extreme);</li>
+        <li>With any calling positions,
+            tenors together or split;</li>
+        <li>With any calling bell and course-end
+            type;</li>
+        <li>With specified musical
+            properties;</li>
+        <li>That are unique - i.e. that are
+            not rotationally equivalent to anything else;</li>
+        <li>That are palindromic [NB not yet
+            fully working!]</li>
+    </ol>
+    <p>The search algorithm is exhaustive,
+    so that given sufficient time, SMC32 will find all possible
+    compositions that satisfy the input criteria. This enables
+    definitive searches for 'best' compositions to be made.</p>
+    <p>SMC32 has been designed to run as
+    fast as possible on today's computers. The inner composing
+    loop has been written in hand-optimised 32-bit assembler,
+	and the search algorithm is
+    the most efficient currently known. To give you some idea of
+    what raw composing power is all about, the following search
+    times have been recorded on a Pentium 200MMX:</p>
+    <ol>
+        <li>1250-1440 changes of Bristol S.
+            Major, bobs only, tenors together: 15 seconds to
+            exhaust search.</li>
+        <li>1250-1440 changes of London No.3
+            Surprise Royal, bobs and singles, tenors together
+            with I/V: 1 second to exhaust search.</li>
+        <li>5000-40320 changes of Cambridge
+            S. Major, bobs only, tenors together: 20 seconds to
+            exhaust search.</li>
+        <li>5000-40320 changes of Cambridge
+            S. Major, bobs and singles, tenors together: 43 hours
+            to exhaust search.</li>
+    </ol>
+</blockquote>
+
+<blockquote>
+    <p>N.B. Searches 1 and 4 specifically
+    omitted touches coming round at the snap - this gives much
+    quicker search times. See <a
+    href="smc32advanced.html#cominground">Coming
+    Round</a> in Advanced Features.</p>
+    <p>Unfortunately, despite the speed of
+    modern PCs, and of SMC32's algorithm, there are still many
+    composing jobs which just aren't feasible by machine. Finding
+    compositions by exhaustive search is one of a class of
+    problems with exponential running time: this is because we
+    are searching a tree structure, and looking just one calling
+    position further into the composition will double the search
+    space (or triple it, if singles are allowed). If we look at a
+    clean-proof mx method such as Bristol, we need a program 54
+    times faster to search just one course deeper! In general, a
+    Treble-dodging Major method must have a fair degree of
+    falseness before it will be amenable to general, one-part
+    peal searches; Plain methods are much worse.</p>
+    <p>SMC32 does provide various ways to
+    reduce an impossibly large search - the most important being
+    the multipart search, the linkage search, call counting, and
+	the palindromic search. See the section on <a
+    href="smc32tech.html#Speed">Speed</a>.</p>
+</blockquote>
+
+<h3>Treatment of SMC32-produced compositions</h3>
+
+<blockquote>
+    <p>You are welcome to call, and publish,
+    any composition produced by SMC32. However, before you even
+    consider using the program it is sensible to check in the
+    literature. Don't reinvent the wheel - the composition you
+    need probably already exists.</p>
+    <p>If you do decide to use SMC32, please
+    prove the output independently before you use it, as we can
+    make no guarantee about the truth of compositions produced.
+    And if you intend to publish a generated peal composition,
+    please also check that it is original, and has merit. The
+    composing credits should be &quot;arranged by &lt;yourname&gt; (SMC32)&quot;. Please
+    DO NOT use &quot;composed by Mark Davies/Graham John&quot;.</p>
+    <p>You must also be aware that you will
+    only get good results from SMC32 if you allow the program to
+    complete a given search. Please do not assume that the first
+    few compositions produced are representative. You <u>must</u> exhaust the search space before you can be
+    sure that the best compositions have been found.</p>
+</blockquote>
+
+<h3>Future Directions</h3>
+
+<blockquote>
+    <p>The following features are planned
+    for SMC32, in rough order of proximity or likelihood:</p>
+</blockquote>
+
+<blockquote>
+    <ol>
+        <li>Palindromic and linkage-pruning debugged and working!</li>
+        <li>Music pruning</li>
+        <li>Multi-extent compositions</li>
+        <li>Support for principles</li>
+        <li>Support for non-leadend calls</li>
+        <li>Skim search</li>
+        <li>Searches for small parts of compositions / linkage
+            searches</li>
+        <li>GUI front-end</li>
+    </ol>
+</blockquote>
+
+<h2><a name="Installation">Installation</a></h2>
+
+<blockquote>
+    <p>There are no installation steps,
+    apart from unzipping the SMC32 archive to a suitable
+    directory on your hard disk. The program does not currently
+    use the registry, or any part of your disk other than the
+    directory it is placed in. You can deinstall it by deleting
+    the directory.</p>
+    <p>You <u>can</u> run SMC32 from a
+    floppy disk, but this is not recommended. SMC32 saves
+    composition results to the installation directory, and a
+    floppy drive will slow progress dramatically.</p>
+</blockquote>
+
+<h2><a name="How to Use SMC32">How To Use
+SMC32</a></h2>
+
+<blockquote>
+    <p>At the moment, SMC32 is run from the
+    command prompt:</p>
+    <dl>
+        <dd><code>SMC32 &lt;input-file.smc&gt;</code></dd>
+    </dl>
+    <p>Input to the program comes from a
+    text file (&quot;input-file&quot; in the line above) which
+    defines the method, calls, composition lengths, music, and
+    other criteria for the search. Some examples of these input
+    files are supplied - see <code>PB6.SMC</code>, <code>CAMB8.SMC</code>,
+	<code>BRISTOL8.SMC</code> or <code>LONDON10.SMC</code>.
+	For a complete description of the input
+    format, see <a href="#Input File Format">Input File Format</a> below.</p>
+    <p>SMC32 can also be used to restart an
+    interrupted search (see <a href="#Restarting">Pausing and Restarting</a>), and to carry out detailed musical analysis
+    on search results (see <a href="#Off-line Analysis">Off-line Analysis</a>).</p>
+</blockquote>
+
+<h3>Examples</h3>
+
+<blockquote>
+    <p>It's probably best to try one of the
+    supplied examples first. Change to your SMC directory and
+    type:</p>
+    <dl>
+        <dd><code>SMC32 camb8.smc</code></dd>
+    </dl>
+    <p>After a few seconds, the search
+    should be compete, and will have found all tenors-together
+    bobs-only peals of Cambridge Major. SMC32 will report various
+    statistics such as number of compositions found and time
+    taken - don't worry about the other numbers for the time
+    being (see <a href="#Composing Display">Composing Display</a> later).</p>
+    <p>You may wonder whether it has really
+    found any compositions - there are none displayed! In fact,
+    SMC32 writes compositions to a <code>.sf1</code> <em>search
+    file</em>. This file has the same name
+    as your input file, with the file extension .smc replaced
+    by .sf1. You can look at this in a text editor, even
+    while a search is in progress. For more details, see the <a
+    href="#Output: the search file">Output</a> section below. Note that if you run the same
+    search again, a <code>.sf2</code>
+    search file is created, then <code>.sf3,</code>
+    and so on. This is so that you can try different searches
+    using the same input file, without overwriting your results.</p>
+    <p>Next, try:</p>
+    <dl>
+        <dd><code>SMC32 london10.smc</code></dd>
+    </dl>
+    <p>This search finds quarter peals of
+    London No.3, subject to certain musical criteria (lots of
+    little-bell music, plus 56s and 65s). Look in <code>london10.sf1</code>
+    to see the results.</p>
+    <p>There are some examples of
+    compositions produced by SMC32 on the <a
+    href="smc32examples.html#Example Compositions">Examples</a> page.</p>
+</blockquote>
+
+<h3><a name="Restarting">Pausing and
+Restarting a Search</a></h3>
+
+<blockquote>
+    <p>Sometimes you may want to stop a long
+    SMC32 search and restart it at a more convenient time. You
+    can stop the search by hitting CTRL-C. SMC32 writes special
+    restart values to the <code>.sf1</code> search file. The search can be restarted by
+    supplying SMC32 with the <code>.sf1</code> file. For example:</p>
+    <dl>
+        <dd><code>SMC32 camb.sf1</code></dd>
+    </dl>
+    <p>If instead you run <code>SMC32 camb.smc</code>
+    again by mistake, your output file will not be overwritten. A
+    new <code>camb.sf2</code> file will be created. And of course you can
+    restart <em>that</em> using</p>
+    <blockquote>
+        <p><code>SMC32 camb.sf2</code></p>
+    </blockquote>
+</blockquote>
+
+<h3><a name="Input File Format">Input File
+Format</a></h3>
+
+<blockquote>
+    <p>You can create an SMC32 input file in
+    any text editor (e.g. Notepad, or DOS edit). If you want to
+    use a word processor such as MS Word, you MUST use the
+    appropriate &quot;Save as ASCII text&quot; option. Have a
+    look at the example files to get a better idea of what the
+    input should look like.</p>
+    <p>The input file must start with the
+    following essential lines:</p>
+    <ol>
+        <li>Name of method (leave off class
+            and stage names, e.g. <code>Plain</code>, not <code>Plain
+            Bob Minor</code>).</li>
+        <li>Place notation. You must specify
+            external places, and use '<code>x</code>' for the cross change. Do
+            not use MicroSiril-type '<code>&amp;</code>' and '<code>+</code>' characters.
+            For symmetric methods, give the notation to the half-lead,
+            then add '<code>l</code>' and the leadhead. E.g.
+			&quot;<code>x16x16x16 l12</code>&quot;
+            gives PB Minor.</li>
+        <li>Minimum and maximum length - two
+            numbers, separated by a space or tab.</li>
+        <li>Minimum score - one number. This
+            is only used if a music file is specified, but must
+            always be present anyway.</li>
+    </ol>
+    <p>Various optional lines can follow, in
+    any order. These include:</p>
+    <ol>
+        <li>Flags: <code>allrots</code>, <code>bestyet</code>,
+		<code>longestyet</code> and <code>palindromic</code>. For explanation, see <a
+            href="#Flags">Flags</a> below</li>
+        <li><code>Parts</code>. This line can be used to
+            search for multi-part compositions (the default is
+            one-parts, i.e. all compositions). The line should
+            start with Parts and be followed by space-separated
+            numbers describing the desired numbers of parts. For
+            example: <code>Parts 2 3 4 5 6</code>. You do not have to
+            specify part ends - SMC32 will search for any that
+            are suitable.</li>
+        <li>Calls and calling positions -
+            see the <a href="smc32advanced.html#Calls">Calls</a>,
+            <a href="smc32advanced.html#disallowingplains">Disallowing Plains</a> and <a
+            href="smc32advanced.html#callcounting">Call Counting</a> sections in
+			Advanced Features. If
+            none are specified, the search will be bobs-only with
+            tenors-together calling positions. Bobs are also
+            assumed to be fourth's place, unless the method is
+            non-mx nths place, in which case n-2th's place bobs
+            are used.</li>
+        <li>Calling bell, and allowed course
+            ends - see <a
+            href="smc32advanced.html#callingbells">Calling Bell and Course Ends</a>
+			and <a href="smc32advanced.html#splittenors">Split-Tenors Searches</a>
+			in Advanced Features. You do not have
+            to provide this line if you want the tenor to be the
+            calling bell, with course ends having bells 7 and
+            heavier home.</li>
+        <li>Allowed ways of coming round -
+            see <a href="smc32advanced.html#cominground">Coming Round</a> in Advanced Features. <span style="color:#FF0000">PLEASE NOTE</span> that SMC32 will ONLY find
+            compositions coming round at the leadhead, unless
+            otherwise specified.</li>
+		<li>Starts and finishes other than rounds -
+			see <a href="smc32advanced.html#NonRounds">this section</a> in
+			Advanced Features.</li>
+		<li>"Must-have" blocks that are essential to the composition - see
+			the section on <a href="sm32advanced.html#musthave">linkage searches</a>
+			in Advanced Features.</li>
+    </ol>
+    <p>At the end of the input file you can add a <code>Music</code> line.
+	Music <em>definitions</em> can be given below this, or a <em>music
+    file</em> can be specified. See the <a href="#Music">Music</a>
+    section below.</p>
+    <h4><a name="Comments">Comments</a></h4>
+    <p>It's often useful to add notes to an
+    input file, or comment out alternative lines. SMC32 uses the
+    '<code>/</code>' comment character - use this at the start of a line to
+    comment it out. For example:</p>
+    <dl>
+        <dd><code>/ We're using this place notation:</code></dd>
+        <dd><code>38x38.14x12x38.14x14.58.16x16.58 l12</code></dd>
+        <dd><code>/ Not this:</code></dd>
+        <dd><code>/ x38x14x56x16x34x58x14x58 l12</code></dd>
+    </dl>
+    <h4><a name="Flags">Flags</a></h4>
+    <p>Flags control specific aspects of SMC32's
+    operation. You can list all your flags as separate words on
+    one line. For example:</p>
+    <dl>
+        <dd><code>allrots longestyet bestyet</code></dd>
+    </dl>
+    <p>Here's what the current SMC32 flags do:</p>
+    <ol>
+        <li><code>Allrots</code>. By default (unless a Rounds internal line is
+			given - see <a href="smc32advanced.html#cominground">Coming Round</a>
+			in Advanced Features) SMC32 will use
+            a special type of tree search which only finds one
+            rotation of each compositions. Once a composition is
+            found, it will automatically calculate all the
+            rotations, and output the 'best' (most musical) one.
+            If this is not enough, you can use the allrots
+            flag. If this is specified, but there is no music
+            file, SMC32 will output all rotations of all
+            compositions found. If a music file was given, SMC32
+            will output all rotations that meet the minimum music
+            criteria, rather than just the best single rotation.</li>
+        <li><code>Longestyet</code> - for some very false methods it may
+            not be possible to get the minimum length that you
+            have specified. With the longestyet flag, SMC32 will output a composition
+            if it is longer than anything previously found. You
+            can then watch the lengths build up as the search
+            progresses. Once any composition of minimum or
+            greater length is found, this flag is automatically
+            turned off.</li>
+        <li><code>Bestyet</code> - the current method and search
+            length might not be capable of producing the minimum
+            music score you have specified. With this flag, SMC32
+            will progressively output the &quot;best&quot;
+            composition found so far. Once any composition of
+            minimum or greater score is found, this flag is
+            automatically turned off.</li>
+        <li><code>Palindromic</code> - see <a
+            href="smc32advanced.html#palindromic">Palindromic Searches</a>
+			in Advanced Features.</li>
+		<li><code>Bittruth</code> - turns on the bitwise truthtable for
+			falseness checking during composition. See
+			<a href="sm32advanced.html#bittruth">this new section</a> in
+			Advanced Features.</li>
+        <li><code>Noregen</code> - an &quot;undocumented&quot; flag,
+            can be used to disabled the rotationally-sorted
+            search algorithm. This is not normally needed; unless,
+            currently, you have specified certain types of &quot;asymmetric&quot;
+            course end sets which SMC32 cannot detect - see the
+			<a href="smc32advanced.html#callingbells">Callfrom</a>
+			instruction and the <a href="smc32tech.html#Unresolved Issues">Unresolved
+			Issues</a> section. More information about the
+            rotationally-sorted search (which is SMC32's default
+            algorithm) can be found <a
+            href="smc32tech.html#Rotational Sorting">here</a>.</li>
+    </ol>
+</blockquote>
+
+<h2><a name="Music">Music</a></h2>
+
+<blockquote>
+    <p>Finding a composition positively
+    bursting with musical changes is, of course, what it's all
+    about. But, one man's music is another's noise, as they say.
+    Some like wraps or little-bell rollups, others prefer Queens;
+    it's even rumoured that a few like CRUs... Music is always
+    important, even in a method so false that only one peal
+    exists - because you still have to decide which rotation is
+    best. In cleaner methods, counting music can be essential to
+    cut down the number of touches under consideration. Try
+    running Bristol Major with no musical criteria, and watch
+    your hard disk fill up with rubbish!</p>
+</blockquote>
+
+<h3><a name="Music Definitions">Music Definitions</a></h3>
+
+<blockquote>
+    <p>You can tell SMC32 exactly what music
+    you are interested in by using <em>music definitions</em>.
+    These must go at the <u>bottom</u> of your input file,
+    following a <code>MUSIC</code> line. For instance:</p>
+    <dl>
+        <dd><code>MUSIC</code></dd>
+        <dd><code>56 rollups</code></dd>
+        <dd><code>25 0 xxxx5678</code></dd>
+        <dd><code>Set changes</code></dd>
+        <dd><code>100 0 13572468 12753468 15263748</code></dd>
+    </dl>
+</blockquote>
+
+<blockquote>
+    <p>Here we have two definitions: &quot;56
+    rollups&quot; and &quot;Set changes&quot;. What you name you
+    use for a music definition is up to you - it is used by the <a
+    href="#Off-line Analysis">Off-line
+    Analysis</a> function of SMC32,
+    but for now you don't need to worry about it. The interesting
+    bit is the second line, after the name. This is in three
+    parts:</p>
+    <dl>
+        <dd>&lt;score&gt; &lt;minimum&gt;
+            &lt;row-match&gt; ...</dd>
+    </dl>
+    <p>The first number is the score given
+    to any change which matches the definition - in the example
+    above, any 5678 rollup scores 25, while Queens, Whittingtons
+    or Tittums score 100 points each. The second number can be
+    used to specify a minimum number of changes - for instance,
+    we could demand at least 12 rollups. SMC32 rejects any
+    composition that does not meet a <em>music minimum</em>
+    like this. However, normally it's best to leave it at zero.</p>
+    <p>The remainder of the definition line gives row <em>matches</em>.
+    These can be specific changes, like Queens etc. as above; or
+    wildcard rows like the 56 rollups. The '<code>x</code>' character is used to match any
+    bell. You can also use '<code>?</code>' '<code>-</code>' or '<code>.</code>'
+    characters if you prefer.</p>
+</blockquote>
+
+<h3><a name="Music Files">Music Files</a></h3>
+
+<blockquote>
+    <p>Often you will want to re-use music
+    definitions from one method to the next. Instead of repeating
+    your definitions every time, you should put them in a <em>music
+    file</em>. This is just a text file,
+    with extension <code>.mus</code>,
+    which contains your music definitions. To use it, just
+    specify the filename on the <code>MUSIC</code> line at the bottom of
+	your <code>.smc</code> file:</p>
+    <dl>
+        <dd><code>Music major.mus</code></dd>
+    </dl>
+    <p>This line tells SMC32 to use one of
+    the provided example files, <code>major.mus</code>.
+	Have a look at the comments at the start of
+    this file to see how it all works. Alternatively, we'll take
+    a closer look at the other example music file - <code>royal.mus</code> -
+    which is the simpler of the two.</p>
+    <p><code>Royal.mus</code> contains four &quot;music definitions&quot;:
+    56 rollups, 65 rollups, and 4- and 5-bell little-bell rollups.
+    The 56 and 65 rollups are very similar to the music
+    definition example given above. Because this music file is
+    designed for Royal methods, all ten bell-places must be given
+    in each row-match. The five-bell LB definition contains two
+    wildcard rows - if a change in your touch matches either of
+    these, it will score 100 points. Similarly for LB4.</p>
+    <p>The other thing to notice is that
+    music.roy insists on a minimum of four changes of both 56s <em>and</em>
+    65s. Although 56/65 rollups only score 1 point each - much
+    less than little-bell runs - no composition will be output
+    unless it has at least four 56s and at least four 65s. It <em>can</em>
+    be useful to use music minimums like this, in addition to the
+    'overall' minimum score that you specify
+    in the method file.</p>
+    <p>Notice how you could have changed the
+    way the 56s and 65s were treated, by also combining them into
+    one line:</p>
+    <dl>
+        <dd><code>56/65 rollups</code></dd>
+        <dd><code>1 8 xxxx567890 xxxx657890</code></dd>
+    </dl>
+    <p>This is less specific than before -
+    we will now allow a touch containing, for example, 8 56s but
+    no 65s.</p>
+    <p>It is very important to have a good
+    understanding of what music your method is capable of
+    producing, given the length constraints imposed. In
+    particular, be very careful about specifying music definition
+    minimums that are too high. If SMC32 can't find anything that
+    reaches your minimums, you will get no output! Often it is
+    best to leave the minimums at 0. This will speed the
+    composition process, too - see <a
+    href="smc32tech.html#Evaluation and Output Performance">Evaluation Speed</a>.</p>
+</blockquote>
+
+<h3>Other Types of Music</h3>
+
+<blockquote>
+    <p>In the Advanced Features section you
+    can find out how to give more sophisticated music parameters
+    - for instance: undesirable changes, excluded changes,
+    handstroke/backstrokes, leadheads, coursing orders, positive
+    and negative changes, handbell positions, and wrap music.</p>
+</blockquote>
+
+<h2><a name="Output: the search file">The
+Search Results File</a></h2>
+
+<blockquote>
+    <p>SMC32 uses a <em>search file</em> to store compositions that achieve the
+    desired length and meet the minimum musical criteria. The
+    first time a search is run, the search file has extension <code>.sf1</code>. If you
+    ever re-run the search (for example, after changing some of
+    the parameters in your .smc input file) a <code>.sf2</code> file will be written,
+	and so on. If you reach
+    <code>.sf9</code> SMC32 will refuse to do any more new searches,
+    until you delete or rename at least one of these nine search
+    files. This incrementing-extension system means you should
+    never accidentally overwrite the results of an earlier search.</p>
+    <p>In the search file, each composition
+    is listed on a single line, with the following information:</p>
+    <dl>
+        <dd>Length, score, number of parts,
+            calling</dd>
+    </dl>
+    <p>The calling is represented using the
+    calling position names you specified in the method file - or,
+    if you didn't, with the familiar M, B, W, H type system. This
+    layout is intentionally brief, since some searches may
+    produce many thousands of compositions. A more readable,
+    column-formatted output can be produced by SMC32 in its
+    analysis mode - see the <a href="#Off-line Analysis">Off-line Analysis</a>
+	section later. A fuller music breakdown is
+    also provided by the analyser.</p>
+    <p>The search file also starts with a
+    summary of the input file (and any included music file) that
+    you gave when you started the search. This helps you see what
+    parameters you specified, and also tells SMC32 what to do if
+    you restart an unfinished search. It's best not to change
+    these values in the search file, because you may get
+    unpredictable results if you restart a search with different
+    parameters.</p>
+    <p>An unfinished search file will
+    probably have some funny symbols and large numbers at the
+    bottom. These are special checkpoint and restart values used
+    by SMC32 and <span style="color:#FF0000">should never be
+    altered!</span> Even if no compositions
+    are being output, SMC32 checkpoints the search file every
+    minute or so. If someone pulls the plug on your search, you
+    can restart later in the knowledge that only a few seconds of
+    search time will have been lost.</p>
+    <p>Since SMC32 opens and closes the
+    search file every time it has compositions or checkpoint
+    values to write to it, the file is quite safe to look at even
+    while composing is in progress. For example, you can run SMC32
+    in analysis mode from another shell, on a search in progress.
+    However, please note that doing this (or indeed, using any
+    other program on your computer) will slow the main search
+    substantially. You can see how fast an SMC32 search is
+    running by looking at the composing display, which is
+    described next.</p>
+</blockquote>
+
+<h2><a name="Composing Display">Composing Display</a></h2>
+
+<blockquote>
+    <p>SMC32 prints various information to
+    the screen as it parses your input file, builds its composing
+    tables, and finally starts composing. Errors can also be
+    displayed if something goes wrong - for example, a syntax
+    error in your input, or an internal error (which should be
+    reported to MBD please!). Most errors will cause the program
+    to stop immediately.</p>
+    <p>The most useful information comes
+    during the composition process. Seven figures are updated on
+    the screen every second or so (depending on the speed of your
+    machine). It should look something like this:</p>
+    <dl>
+        <dd><pre>Best      Comps     Mnodes    Mnode/s   Comps/s   Time      %complete
+934	  59326     1115632   1.38      6236      217:46:17 4.266</pre>
+        </dd>
+    </dl>
+    <p>Here's what each column means:</p>
+    <ol>
+        <li>Best score found so far</li>
+        <li>Number of compositions output</li>
+        <li>Millions of nodes visited (see <a
+            href="smc32tech.html#Under the Hood">Under the Hood</a>)</li>
+        <li>Composing speed, in millions of
+            nodes per second</li>
+        <li>Composing rate, in compositions
+            evaluated per second</li>
+        <li>Total time taken (hours:minutes:seconds)</li>
+        <li>Approximate percentage complete
+            (see <a href="smc32tech.html#Speed">Speed</a>)</li>
+    </ol>
+    <p>It's very important to remember that
+    the second figure (number of compositions output) <u>only</u> apply to touches that have met your minimum
+    criteria. In particular, they have to be of the right length,
+    and <u>must have met the individual music definition minimums</u>!
+    </p>
+    <p>Often you will see a best score, but
+    have no compositions output. This is because no composition (no
+    matter how high-scoring) has met all of your music definition
+    minimums. Sometimes it will be necessary to revise downward
+    the minimums you have specified - see <a
+    href="#Music Definitions">Music
+    Definitions</a>.</p>
+    <p>The fifth column, 'composing rate', is also useful. It
+    tells you how many compositions (of the correct length) are
+    being found and analysed every second. Sometimes, if the
+    search tree is very sparse or the length is not easy to
+    achieve, there may be no compositions produced for a long
+    time. Other searches - especially in clean-proof methods -
+    produce tens of thousands of compositions every second. Of
+    course, these will only get added to the 'compositions output'
+    figure if they satisfy your music criteria.</p>
+</blockquote>
+
+<h2><a name="Off-line Analysis">Off-line
+Analysis</a></h2>
+
+<blockquote>
+    <p>The output written to the search file by SMC32 is not
+    always very useful. Often a search will produce tens or even
+    hundreds of thousands of compositions. It is also not easy to
+    read the callings, and see what music is in the compositions
+    in the list. This is where the analysis capabilities of SMC32
+    can help. The analyser can run through the entire search file,
+    applying the same (or altered) musical criteria, and print
+    the best ten, twenty or however many touches, in a human-readable
+    format.</p>
+    <p>If you run the SMC32 analyser in another shell, you can
+    also analyse composition results <u>while they are being
+    produced</u>! It is quite safe to analyse a search file that
+    is still being written to by an active search. This can be
+    useful to get an idea of what a very big search has produced
+    so far. But remember that the best compositions may not yet
+    have been produced.</p>
+</blockquote>
+
+<h3>Using the Analyser</h3>
+
+<blockquote>
+    <p>You run the analyser like this:</p>
+    <blockquote>
+        <p><code>SMC32 &lt;search-file&gt; redo [n]</code></p>
+    </blockquote>
+	<p>Or:</p>
+    <blockquote>
+        <p><code>SMC32 &lt;search-file&gt; &lt;music-file&gt; [n]</code></p>
+    </blockquote>
+    <p>This is a bit like restarting a search, because the first
+    parameter is a search file such as <code>camb.sf1</code>,
+    not a <code>.smc</code> input file.
+    However, you must also either provide a music file (with extension <code>.mus</code>)
+	which will be applied to the compositions, or specify '<code>redo</code>', which will
+	reapply the same music definitions as used in the original search.</p>
+	<p>The optional third parameter '<code>n</code>' tells
+	the analyser how many of the best touches you want to see. The default is 10, for a
+    top-ten list.</p>
+    <p>Assuming you have already run the london10.smc
+    file to produce <code>london10.sf1</code>,
+    try the following example:</p>
+    <blockquote>
+        <p><code>SMC32 london10.sf1 redo</code></p>
+    </blockquote>
+    <p>The normal table-building messages will be displayed, but
+    don't worry - no new composition search is being done. After
+    table-building is complete, the analyser will scan through
+    the compositions in the search file. A count is updated on
+    the screen whilst it does this - a very large search file can
+    take some time. This is partly because every <em>rotation</em>
+    of every composition is also being checked, just to make sure
+    nothing is missed.</p>
+</blockquote>
+
+<h3><a name="Composition Files">Composition
+Files</a></h3>
+
+<blockquote>
+    <p>When analysis is complete, a <em>composition file</em>
+    with extension <code>.cf1</code> will have
+    been written. You can look in this to see a list of the best
+    compositions found. For each touch output, the calling is
+    shown in standard column/course-end format. A breakdown of
+    how many changes present in each of the <a
+    href="#Music Definitions">music definitions</a> is also given.</p>
+    <p>Here's an example of a touch printed by the analyser - we've
+    shown the eighth one in this particular composition file:</p>
+</blockquote>
+
+<blockquote>
+    <blockquote>
+        <pre>5184 Kent Treble Bob Major, gen. SMC32 (No.8)
+  H  M  B  W  23456
+     -  -  2  52436
+        -     52364
+  -        2  26354
+     -        43652
+  2  -     2  24536
+  -  -     -  63542
+  -  2        62345
+  2  -  -  2  24365
+  2           32465
+2 part
+Score: 10678
+  22 56s
+  22 65s
+  136 CRUs
+  12 LB5
+  57 LB4
+  1 Tittums
+  84 Undesirables</pre>
+    </blockquote>
+    <p>Note that the composition file extension always mimics the
+    extension of the search file - so that, if you analyse <code>london10.sf3</code>,
+	you will get a composition file <code>london10.cf3</code>.
+    Any earlier composition file of the same name will be lost!</p>
+</blockquote>
+
+<h3><a name="Trivial Variations">Trivial
+Variations</a></h3>
+
+<blockquote>
+    <p>Sometimes you will see the line &quot;Has one trivial
+    variation&quot; under the figures for a composition. This
+    means there is a similar composition with the same music
+    scores, but with a slightly different calling. Usually this
+    is caused by a trivial substitution such as sWH for WsH. The
+    analyser only shows one version, and tries to guess which is
+    'best'. It prefers variations with:</p>
+    <ol>
+        <li>More parts</li>
+        <li>Shorter length</li>
+        <li>Fewer calls</li>
+        <li>Fewer singles (or extremes)</li>
+    </ol>
+    <p>At the moment, there is no way of getting the analyser to
+    show what the other variation is (or variations - there can
+    be more than one). Most of the time you probably needn't
+    worry, and can accept the one shown. However, a future
+    version of the analyser will enable variations to be shown.</p>
+    <p>Note that what is and what isn't a variation will change
+    with the music definitions you supply. The greater the range
+    of music types you specify, the fewer trivial variations
+    there will be. However, even if you set every change as a
+    different type of music, you may still get variations. This
+    is because some touches can visit exactly the same changes,
+    using different callings. For example, try writing out the
+    two-part touches sW sWsH and sH sWsH.</p>
+</blockquote>
+
+<h3><a name="Special Selection">Special
+Selection</a></h3>
+
+<blockquote>
+    <p>At the bottom of the composition file, there will often be
+    a few extra compositions printed, under a <em>Special
+    Selection</em> heading. These are the compositions from the
+    search file that contained the maximum amount of <u>each type</u>
+    of music.</p>
+    <p>For example, if you had two music definitions - 56 rollups
+    and 65 rollups - and scored them both equally, then the
+    highest-scoring touches would usually contain a good balance
+    of both rollups. But SMC32 will give you two more
+    compositions in the Special Selection - one with the maximum
+    number of 56s, and one with the maximum 65s.</p>
+    <p>The Special Selection can be very useful to give you an
+    idea about what is the most you can expect from each type of
+    music. However, as usual there is a <span style="color:#FF0000">
+    WARNING</span>. Just because a special
+    composition is advertised as, say &quot;Max 56s&quot;, doesn't
+    mean to say it contains the most rollups you could possibly
+    get. The 'absolute maximum' composition might not have scored
+    highly enough in other areas to have been recorded in the
+    search file!</p>
+</blockquote>
+
+<h3>Changing the Music Criteria</h3>
+
+<blockquote>
+    <p>Although it is useful to analyse a search file using
+    exactly the same music file as originally used, there is no
+    reason why you can't change the music file or use a different
+    one. Sometimes you might change your mind about what music
+    you want. Sometimes it can help you gain a better
+    understanding of the available compositions, if you rerun the
+    analyser with 'tweaked' music definitions and scores.</p>
+    <p><span style="color:#FF0000">WARNING</span>. There
+    is one important caveat. Unless the search file contains <u>every</u>
+    possible composition (that is, the search is complete, and no
+    music minimum of any sort was specified) then you are likely
+    to miss the 'best' composition if you analyse with
+    substantially altered music criteria. If you decide your
+    original music ideas were completely wrong, it is often
+    better to re-run the search from scratch.</p>
+    <p>A good example would be if you had searched for quarter
+    peals of Cambridge Major using CRU music. If you then decide
+    you would rather have little-bell rollups instead, it will be
+    no use analysing a search file full of touches that maximise
+    CRUs.</p>
+</blockquote>
+
+<h3><a name="Analysing non-SMC32 compositions">Analysing non-SMC32 compositions</a></h3>
+
+<blockquote>
+    <p>Sometimes it can be very useful to
+    compare SMC32's results with existing compositions by human
+    composers. The analyser will happily process non-SMC32
+    compositions, but they must be entered into a search file in
+    the correct format. Here's how to do it.</p>
+    <p>First you must find (or generate) a
+    completed search file with the right characteristics. This
+    means one with the same method, calls, and calling positions.
+    This is very important - for example, SMC32 won't analyse a
+    tenors-split composition if the search file does not specify
+    the right tenors-split calls. Often you will have a suitable
+    search file, because you have been searching for similar
+    compositions. If not, you will have to generate one.</p>
+    <p>Now you can type in the new
+    composition(s). <span style="color:#FF0000">Since you are
+    altering the search file, make sure you are not currently
+    running a search on it!</span> You must
+    add your compositions in the same format as used by SMC32,
+    but you can replace the 'score' field with the composer's
+    name:</p>
+    <blockquote>
+        <blockquote>
+            <pre>Length	author	number-of-parts  calling</pre>
+        </blockquote>
+    </blockquote>
+    <p>Each field should be separated by tabs, and the 'author'
+    field must have NO spaces - so last name only. If you get the
+    number of parts or calling wrong, SMC32 will probably
+    complain.</p>
+    <p>Finally, you can run the analyser in the normal way, with
+    whatever music file you choose. If you have typed the
+    compositions correctly (and they score highly enough compared
+    to any SMC32 touches in the file) you will see them printed
+    in the composition file. The composer's name is given instead
+    of 'gen. SMC32'.</p>
+</blockquote>
+
+<h2><a name="Frequently Asked Questions">Frequently
+Asked Questions</a></h2>
+
+<blockquote>
+    <p><strong>Q.</strong> I tried a tenors-split search for a
+    short touch of Maximus. SMC32 took a very long time to build
+    tables, then crashed. What's going wrong?</p>
+    <p><strong>A.</strong> On twelve bells, there are 11
+    factorial (39.9 million) possible leads if the tenors are
+    allowed to part. Even for short touches, SMC32 must build a
+    table containing all possible leads (or <a
+    href="smc32tech.html#Nodes">nodes</a>). On higher numbers this
+    can take a long time, and can also exhaust available memory,
+    sometimes causing a crash. It's best to stick to standard
+    tenors-together calls on higher numbers. For Maximus, this
+    reduces the number of leads from 39 million to a more
+    manageable 1320! See <a href="smc32tech.html#Under the Hood">Under
+    the Hood</a> for more details.</p>
+</blockquote>
+
+<blockquote>
+    <p><strong>Q.</strong> SMC32 is reporting lots of
+    compositions analysed under the &quot;comps/s&quot; figure,
+    but none are being output! Why is that?</p>
+    <p><strong>A.</strong> You have probably set music minimums
+    that are too high. SMC32 will only output a composition if
+    all minimums have been met. See the <a href="#Music">Music</a>
+    section. If you haven't specified a music file at all, then
+    the overall minimum score must be 0 if you want to see any
+    results! If you have used a music file, you could try using
+    the &quot;<code>bestyet</code>&quot; flag. This will output the best
+    composition so far, even if the minimum score hasn't been
+    reached.</p>
+</blockquote>
+
+<blockquote>
+    <p><strong>Q.</strong> I created an smc file for Kent Treble
+    Bob. When I ran the search, SMC32 printed the name of the
+    method as &quot;Kent Treble Bob Treble Bob&quot;. Is that a
+    bug?</p>
+</blockquote>
+
+<blockquote>
+    <p><strong>A.</strong> No. You should not use the method's
+    class name in the smc file - type &quot;Kent&quot; not &quot;Kent
+    Treble Bob Major&quot;. SMC32 analyses the place notation for
+    you, and works out what the method class is, and how many
+    bells it is on. The one to watch out for is Little Bob. This
+    method doesn't really have a name - both the &quot;Little&quot;
+    and the &quot;Bob&quot; are class tags. So, you just need a
+    space on the first line of the smc file!</p>
+
+    <p><strong>Q.</strong> I'd like to search for quarter-peal
+    lengths of Minor. Is there any way to do this using SMC32?</p>
+    <p><strong>A.</strong> At the moment, SMC32 can only find
+    single extents. It will not find any Minor length over 720,
+    because that must be false. An extension is planned so that,
+    for lengths of say 1296 or 1440, every change would be
+    allowed twice. In the meantime, it is possible to use the
+    following kludge. Define a Caters method based on your Minor
+    place notation - bells 7 and 8 dodge continuously, and 9 lie
+    behind. E.g. Little Bob Minor becomes <code>9.169.9.149 l129</code>. Use a
+    '<code>callfrom 6 1xxxx6789</code>' line to prevent the 9th becoming the
+    calling bell, and specify appropriate calling positions. Now
+    you can search for compositions up to 1440 changes, and such
+    lengths will have every change twice - once at hand, once at
+    back.</p>
+    <p><strong>Q.</strong> The statistics display has frozen, and
+    nothing is being written to my <code>.sf1</code>
+    file. Has SMC32 crashed?</p>
+    <p><strong>A.</strong> Probably not. Ocasionally SMC32 enters
+    a &quot;difficult&quot; part of the search tree, where
+    because of method falseness there is no way of coming round.
+    Although SMC32 is still processing, the display will not
+    update, and checkpoints will not be written to the
+    composition file. If you leave it running long enough, it
+    should emerge from the &quot;dead&quot; area of the search.
+    See <a href="smc32tech.html#Unresolved Issues">Unresolved
+    Issues</a> for more information.</p>
+</blockquote>
+</body>
+</html>
