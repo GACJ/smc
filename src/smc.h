@@ -9,6 +9,7 @@
 #include "filer.h"
 #include "fragment.h"
 #include "ring.h"
+#include <new>
 #include <stdio.h>
 #include <time.h>
 
@@ -113,14 +114,14 @@ public:
 public:
     MusicDef()
     {
-        name = 0;
-        matches = 0;
+        name = nullptr;
+        matches = nullptr;
         nrows = weighting = minscore = 0;
     }
     ~MusicDef()
     {
-        delete name;
-        delete matches;
+        delete[] name;
+        delete[] matches;
     }
     int ensurespace(int n);
 };
@@ -137,11 +138,11 @@ public:
         score = nullptr;
         nmusicdefs = 0;
     }
-    ~MusicCount() { delete score; }
+    ~MusicCount() { delete[] score; }
     int alloc(int n)
     {
-        delete score;
-        score = new int[n];
+        delete[] score;
+        score = new (std::nothrow) int[n];
         if (score == nullptr)
             return (FALSE);
         nmusicdefs = n;
@@ -241,10 +242,11 @@ public:
     }
     int init(int ncomps)
     {
-        safedelete(list);
         bulkalloc.freeall();
         listsize = n = 0;
-        list = new CompMusicStore*[ncomps];
+        delete list;
+        list = nullptr;
+        list = new (std::nothrow) CompMusicStore*[ncomps];
         if (list == nullptr)
             return (FALSE);
         listsize = ncomps;
@@ -341,12 +343,14 @@ public:
         music = nullptr;
         musicallocated = FALSE;
         renumbered = FALSE;
+        essential = FALSE;
+        excluded = FALSE;
     }
     ~NodeExtra()
     {
-        delete falsenodes;
+        delete[] falsenodes;
         if (musicallocated)
-            delete music;
+            delete[] music;
     }
     // Kills all nextnode pointers except that for calltype "call" (internal call num)
     void forcenextnodeto(int call)
@@ -416,9 +420,9 @@ public:
     Exclusions()
     {
         nrows = 0;
-        rows = 0;
+        rows = nullptr;
     }
-    ~Exclusions() { delete rows; }
+    ~Exclusions() { delete[] rows; }
 };
 
 class Stats
@@ -625,11 +629,11 @@ public:
     }
     void clear()
     {
-        workinglead = 0;
-        nodealloc = 0;
-        compalloc = 0;
-        musicdefs = 0;
-        nodeextra = 0;
+        workinglead = nullptr;
+        nodealloc = nullptr;
+        compalloc = nullptr;
+        musicdefs = nullptr;
+        nodeextra = nullptr;
         resetcompbuffer();
         falseLHs = nullptr;
         specialcomps = nullptr;
@@ -638,13 +642,13 @@ public:
     }
     ~Composer()
     {
-        delete workinglead;
-        delete nodealloc;
-        delete compalloc;
+        delete[] workinglead;
+        delete[] nodealloc;
+        delete[] compalloc;
         delete[] musicdefs;
         delete[] nodeextra;
-        delete falseLHs;
-        delete truthtable;
+        delete[] falseLHs;
+        delete[] truthtable;
         delete musthaveblocks;
     }
     void init(ExtMethod* method) { Ring::init(method); }

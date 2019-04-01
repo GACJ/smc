@@ -3,6 +3,7 @@
 // Copyright Mark B Davies 1995-1998
 
 #include <ctype.h>
+#include <new>
 #include <stdio.h>
 #include <string.h>
 
@@ -27,13 +28,13 @@ int Method::newmethod(char* newname, char* newpn)
     int i, ret;
 
     delete name;
-    name = new char[strlen(newname) + 1];
+    name = new (std::nothrow) char[strlen(newname) + 1];
     if (name == nullptr)
         return (FALSE);
     strcpy(name, newname);
     delete pn;
-    pn = new char[strlen(newpn) + 1];
-    if (pn)
+    pn = new (std::nothrow) char[strlen(newpn) + 1];
+    if (pn != nullptr)
     {
         strcpy(pn, newpn);
         if (!parsepn())
@@ -63,7 +64,7 @@ int Method::newmethod(char* newname, char* newpn)
 int Method::newcall(Call call, char* newpn)
 {
     delete callpn[call];
-    callpn[call] = new char[strlen(newpn) + 1];
+    callpn[call] = new (std::nothrow) char[strlen(newpn) + 1];
     if (callpn[call] == nullptr)
     {
         printf("ERROR: failed to allocate call pn\n");
@@ -173,21 +174,21 @@ void Method::analyse()
     char* treblepath;
     Ring ring(this);
 
-    treblepath = new char[leadlen + 1];
+    treblepath = new (std::nothrow) char[leadlen + 1];
     leadheadcode = 0;
     ring.starttouch();
     while (ring.changen < leadlen)
     {
-        if (treblepath)
+        if (treblepath != nullptr)
             treblepath[ring.changen] = (char)(strchr(ring.row, rounds[0]) - ring.row);
         ring.change();
     }
-    if (treblepath)
+    if (treblepath != nullptr)
         treblepath[ring.changen] = (char)(strchr(ring.row, rounds[0]) - ring.row);
     strcpy(leadhead, ring.row);
     findleadheadcode();
     classify(treblepath);
-    delete treblepath;
+    delete[] treblepath;
     // setcompletename(methodn,ring.completename,FALSE);
 }
 

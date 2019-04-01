@@ -2,6 +2,7 @@
 
 #include "smc.h"
 #include <limits.h>
+#include <new>
 
 // Uncomment this to prevent TVs being removed from the ouput list
 #define TVS
@@ -69,9 +70,9 @@ int Composer::musicsort(int maxncomps)
         printf("ERROR: failed to alloc composition storage\n");
         return (FALSE);
     }
-    safedelete(specialcomps);
     // One extra "special" comp for "max musthave blocks"
-    specialcomps = new CompMusicStore[nmusicdefs + 1];
+    delete[] specialcomps;
+    specialcomps = new (std::nothrow) CompMusicStore[nmusicdefs + 1];
     if (specialcomps == nullptr)
     {
         printf("ERROR: failed to allocate 'special' composition storage\n");
@@ -300,9 +301,9 @@ int MusicDef::ensurespace(int n)
 {
     if (n > nrows)
     {
-        safedelete(matches);
         nrows = 0;
-        matches = new MusicRow[n];
+        delete[] matches;
+        matches = new (std::nothrow) MusicRow[n];
         if (matches == nullptr)
             return (FALSE);
         nrows = n;
@@ -325,9 +326,9 @@ int CompStore::ensurespace(int length)
 {
     if (allocsize < length)
     {
-        safedelete(calling);
         allocsize = 0;
-        calling = new char[length];
+        delete[] calling;
+        calling = new (std::nothrow) char[length];
         if (calling == nullptr)
         {
             printf("ERROR: failed to alloc composition buffer\n");
@@ -443,8 +444,8 @@ int CompSorter::addcomp(CompMusicStore& newcomp)
         }
         list[i] = replace;
     copy:
-        safedelete(replace->calling);
-        safedelete(replace->music.score);
+        delete[] replace->calling;
+        delete[] replace->music.score;
         *replace = newcomp;
     resetnewcomp:
         newcomp.calling = nullptr; // Calling has been transferred - dereference in newcomp

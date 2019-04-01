@@ -12,12 +12,6 @@ enum Bool
     TRUE
 };
 
-#define safedelete(p) \
-    {                 \
-        delete (p);   \
-        p = 0;        \
-    }
-
 inline int filesize(const char* path)
 {
     int size = 0;

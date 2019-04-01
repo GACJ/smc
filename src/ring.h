@@ -74,17 +74,17 @@ protected:
 public:
     Method()
     {
-        pn = 0;
-        name = 0;
+        pn = nullptr;
+        name = nullptr;
         for (int i = 0; i < NDIFFCALLS; i++)
-            callpn[i] = 0;
+            callpn[i] = nullptr;
     }
     ~Method()
     {
-        delete name;
-        delete pn;
+        delete[] name;
+        delete[] pn;
         for (int i = 0; i < NDIFFCALLS; i++)
-            delete callpn[i];
+            delete[] callpn[i];
     }
     int newmethod(char* newname, char* newpn);
     int newcall(Call call, char* newpn);

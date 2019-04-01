@@ -314,7 +314,8 @@ int CompHasher::addcomp(Composer* ring)
                 printf("INTERNAL ERROR: failed to retrieve composition from hash table!\n");
                 return (FALSE);
             }
-            safedelete(storedcomp->calling);
+            delete[] storedcomp->calling;
+            storedcomp->calling = nullptr;
             *storedcomp = newcomp;
         }
         else
@@ -339,7 +340,7 @@ int FragmentLibrary::add(Fragment& newfrag, int endplacebell)
     // Check that the map for this place bell has been allocated
     if (fragmap[endplacebell] == nullptr)
     {
-        fragmap[endplacebell] = new FragMap[mapsize];
+        fragmap[endplacebell] = new (std::nothrow) FragMap[mapsize];
         if (fragmap[endplacebell] == nullptr)
         {
             printf("ERROR: failed to allocate fragment library\n");
@@ -355,7 +356,7 @@ int FragmentLibrary::add(Fragment& newfrag, int endplacebell)
     // Check that the list for this map index has been allocated
     if (fraglist == nullptr)
     {
-        fraglist = fragmap[endplacebell][mapindex].bulklist = new BulkList(4, sizeof(Fragment));
+        fraglist = fragmap[endplacebell][mapindex].bulklist = new (std::nothrow) BulkList(4, sizeof(Fragment));
         if (fraglist == nullptr)
         {
             printf("ERROR: failed to allocate fragment storage\n");
@@ -474,7 +475,7 @@ int FragmentLibrary::compress()
                         }
                         ndistinct++;
                     }
-                    auto compressedalloc = new int[1 + ndistinct * NPATTS * 2];
+                    auto compressedalloc = new (std::nothrow) int[1 + ndistinct * NPATTS * 2];
                     if (compressedalloc == nullptr)
                     {
                         printf("ERROR: failed to alloc compressed frag library\n");

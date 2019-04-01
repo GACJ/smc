@@ -3,6 +3,7 @@
 
 #include "basedef.h"
 #include "bulklist.h"
+#include <new>
 
 // Bulk Hash class
 // Copyright Mark B Davies 1998
@@ -33,9 +34,15 @@ public:
     ~BulkHash() { freeall(); }
     void freeall()
     {
-        if (hashtable)
+        if (hashtable != nullptr)
+        {
             for (int i = 0; i < tablesize; i++)
-                safedelete(hashtable[i]);
+            {
+                delete hashtable[i];
+                hashtable[i] = nullptr;
+            }
+        }
+        delete[] hashtable;
         hashtable = nullptr;
     }
     inline int init(int tsize, int bulksize, int itemsize, int bulklimit = -1);
@@ -77,7 +84,7 @@ int BulkHash::init(int tsize, int bulksize, int itemsize, int bulklimit)
         return (FALSE);
     }
     freeall();
-    hashtable = new BulkList*[tsize];
+    hashtable = new (std::nothrow) BulkList*[tsize];
     if (hashtable == nullptr)
     {
         err = BULKLISTNOMEM;

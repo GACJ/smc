@@ -33,11 +33,11 @@ int Composer::newcomp()
     else
         maxpartlength = 0;
     ncompnodes = 0;
-    safedelete(compalloc);
     i = maxlength;
     if (palindromic)
         i = i * 2 + 2;
-    compalloc = new char[ALIGNMENT + sizeof(Composition) * (i / m->leadlen + 1 + courselen * 2)];
+    delete[] compalloc;
+    compalloc = new (std::nothrow) char[ALIGNMENT + sizeof(Composition) * (i / m->leadlen + 1 + courselen * 2)];
     if (compalloc == nullptr)
     {
         printf("ERROR: failed to alloc composition array!\n");
@@ -685,8 +685,8 @@ int Composer::inputcomp(char* compbuf)
     if (isalpha(*p))
     {
         storedcomp.score = 0;
-        storedcomp.author = new char[strlen(p) + 1];
-        if (storedcomp.author)
+        storedcomp.author = new (std::nothrow) char[strlen(p) + 1];
+        if (storedcomp.author != nullptr)
             strcpy(storedcomp.author, p);
     }
     else

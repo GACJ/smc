@@ -6,6 +6,7 @@
 // Finds false lead heads
 
 #include "smc.h"
+#include <new>
 #include <string.h>
 
 int Composer::findfalseLHs()
@@ -14,16 +15,16 @@ int Composer::findfalseLHs()
     int treblepos;
     int i, j;
 
-    safedelete(workinglead);
-    workinglead = new char[m->leadlen * nbells];
+    delete[] workinglead;
+    workinglead = new (std::nothrow) char[m->leadlen * nbells];
     if (workinglead == nullptr)
     {
         printf("ERROR: failed to alloc workinglead\n");
         return (FALSE);
     }
     nfalseLHs = 0;
-    safedelete(falseLHs);
-    falseLHs = new FalseLH[m->leadlen * (m->leadlen - 1)];
+    delete[] falseLHs;
+    falseLHs = new (std::nothrow) FalseLH[m->leadlen * (m->leadlen - 1)];
     if (falseLHs == nullptr)
     {
         printf("ERROR: failed to alloc false LHs\n");

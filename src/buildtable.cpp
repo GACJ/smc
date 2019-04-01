@@ -4,6 +4,7 @@
 // Copyright Mark B Davies 1998-2000
 
 #include "smc.h"
+#include <new>
 #include <stdint.h>
 #include <stdlib.h>
 #include <time.h>
@@ -296,8 +297,8 @@ int Composer::gennodetable()
         nodesincluded++; // One extra for 'starting' rounds
                          // The number of included nodes ('nodesincluded') is now known.
                          // Allocate the NodeExtra array and copy nodeheads from the BulkList into it
-    nodeextra = new NodeExtra[nodesincluded];
-    if (nodeextra == 0)
+    nodeextra = new (std::nothrow) NodeExtra[nodesincluded];
+    if (nodeextra == nullptr)
     {
         printf("ERROR: failed to alloc NodeExtra table!\n");
         return (FALSE);
@@ -363,7 +364,7 @@ int Composer::gennodetable()
         gennodex(i);
         if (nmusicdefs && !optimisemusic)
         {
-            nodeextra[i].music = new int[nmusicdefs];
+            nodeextra[i].music = new (std::nothrow) int[nmusicdefs];
             if (nodeextra[i].music == nullptr)
             {
                 printf("\nERROR: failed to alloc music table!\n");
@@ -387,8 +388,8 @@ int Composer::gennodetable()
     for (i = 0; i < nodesincluded; i++)
     {
         // Include space for the node's own number in case we have bitwisetruthflags switched on
-        nodeextra[i].falsenodes = new int[nodeextra[i].nleads * nfalseLHs + 1];
-        if (nodeextra[i].falsenodes == 0)
+        nodeextra[i].falsenodes = new (std::nothrow) int[nodeextra[i].nleads * nfalseLHs + 1];
+        if (nodeextra[i].falsenodes == nullptr)
         {
             printf("\nERROR: failed to allocate false node array!\n");
             return (FALSE);
@@ -421,12 +422,13 @@ int Composer::gennodetable()
     // If using bitwise truthtable, need to determine list of false node numbers
     // for each node, and optimise the numbering system to pack false node lists
     // into the minimum number of bitmasks.
-    safedelete(truthtable);
+    delete[] truthtable;
+    truthtable = nullptr;
     if (bitwisetruthflags)
     {
         // Must allocate truthtable so table pointers can be calculated
         truthtablesize = (nodesincluded + TRUTHTABLEWORDSIZE) / TRUTHTABLEWORDSIZE;
-        truthtable = new unsigned int[truthtablesize];
+        truthtable = new (std::nothrow) unsigned int[truthtablesize];
         if (truthtable == nullptr)
         {
             printf("\nERROR: failed to allocate bitwise truth table!\n");
@@ -445,13 +447,13 @@ int Composer::gennodetable()
     // Now we know the maximum number of false nodes per node, we can allocate
     // Node structures of minimum size (important for cache usage in composing loop)
     printf(" Creating nodes table (%d nodes per course)", nodespercourse);
-    safedelete(nodealloc);
     nodesize = sizeof(Node) + maxnodealloc;
     // Pad to 8-byte multiple
     nodesize = (nodesize + ALIGNMENT - 1) & ~(ALIGNMENT - 1);
     printf(" (node size %d) ...", nodesize);
-    nodealloc = new char[nodesize * nodesincluded + ALIGNMENT];
-    if (nodealloc == 0)
+    delete[] nodealloc;
+    nodealloc = new (std::nothrow) char[nodesize * nodesincluded + ALIGNMENT];
+    if (nodealloc == nullptr)
     {
         printf("\nERROR: failed to alloc Node table!\n");
         return (FALSE);
@@ -902,7 +904,7 @@ int Composer::calcbitwisetruthtables()
         nodex = &nodeextra[i];
         nodex->truthflagbit = i % TRUTHTABLEWORDSIZE; // Numbering scheme starts off non-optimised
         nodex->truthflagword = i / TRUTHTABLEWORDSIZE;
-        nodex->falsebits = new FalseBits[nodex->nfalsenodes + 1]; // 1 extra to hold single bit for self
+        nodex->falsebits = new (std::nothrow) FalseBits[nodex->nfalsenodes + 1]; // 1 extra to hold single bit for self
         if (nodex->falsebits == nullptr)
             return FALSE;
     }
@@ -1129,7 +1131,8 @@ void Composer::gennode(int n)
         node->nfalsenodes = nodex->nfalsebits;
         for (i = 0; i <= nodex->nfalsebits; i++)
             node->falsebits[i] = nodex->falsebits[i];
-        safedelete(nodex->falsebits);
+        delete[] nodex->falsebits;
+        nodex->falsebits = nullptr;
     }
     else
     {
@@ -1138,7 +1141,8 @@ void Composer::gennode(int n)
             node->falsenodes[i] = (Node*)(nodes + nodex->falsenodes[i] * nodesize);
     }
     // Can now delete falsenode arrays in NodeExtra
-    safedelete(nodex->falsenodes);
+    delete[] nodex->falsenodes;
+    nodex->falsenodes = nullptr;
     for (call = 0; call <= ncalltypes; call++)
     {
         if (nodex->nextnode[call] < 0)

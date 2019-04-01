@@ -637,7 +637,8 @@ int Composer::readinputfile(LineFile& f)
     int i, call, leadheadrounds;
     int musthave = 0, shouldhave = 0;
 
-    safedelete(musthaveblocks);
+    delete musthaveblocks;
+    musthaveblocks = nullptr;
     musthaveblocks = new BulkList(5, sizeof(Block));
 
     musicinclude = nullptr;
@@ -1256,8 +1257,10 @@ int Composer::readmusicfile(LineFile& f)
     // First read through file, counting lines
     // Check for excluded rows (weighting<0, min>=0) and count seperately
     nmusicdefs = exclude.nrows = 0;
-    safedelete(musicdefs);
-    safedelete(exclude.rows);
+    delete[] musicdefs;
+    musicdefs = nullptr;
+    delete[] exclude.rows;
+    exclude.rows = nullptr;
     f.markpos();
     while (f.readline())
     {
@@ -1295,8 +1298,8 @@ int Composer::readmusicfile(LineFile& f)
     // Now allocate musicdefs[], exclude.rows[], and music arrays
     if (nmusicdefs)
     {
-        musicdefs = new MusicDef[nmusicdefs];
-        if (musicdefs == 0)
+        musicdefs = new (std::nothrow) MusicDef[nmusicdefs];
+        if (musicdefs == nullptr)
         {
             printf("ERROR: failed to allocate musicdef array\n");
             return (FALSE);
@@ -1309,8 +1312,8 @@ int Composer::readmusicfile(LineFile& f)
     }
     if (exclude.nrows)
     {
-        exclude.rows = new MusicRow[exclude.nrows];
-        if (exclude.rows == 0)
+        exclude.rows = new (std::nothrow) MusicRow[exclude.nrows];
+        if (exclude.rows == nullptr)
         {
             printf("ERROR: failed to allocate excluded rows array\n");
             return (FALSE);
@@ -1379,8 +1382,8 @@ int Composer::readmusicfile(LineFile& f)
                 return (FALSE);
             }
             // Load musicdef name
-            musicdefs[i].name = new char[strlen(buf2) + 1];
-            if (musicdefs[i].name == 0)
+            musicdefs[i].name = new (std::nothrow) char[strlen(buf2) + 1];
+            if (musicdefs[i].name == nullptr)
             {
                 printf("ERROR: failed to allocate musicdef name field for %s\n", buf2);
                 return (FALSE);
