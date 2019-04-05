@@ -21,8 +21,8 @@
 #error "Unknown compiler"
 #endif
 
-#define VERSION "SMC32 v0.965.2-" COMPILER
-#define COPYRIGHT "(c) 1998-2003 Mark B Davies & Graham A C John"
+#define VERSION "SMC32 v1.1-" COMPILER
+#define COPYRIGHT "(c) 1998-2019 Mark B Davies & Graham A C John"
 #define INEXT "smc"
 #define MUSEXT "mus"
 #define OUTEXT "sf0"

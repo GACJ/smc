@@ -13,6 +13,27 @@ H2 {margin-bottom: 0pt}
 
 <h1 align="left">SMC32 <a name="Version List">Version List</a></h1>
 
+<h2>New in Version 1.1</h2>
+<span>Released: April 2019</span>
+<blockquote>
+	<ol>
+	<li>Fixed: uninitialised flags (affecting different compilers / platforms).</li>
+	<li>Fixed: flush stdout after status update.</li>
+	<li>Enhancement: Music paths now relative from .smc file.</li>
+	<li>Enhancement: Support for Linux.</li>
+	<li>Enhancement: 64-bit support (using C++ implementation of compose loop).</li>
+	<li>Enhancement: New flag, --deterministic-output to produce identical output regardless of platform.</li>
+	<li>Enhancement: Reduce stdout refresh time on fast machines (now 5 per second rather than 2M iterations).</li>
+	</ol>
+</blockquote>
+<span>Known issues:</span>
+<blockquote>
+	<ol>
+	<li>No support for palindromic in 64-bit.</li>
+	<li>Palindromic produces false compositions.</li>
+	</ol>
+</blockquote>
+
 <h2>New in Version 0.965</h2>
 <span>Released: November 2005</span>
 <blockquote>
