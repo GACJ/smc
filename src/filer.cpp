@@ -83,6 +83,68 @@ int File::resetpos()
     return (TRUE);
 }
 
+// Ensure we have no garbage past our file position
+// Re-write the file in `w` mode and close.
+bool File::finalise()
+{
+    auto pos = ftell(handle);
+    if (fseek(handle, 0, SEEK_END) != 0)
+    {
+        close();
+        return false;
+    }
+
+    auto end = ftell(handle);
+    if (end <= pos)
+    {
+        close();
+        return true;
+    }
+
+    // Write null terminator to mark end of file
+    char nullt = 0;
+    if (fseek(handle, pos, SEEK_SET) != 0)
+    {
+        close();
+        return false;
+    }
+    fwrite(&nullt, sizeof(nullt), 1, handle);
+    fclose(handle);
+
+    // Re-open file in binary mode
+    handle = fopen(name, "rb");
+    if (handle == nullptr)
+        return false;
+
+    // Re-read in entire file into new buffer
+    if (fseek(handle, 0, SEEK_END) != 0)
+    {
+        close();
+        return false;
+    }
+    auto fsize = ftell(handle);
+    if (fseek(handle, 0, SEEK_SET) != 0)
+    {
+        close();
+        return false;
+    }
+
+    auto buffer = (char*)malloc(fsize + 1);
+    auto r = fread(buffer, 1, fsize, handle);
+    buffer[r] = '\0';
+    auto realSize = strlen(buffer);
+
+    // Write all bytes in buffer until null terminator is reached
+    auto result = false;
+    handle = freopen(name, "wb", handle);
+    if (handle != nullptr && fwrite(buffer, 1, realSize, handle) == realSize)
+        result = true;
+    fclose(handle);
+    free(buffer);
+    handle = nullptr;
+    return result;
+}
+
 // Prints error message and returns FALSE if write failed
 int LineFile::writeline(const char* line)
 {

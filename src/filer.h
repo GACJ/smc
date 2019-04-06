@@ -73,6 +73,7 @@ public:
     }
     void markpos() { mark = ftell(handle); }
     int resetpos();
+    bool finalise();
     bool isabsolute() const
     {
 #ifdef _WIN32

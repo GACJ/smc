@@ -150,7 +150,8 @@ void Composer::finaloutput()
         printf("%s\n", outfile.buffer);
         outfile.writeline();
     }
-    outfile.close();
+    if (!outfile.finalise())
+        printf("\nERROR: failed to finalise file %s\n", outfile.getname());
     printf("Output file %s complete\n", outfile.getname());
 }
 
