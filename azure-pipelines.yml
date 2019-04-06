@@ -13,10 +13,17 @@ jobs:
   - script: |
       call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\Common7\Tools\VsDevCmd.bat"
       msbuild smc32.sln /p:Configuration=Release /p:PlatformToolset=v140 /p:WindowsTargetPlatformVersion=8.1
+      md artefacts
+      copy bin.release\*.exe artefacts
     displayName: 'Build'
   - script: |
       test\test.bat %Platform%
     displayName: 'Test'
+  - task: PublishPipelineArtifact@0
+    inputs:
+      artifactName: 'win-$(Platform)'
+      targetPath: 'artefacts'
+    displayName: 'Publish'
 
 - job: ubuntu
   displayName: Ubuntu 16.04
@@ -24,10 +31,54 @@ jobs:
     vmImage: 'Ubuntu-16.04'
   steps:
   - script: |
-      mkdir bin && cd bin
+      mkdir bin && pushd bin
       cmake .. -DCMAKE_BUILD_TYPE=Release
       make
+      popd
+      mkdir artefacts
+      cp bin/smc artefacts
     displayName: 'Build'
   - script: |
       ./test/test.sh
     displayName: 'Test'
+  - task: PublishPipelineArtifact@0
+    inputs:
+      artifactName: 'linux'
+      targetPath: 'artefacts'
+    displayName: 'Publish'
+
+- job: merge
+  displayName: Merge
+  dependsOn:
+  - windows
+  - ubuntu
+  condition: succeeded()
+  pool:
+    vmImage: 'Ubuntu-16.04'
+  steps:
+  - task: DownloadPipelineArtifact@0
+    inputs:
+      artifactName: win-x86
+      targetPath: '$(System.DefaultWorkingDirectory)/artefacts'
+    displayName: 'Download Artefacts (win-x86)'
+  - task: DownloadPipelineArtifact@0
+    inputs:
+      artifactName: win-x64
+      targetPath: '$(System.DefaultWorkingDirectory)/artefacts'
+    displayName: 'Download Artefacts (win-x64)'
+  - task: DownloadPipelineArtifact@0
+    inputs:
+      artifactName: linux
+      targetPath: '$(System.DefaultWorkingDirectory)/artefacts'
+    displayName: 'Download Artefacts (linux)'
+  - script: |
+      cp -r docs artefacts
+      cd artefacts
+      chmod 755 smc
+      zip -r smc.zip *
+    displayName: 'Create Archive'
+  - task: PublishPipelineArtifact@0
+    inputs:
+      artifactName: 'final'
+      targetPath: 'artefacts/smc.zip'
+    displayName: 'Publish'

@@ -2,6 +2,7 @@
 *.sf1
 *.cf1
 
+/artefacts/
 /bin.*/
 /data/
 
