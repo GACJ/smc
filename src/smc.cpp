@@ -21,9 +21,9 @@
 int badusage()
 {
     auto text = "Usage:\n"
-                " Composing:  SMC32 <method-file>." INEXT "\n"
-                " Restarting: SMC32 <output-file>." OUTEXT "\n"
-                " Analysing:  SMC32 <output-file>." OUTEXT " <music-file>." MUSEXT " [maxn]\n"
+                " Composing:  " APPNAME " <method-file>." INEXT "\n"
+                " Restarting: " APPNAME " <output-file>." OUTEXT "\n"
+                " Analysing:  " APPNAME " <output-file>." OUTEXT " <music-file>." MUSEXT " [maxn]\n"
                 "\n"
                 "Options:\n"
                 " --deterministic-output        Suppresses version and time information from output.\n";

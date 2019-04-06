@@ -21,7 +21,12 @@
 #error "Unknown compiler"
 #endif
 
-#define VERSION "SMC32 v1.1-" COMPILER
+#if defined(_WIN64) || defined(__LP64__)
+#define APPNAME "SMC64"
+#else
+#define APPNAME "SMC32"
+#endif
+#define VERSION APPNAME " v1.1-" COMPILER
 #define COPYRIGHT "(c) 1998-2019 Mark B Davies & Graham A C John"
 #define INEXT "smc"
 #define MUSEXT "mus"

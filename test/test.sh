@@ -2,7 +2,7 @@
 pushd `dirname "$0"`
 
 FINALRESULT=0
-SMC32=../bin/smc32
+SMC32=../bin/smc
 
 # Clean output files
 rm -f data/*.sf1 data/*.cf1

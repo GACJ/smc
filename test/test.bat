@@ -2,14 +2,15 @@
 
 pushd %~dp0
 
+set SMC32=..\bin.release\smc32.exe
 set PLATFORM=Win32
 if "%1" == "x64" (
+    set SMC32=..\bin.release\smc64.exe
     set PLATFORM=x64
 )
 echo Running for %PLATFORM%
 
 set FINALRESULT=0
-set SMC32=..\bin\%PLATFORM%\Release\smc32.exe
 
 REM Clean output files
 del data\*.sf1 data\*.cf1

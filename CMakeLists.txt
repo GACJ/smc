@@ -1,8 +1,8 @@
 cmake_minimum_required(VERSION 3.9)
-project(smc32 CXX)
+project(smc CXX)
 
-file(GLOB_RECURSE SMC32_SOURCES "src/*.cpp")
-file(GLOB_RECURSE SMC32_HEADERS "src/*.h" "src/*.hpp")
+file(GLOB_RECURSE SMC_SOURCES "src/*.cpp")
+file(GLOB_RECURSE SMC_HEADERS "src/*.h" "src/*.hpp")
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}  -std=c++11 -Wall -Wextra -Werror")
 
@@ -21,4 +21,4 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wredundant-decls")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wstrict-overflow=1")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wundef")
 
-add_executable(smc32 ${SMC32_SOURCES})
+add_executable(smc ${SMC_SOURCES})
