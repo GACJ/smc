@@ -118,6 +118,8 @@ backtrackfromrounds:
     mov [ebx]Composer.complength,eax
     mov [ebx]Composer.lengthcountdown,ebp
     mov [ebx]Composer.stats.nodecount,edx
+    add dword ptr [ebx]Composer.stats.nodesgenerated,edx
+    adc dword ptr [ebx+4]Composer.stats.nodesgenerated,0
     pop ebx
     pop ebp
     mov [compptr],edi
@@ -143,6 +145,10 @@ asmdone:
 #ifdef MMXCOUNTER
     emms
 #endif
+  }
+    showstats();
+  __asm
+  {
     jmp alldone
 
 lbl_loadcallnextcall:

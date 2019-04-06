@@ -110,6 +110,7 @@ struct composeloop
         ebx.complength = eax;
         ebx.lengthcountdown = ebp;
         ebx.stats.nodecount = edx1;
+        ebx.stats.nodesgenerated += edx1;
         compptr = edi;
         composer.ncompnodes = (int)(compptr - composer.comp);
         composer.showstats();
@@ -117,6 +118,7 @@ struct composeloop
 
     asmdone:
         ebx.stats.nodesgenerated += ebx.stats.nodecount;
+        composer.showstats();
         goto alldone;
 
     lbl_loadcallnextcall:

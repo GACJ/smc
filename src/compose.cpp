@@ -4,6 +4,7 @@
 // Copyright Mark B Davies 1998-2000
 
 #include "smc.h"
+#include <algorithm>
 #include <ctype.h>
 #include <limits.h>
 #include <math.h>
@@ -131,7 +132,6 @@ void Composer::showstats()
     evalspeed = float(stats.evalcount) / interval;
     stats.lastdisplaytime = (clock_t)stats.elapsed;
     stats.elapsed -= stats.starttime;
-    stats.nodesgenerated += stats.nodecount;
     stats.nodecount = stats.evalcount = 0;
     // If there are buffered compositions waiting to be written, flush them
     // Even if there are no comps, call flushcompbuffer() to write a checkpoint if
@@ -178,7 +178,7 @@ double Composer::calcpercentcomplete()
     if (rotationalsort)
         percent = pow(percent, 0.5); //1.0/M_E);
 #endif
-    return percent;
+    return std::min(percent, 1.0);
 }
 
 // This routine calculates two numbers:
