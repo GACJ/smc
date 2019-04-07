@@ -27,7 +27,7 @@
 #define APPNAME "SMC32"
 #endif
 #define VERSION APPNAME " v1.1-" COMPILER
-#define COPYRIGHT "(c) 1998-2019 Mark B Davies & Graham A C John"
+#define COPYRIGHT "(c) 1998-2019 Mark B. Davies & Graham A. C. John"
 #define INEXT "smc"
 #define MUSEXT "mus"
 #define OUTEXT "sf0"

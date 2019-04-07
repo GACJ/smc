@@ -219,7 +219,7 @@ int Composer::musicsort(int maxncomps)
     }
     if (!deterministicoutput)
     {
-        sprintf(outfile.buffer, "/ %s (c) 1998 Mark B. Davies & Graham A.C. John", VERSION);
+        sprintf(outfile.buffer, "/ %s %s", VERSION, COPYRIGHT);
         if (!outfile.writeline())
             return (FALSE);
         if (!outfile.writeline(titleline))

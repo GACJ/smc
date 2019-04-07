@@ -189,7 +189,7 @@ int Composer::writefileheader(LineFile& f)
     f.setmode("w");
     if (!deterministicoutput)
     {
-        sprintf(f.buffer, "/ %s (c) 1998 Mark B. Davies & Graham A.C. John", VERSION);
+        sprintf(f.buffer, "/ %s %s", VERSION, COPYRIGHT);
         if (!f.writeline())
             return (FALSE);
         if (!f.writeline("/ This is a machine-generated composition output file - do not alter"))
@@ -318,7 +318,7 @@ int FragmentLibrary::writelibheader(Composer* ring)
     f.newfile(ring->outfile.getname());
     f.changeexttype(LIBEXT);
     f.setmode("w");
-    sprintf(f.buffer, "/ %s (c) 1998 Mark B. Davies & Graham A.C. John", VERSION);
+    sprintf(f.buffer, "/ %s %s", VERSION, COPYRIGHT);
     if (!f.writeline())
         return (FALSE);
     if (!f.writeline("/ Fragment Library file. Corresponds to search file:"))
