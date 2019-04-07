@@ -1,0 +1,60 @@
+56s
+500 0 xxxx567890ET
+65s
+500 0 xxxx657890ET
+3456s at back
+200 0 xxxxxxxx3456b
+6543s at back
+200 0 xxxxxxxx6543b
+2345s at back
+200 0   xxxxxxxx2345b
+5432s at back
+200 0   xxxxxxxx5432b
+3456s at hand
+100 0 xxxxxxxx3456h
+6543s at hand
+100 0 xxxxxxxx6543h
+2345s at hand
+100 0   xxxxxxxx2345h
+5432s at hand
+100 0   xxxxxxxx5432h
+3456s off front
+1 0   3456xxxxxxxx
+6543s off front
+1 0   6543xxxxxxxx
+2345s off front
+1 0   2345xxxxxxxx
+5432s off front
+1 0   5432xxxxxxxx
+23456s at back
+500 0 xxxxxxx23456b
+65432s at back
+500 0 xxxxxxx65432b
+76543s at back
+500 0 xxxxxxx76543b
+34562s at back
+200 0 xxxxxxx34562b
+23456s at hand
+400 0 xxxxxxx23456h
+65432s at hand
+400 0 xxxxxxx65432h
+76543s at hand
+400 0 xxxxxxx76543h
+34562s at hand
+100 0 xxxxxxx34562h
+23456s off front
+100 0 23456xxxxxxx
+65432s off front
+100 0 65432xxxxxxx
+76543s off front
+100 0 76543xxxxxxx
+34567s off front
+100 0 34567xxxxxxx
+26543s off front
+100 0 26543xxxxxxx
+cascades
+1 0 xxxxxxxx1234 xxxxxxxx2345 xxxxxxxx3456 xxxxxxxx4321 xxxxxxxx5432 xxxxxxxx6543
+cascades off front
+1 0 1234xxxxxxxx 2345xxxxxxxx 3456xxxxxxxx 4321xxxxxxxx 5432xxxxxxxx 6543xxxxxxxx
+false leadheads
+-1 0 1268403T5E79l

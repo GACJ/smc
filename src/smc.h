@@ -691,7 +691,11 @@ protected:
     int readcall(int call);
 
 public:
-    void showstats();
+    void showstats() { showstats(false); }
+    void showfinalstats() { showstats(true); }
+
+private:
+    void showstats(bool isFinal);
 
 protected:
     void printelapsed(char* buf, int nearestsecond = TRUE);

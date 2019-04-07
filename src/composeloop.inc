@@ -146,7 +146,7 @@ asmdone:
     emms
 #endif
   }
-    showstats();
+    showfinalstats();
   __asm
   {
     jmp alldone

@@ -118,7 +118,7 @@ struct composeloop
 
     asmdone:
         ebx.stats.nodesgenerated += ebx.stats.nodecount;
-        composer.showstats();
+        composer.showfinalstats();
         goto alldone;
 
     lbl_loadcallnextcall:

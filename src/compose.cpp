@@ -118,7 +118,7 @@ int Composer::newcomp()
     return (TRUE);
 }
 
-void Composer::showstats()
+void Composer::showstats(bool isFinal)
 {
     char timebuf[100];
     float interval, nodespeed, evalspeed;
@@ -143,7 +143,9 @@ void Composer::showstats()
         noutput = stats.nfragsfound;
     else
         noutput = stats.ncompsoutput;
-    printf("\r%-9d%-10d%-10d%-9.2f%-9.0f%-12s%.3f", stats.bestscore, noutput, int(stats.nodesgenerated / 1000000), nodespeed, evalspeed, timebuf, 100.0 * calcpercentcomplete());
+
+    auto percent = isFinal ? 100.0 : 100.0 * calcpercentcomplete();
+    printf("\r%-9d%-10d%-10d%-9.2f%-9.0f%-12s%.3f", stats.bestscore, noutput, int(stats.nodesgenerated / 1000000), nodespeed, evalspeed, timebuf, percent);
     fflush(stdout);
 }
 

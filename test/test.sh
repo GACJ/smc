@@ -44,6 +44,22 @@ echo '---------------------------------------------------------------'
 echo '---------------------------------------------------------------'
 echo 'TEST CASE 3'
 echo '---------------------------------------------------------------'
+$SMC32 --deterministic-output data/ba12aa.smc
+diff data/ba12aa.sf1 data/ba12aa.sf1.expected
+DIFF_RESULT=$?
+echo '---------------------------------------------------------------'
+if [ $DIFF_RESULT -ne 0 ]; then
+    echo -e '\e[31mFAILED\e[0m'
+    FINALRESULT=1
+else
+    echo -e '\e[32mPASSED\e[0m'
+fi
+echo '---------------------------------------------------------------'
+
+# Test case 4:
+echo '---------------------------------------------------------------'
+echo 'TEST CASE 4'
+echo '---------------------------------------------------------------'
 $SMC32 --deterministic-output data/ca08jf.smc
 diff data/ca08jf.sf1 data/ca08jf.sf1.expected
 DIFF_RESULT=$?

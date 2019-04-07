@@ -50,6 +50,21 @@ REM Test case 3:
 echo ---------------------------------------------------------------
 echo TEST CASE 3
 echo ---------------------------------------------------------------
+%SMC32% --deterministic-output data\ba12aa.smc
+fc data\ba12aa.sf1 data\ba12aa.sf1.expected
+echo ---------------------------------------------------------------
+if errorlevel 1 (
+    echo [31mFAILED[0m
+    set FINALRESULT=1
+) else (
+    echo [32mPASSED[0m
+)
+echo ---------------------------------------------------------------
+
+REM Test case 4:
+echo ---------------------------------------------------------------
+echo TEST CASE 4
+echo ---------------------------------------------------------------
 %SMC32% --deterministic-output data\ca08jf.smc
 fc data\ca08jf.sf1 data\ca08jf.sf1.expected
 echo ---------------------------------------------------------------
