@@ -72,7 +72,7 @@ jobs:
       targetPath: '$(System.DefaultWorkingDirectory)/artefacts'
     displayName: 'Download Artefacts (linux)'
   - script: |
-      cp -r docs artefacts
+      cp -r docs LICENSE artefacts
       cd artefacts
       chmod 755 smc
       zip -r smc.zip *
