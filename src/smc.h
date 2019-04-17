@@ -94,10 +94,10 @@ enum MusicType
 
 struct MusicRow
 {
-    char row[MAXNBELLS]; // Wildcard indicated with -1
+    char row[MAXNBELLS];      // Wildcard indicated with 255
     char wrapbackstroke[MAXNBELLS];
     char handstrokewrapmatch; // Set when a handstroke matches first part of wrap
-    char sign;                // 0 = any, -1 = negative, +1 = positive
+    signed char sign;         // 0 = any, -1 = negative, +1 = positive
     char type;                // enum MusicType
 };
 

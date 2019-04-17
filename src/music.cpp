@@ -942,14 +942,14 @@ int Composer::isrowmatch(MusicRow& m)
             if (!m.handstrokewrapmatch) // Backstrokes don't match unless flag set
                 return (FALSE);
             for (i = 0; i < nbells; i++) // Check b/stroke against wrapbackstroke match
-                if (m.wrapbackstroke[i] >= 0 && row[i] != m.wrapbackstroke[i])
+                if (m.wrapbackstroke[i] != 255 && row[i] != m.wrapbackstroke[i])
                     return (FALSE);
             return (TRUE); // Yes! Both strokes of wrap match
         }
     }
     // Normal row type matches at any position in lead
     for (i = 0; i < nbells; i++)
-        if (m.row[i] >= 0 && row[i] != m.row[i])
+        if (m.row[i] != 255 && row[i] != m.row[i])
             return (FALSE);
     if (m.type == MUSICWRAP)
     {

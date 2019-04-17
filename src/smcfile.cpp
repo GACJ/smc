@@ -1530,7 +1530,7 @@ int Composer::readrowmatch(char* buffer, MusicRow& m)
             // For wrap rows, the backstroke change must be read into wrapbackstroke
             m.type = MUSICWRAP;
             for (j = 0; j < nbells; j++)
-                m.wrapbackstroke[j] = -1;
+                m.wrapbackstroke[j] = 255;
             m.handstrokewrapmatch = FALSE;
             for (j = 0; j < nbells && buffer[i + j + 1]; j++)
                 if (strchr(MATCHWILD, buffer[i + j + 1]) == nullptr)
@@ -1582,7 +1582,7 @@ void Composer::writerowmatch(char* buffer, MusicRow& m)
 
     *buffer++ = ' ';
     for (i = 0; i < nbells; i++)
-        if (m.row[i] < 0)
+        if (m.row[i] == 255)
             *buffer++ = MATCHWILD[0];
         else
             *buffer++ = rounds[m.row[i]];
@@ -1591,7 +1591,7 @@ void Composer::writerowmatch(char* buffer, MusicRow& m)
         case (MUSICWRAP):
             *buffer++ = ROWMATCHWRAPCHAR;
             for (i = 0; i < nbells; i++)
-                if (m.wrapbackstroke[i] < 0)
+                if (m.wrapbackstroke[i] == 255)
                     *buffer++ = MATCHWILD[0];
                 else
                     *buffer++ = rounds[m.wrapbackstroke[i]];
