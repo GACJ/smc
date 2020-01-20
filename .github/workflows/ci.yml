@@ -1,0 +1,85 @@
+name: CI
+on: [push, pull_request]
+jobs:
+  windows:
+    name: Windows
+    runs-on: windows-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        platform: [x86, x64]
+    env:
+      platform: ${{ matrix.platform }}
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v1
+    - name: Build
+      shell: cmd
+      run: |
+        call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\Common7\Tools\VsDevCmd.bat"
+        msbuild smc32.sln /p:Configuration=Release
+        md artefacts
+        copy bin.release\*.exe artefacts
+    - name: Test
+      shell: cmd
+      run: test\test.bat %platform%
+    - name: Upload artefacts
+      uses: actions/upload-artifact@v1
+      with:
+        name: "win-${{ matrix.platform }}"
+        path: artefacts
+  linux:
+    name: Ubuntu
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v1
+    - name: Build
+      run: |
+        mkdir bin && pushd bin
+          cmake .. -DCMAKE_BUILD_TYPE=Release
+          make -j2
+        popd
+        mkdir artefacts
+        cp bin/smc artefacts
+    - name: Test
+      run: test/test.sh
+    - name: Upload artefacts
+      uses: actions/upload-artifact@v1
+      with:
+        name: linux
+        path: artefacts
+  merge:
+    name: Merge
+    needs: [windows, linux]
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v1
+    - name: Download Artefacts (win-x86)
+      uses: actions/download-artifact@v1
+      with:
+        name: win-x86
+        path: artefacts
+    - name: Download Artefacts (win-x64)
+      uses: actions/download-artifact@v1
+      with:
+        name: win-x64
+        path: artefacts
+    - name: Download Artefacts (linux)
+      uses: actions/download-artifact@v1
+      with:
+        name: linux
+        path: artefacts
+    - name: Create Archive
+      run: |
+        mkdir final
+        cp -r docs LICENSE artefacts
+        cd artefacts
+        chmod 755 smc
+        zip -r ../final/smc.zip *
+    - name: Upload artefacts
+      uses: actions/upload-artifact@v1
+      with:
+        name: final
+        path: final
