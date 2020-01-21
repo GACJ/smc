@@ -1,9 +1,7 @@
 ## SMC32
 
 ### Build Status
-| Windows      | [![Build Status](https://dev.azure.com/gacj/smc32/_apis/build/status/IntelOrca.smc32?branchName=master&jobName=Windows)](https://dev.azure.com/gacj/smc32/_build/latest?definitionId=4&branchName=master) |
-|--------------|-----------------|
-| **Ubuntu 16.04** | [![Build Status](https://dev.azure.com/gacj/smc32/_apis/build/status/IntelOrca.smc32?branchName=master&jobName=Ubuntu%2016.04)](https://dev.azure.com/gacj/smc32/_build/latest?definitionId=4&branchName=master) |
+[![Build Status](https://github.com/GACJ/smc/workflows/CI/badge.svg)](https://github.com/GACJ/smc/actions)
 
 ### Building SMC32
 #### Windows
